@@ -6,3 +6,6 @@ pluginManagement {
 }
 
 rootProject.name = "commons"
+
+include(":commons-all")
+include(":commons-main")
