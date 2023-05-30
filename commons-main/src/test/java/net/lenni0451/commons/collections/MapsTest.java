@@ -6,8 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.*;
 
 class MapsTest {
 
@@ -34,6 +33,8 @@ class MapsTest {
                     assertEquals("A", entry.getKey());
                     assertEquals("C", entry.getValue());
                     break;
+                default:
+                    fail("Unexpected value: " + entry.getKey() + " (" + i + ")");
             }
             i++;
         }
