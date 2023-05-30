@@ -31,6 +31,30 @@ class MathUtilsTest {
     }
 
     @Test
+    void ceilFloatToInt() {
+        assertEquals(2, MathUtils.ceilInt(1.5F));
+        assertEquals(1, MathUtils.ceilInt(1F));
+    }
+
+    @Test
+    void ceilDoubleToInt() {
+        assertEquals(2, MathUtils.ceilInt(1.5D));
+        assertEquals(1, MathUtils.ceilInt(1D));
+    }
+
+    @Test
+    void ceilFloatToLong() {
+        assertEquals(2L, MathUtils.ceilLong(1.5F));
+        assertEquals(1L, MathUtils.ceilLong(1F));
+    }
+
+    @Test
+    void ceilDoubleToLong() {
+        assertEquals(2L, MathUtils.ceilLong(1.5D));
+        assertEquals(1L, MathUtils.ceilLong(1D));
+    }
+
+    @Test
     void clampInt() {
         assertEquals(10, MathUtils.clamp(100, 1, 10));
         assertEquals(1, MathUtils.clamp(-100, 1, 10));

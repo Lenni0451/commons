@@ -43,6 +43,46 @@ public class MathUtils {
     }
 
     /**
+     * Ceil a float to an int.
+     *
+     * @param f The float to ceil
+     * @return The ceiled int
+     */
+    public static int ceilInt(final float f) {
+        return (int) Math.ceil(f);
+    }
+
+    /**
+     * Ceil a double to an int.
+     *
+     * @param d The double to ceil
+     * @return The ceiled int
+     */
+    public static int ceilInt(final double d) {
+        return (int) Math.ceil(d);
+    }
+
+    /**
+     * Ceil a float to a long.
+     *
+     * @param f The float to ceil
+     *          The ceiled long
+     */
+    public static long ceilLong(final float f) {
+        return (long) Math.ceil(f);
+    }
+
+    /**
+     * Ceil a double to a long.
+     *
+     * @param d The double to ceil
+     * @return The ceiled long
+     */
+    public static long ceilLong(final double d) {
+        return (long) Math.ceil(d);
+    }
+
+    /**
      * Clamp an int between a min and max value.
      *
      * @param i   The int to clamp
