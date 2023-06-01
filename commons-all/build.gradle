@@ -1,3 +1,4 @@
 dependencies {
+    api project(':commons-functional')
     api project(':commons-main')
 }
