@@ -69,7 +69,7 @@ public class MathUtils {
      * Ceil a float to a long.
      *
      * @param f The float to ceil
-     *          The ceiled long
+     * @return The ceiled long
      */
     public static long ceilLong(final float f) {
         return (long) Math.ceil(f);

@@ -33,6 +33,7 @@ public interface ThrowingFunction<O, R, T extends Throwable> {
      * A function that always returns the argument value.
      *
      * @param <X> The type of the argument
+     * @param <E> The type of the exception
      * @return The identity function
      */
     default <X, E extends Throwable> ThrowingFunction<X, X, E> identity() {
