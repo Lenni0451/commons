@@ -126,4 +126,13 @@ class MathUtilsTest {
         assertEquals(0.5D, MathUtils.map(5, 0D, 10D, 0D, 1D));
     }
 
+    @Test
+    void formatBytes() {
+        assertEquals("0 B", MathUtils.formatBytes(0));
+        assertEquals("1,0 KiB", MathUtils.formatBytes(1024));
+        assertEquals("1,0 GiB", MathUtils.formatBytes(1024 * 1024 * 1024));
+        assertEquals("8,0 EiB", MathUtils.formatBytes(Long.MAX_VALUE));
+        assertEquals("-8,0 EiB", MathUtils.formatBytes(Long.MIN_VALUE + 1));
+    }
+
 }

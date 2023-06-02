@@ -2,6 +2,9 @@ package net.lenni0451.commons.math;
 
 public class MathUtils {
 
+    private static final int DATA_BASE_UNIT = 1024;
+    private static final String[] DATA_UNITS = new String[]{"KiB", "MiB", "GiB", "TiB", "PiB", "EiB"};
+
     /**
      * Floor a float to an int.
      *
@@ -212,12 +215,16 @@ public class MathUtils {
      * @param bytes The byte count
      * @return The human-readable string
      */
-    public static String formatBytes(final long bytes) {
-        int unit = 1024;
-        if (bytes < unit) return bytes + " B";
-        int exp = (int) (Math.log(bytes) / Math.log(unit));
-        String pre = ("KMGTPE").charAt(exp - 1) + "i";
-        return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
+    public static String formatBytes(long bytes) {
+        boolean neg = bytes < 0;
+        bytes = Math.abs(bytes);
+        if (bytes < DATA_BASE_UNIT) return bytes + " B";
+        int exp = (int) (Math.log(bytes) / Math.log(DATA_BASE_UNIT));
+        return new StringBuilder()
+                .append(neg ? "-" : "")
+                .append(String.format("%.1f ", bytes / Math.pow(DATA_BASE_UNIT, exp)))
+                .append(DATA_UNITS[exp - 1])
+                .toString();
     }
 
 }
