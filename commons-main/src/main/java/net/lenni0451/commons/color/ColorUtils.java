@@ -2,7 +2,7 @@ package net.lenni0451.commons.color;
 
 import java.awt.*;
 
-import static net.lenni0451.commons.MathUtils.clamp;
+import static net.lenni0451.commons.math.MathUtils.clamp;
 
 public class ColorUtils {
 
