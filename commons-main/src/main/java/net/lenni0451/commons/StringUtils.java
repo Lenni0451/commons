@@ -13,6 +13,19 @@ public class StringUtils {
     }
 
     /**
+     * Repeat the char a given amount of times.
+     *
+     * @param c     The char to repeat
+     * @param count The amount of times to repeat
+     * @return The repeated string
+     */
+    public static String repeat(final char c, final int count) {
+        StringBuilder out = new StringBuilder();
+        for (int i = 0; i < count; i++) out.append(c);
+        return out.toString();
+    }
+
+    /**
      * Repeat the string a given amount of times.
      *
      * @param s     The string to repeat
@@ -35,6 +48,20 @@ public class StringUtils {
      */
     public static String cut(final String s, final int length) {
         if (s.length() < length) return s;
+        return s.substring(0, length);
+    }
+
+    /**
+     * Cut the string to the given length.<br>
+     * The filler will be appended if the string is shorter.
+     *
+     * @param s      The string to cut
+     * @param filler The filler to add if the string is shorter
+     * @param length The length to cut to
+     * @return The cut string
+     */
+    public static String cut(String s, final char filler, final int length) {
+        if (s.length() < length) return s + repeat(filler, length - s.length());
         return s.substring(0, length);
     }
 

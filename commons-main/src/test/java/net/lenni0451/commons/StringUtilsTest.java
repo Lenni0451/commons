@@ -12,7 +12,12 @@ class StringUtilsTest {
     }
 
     @Test
-    void repeat() {
+    void repeatChar() {
+        assertEquals("TTT", StringUtils.repeat('T', 3));
+    }
+
+    @Test
+    void repeatString() {
         assertEquals("TestTestTest", StringUtils.repeat("Test", 3));
     }
 
@@ -20,6 +25,12 @@ class StringUtilsTest {
     void cut() {
         assertEquals("Test", StringUtils.cut("Test", 10));
         assertEquals("TestTestTe", StringUtils.cut("TestTestTestTest", 10));
+    }
+
+    @Test
+    void sizeCut() {
+        assertEquals("Test______", StringUtils.cut("Test", '_', 10));
+        assertEquals("TestTestTe", StringUtils.cut("TestTestTestTest", '_', 10));
     }
 
     @Test

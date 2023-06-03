@@ -106,4 +106,17 @@ public class ColorUtils {
         );
     }
 
+    /**
+     * Get the distance between two colors.
+     *
+     * @param color1 The first color
+     * @param color2 The second color
+     * @return The distance between the two colors
+     */
+    public static int distance(final Color color1, final Color color2) {
+        return Math.abs(color1.getRed() - color2.getRed())
+                + Math.abs(color1.getGreen() - color2.getGreen())
+                + Math.abs(color1.getBlue() - color2.getBlue());
+    }
+
 }
