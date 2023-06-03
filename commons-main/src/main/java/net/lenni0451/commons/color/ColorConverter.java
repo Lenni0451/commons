@@ -215,10 +215,11 @@ public class ColorConverter {
 
     public float[] toFloats(final int r, final int g, final int b, final int a) {
         float[] floats = new float[this.aShift == -1 ? 3 : 4];
-        floats[this.rShift / 8] = r / 255F;
-        floats[this.gShift / 8] = g / 255F;
-        floats[this.bShift / 8] = b / 255F;
-        if (this.aShift != -1) floats[this.aShift / 8] = a / 255F;
+        int arrayOffset = floats.length - 1;
+        floats[arrayOffset - (this.rShift / 8)] = r / 255F;
+        floats[arrayOffset - (this.gShift / 8)] = g / 255F;
+        floats[arrayOffset - (this.bShift / 8)] = b / 255F;
+        if (this.aShift != -1) floats[arrayOffset - (this.aShift / 8)] = a / 255F;
         return floats;
     }
 
@@ -243,10 +244,15 @@ public class ColorConverter {
      * @return The color
      */
     public Color from(final float[] color) {
-        return new Color(color[this.rShift / 8],
-                color[this.gShift / 8],
-                color[this.bShift / 8],
-                this.aShift == -1 ? 1 : color[this.aShift / 8]);
+        if (color.length == 3 && this.aShift != -1) throw new IllegalArgumentException("Color format has no alpha value");
+        if (color.length == 4 && this.aShift == -1) throw new IllegalArgumentException("Color format has an alpha value");
+        if (color.length != 3 && color.length != 4) throw new IllegalArgumentException("Color format has an invalid length");
+
+        int arrayOffset = color.length - 1;
+        return new Color(color[arrayOffset - (this.rShift / 8)],
+                color[arrayOffset - (this.gShift / 8)],
+                color[arrayOffset - (this.bShift / 8)],
+                this.aShift == -1 ? 1 : color[arrayOffset - (this.aShift / 8)]);
     }
 
 }
