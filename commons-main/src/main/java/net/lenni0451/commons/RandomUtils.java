@@ -69,6 +69,50 @@ public class RandomUtils {
     }
 
     /**
+     * Generate a random long between the given min and max.
+     *
+     * @param min The minimum value
+     * @param max The maximum value
+     * @return The generated long
+     */
+    public static long randomLong(final long min, final long max) {
+        if (min == max) return min;
+        long rMin;
+        long rMax;
+        if (min > max) {
+            rMin = max;
+            rMax = min;
+        } else {
+            rMin = min;
+            rMax = max;
+        }
+
+        return (long) (RND.nextDouble() * (rMax - rMin)) + rMin;
+    }
+
+    /**
+     * Generate a random double between the given min and max.
+     *
+     * @param min The minimum value
+     * @param max The maximum value
+     * @return The generated double
+     */
+    public static double randomDouble(final double min, final double max) {
+        if (min == max) return min;
+        double rMin;
+        double rMax;
+        if (min > max) {
+            rMin = max;
+            rMax = min;
+        } else {
+            rMin = min;
+            rMax = max;
+        }
+
+        return RND.nextDouble() * (rMax - rMin) + rMin;
+    }
+
+    /**
      * Generate random bytes with the given length.
      *
      * @param length The length of the bytes
