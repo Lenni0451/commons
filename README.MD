@@ -10,24 +10,32 @@ To use `commons` in your project, you have the following options:
 ### Gradle
 ````groovy
 repositories {
-    mavenCentral()
+    maven {
+        url "https://maven.lenni0451.net/releases"
+    }
 }
 
 dependencies {
     implementation "net.lenni0451.commons:all:x.x.x"
 }
 ````
-Check [maven central](https://central.sonatype.com/search?q=net.lenni0451.commons) for the latest version.
+Check my [maven server](https://maven.lenni0451.net/#/releases/net/lenni0451/commons) for the latest version.
 
 ### Maven
 ````xml
+<repository>
+    <id>lenni0451-maven-releases</id>
+    <name>Lenni0451 Maven Repository</name>
+    <url>https://maven.lenni0451.net/releases</url>
+</repository>
+
 <dependency>
   <groupId>net.lenni0451.commons</groupId>
   <artifactId>all</artifactId>
   <version>x.x.x</version>
 </dependency>
 ````
-Check [maven central](https://central.sonatype.com/search?q=net.lenni0451.commons) for the latest version.
+Check my [maven server](https://maven.lenni0451.net/#/releases/net/lenni0451/commons) for the latest version.
 
 ### Jar File
 To add `commons` as a jar library, you can download the jar file from my [Jenkins Server](https://build.lenni0451.net/job/commons/).
