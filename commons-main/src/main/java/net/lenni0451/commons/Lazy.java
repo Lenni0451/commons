@@ -12,6 +12,18 @@ import java.util.function.Supplier;
 @ThreadSafe
 public class Lazy<T> {
 
+    /**
+     * Create a new lazy object.
+     *
+     * @param supplier The supplier to create the object
+     * @param <T>      The type of the object
+     * @return The lazy object
+     */
+    public static <T> Lazy<T> of(final Supplier<T> supplier) {
+        return new Lazy<>(supplier);
+    }
+
+
     private final Object lock = new Object();
     private final Supplier<T> supplier;
     private T value;
