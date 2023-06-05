@@ -19,7 +19,8 @@ dependencies {
     implementation "net.lenni0451.commons:all:x.x.x"
 }
 ````
-Check my [maven server](https://maven.lenni0451.net/#/releases/net/lenni0451/commons) for the latest version.
+Check my [maven server](https://maven.lenni0451.net/#/releases/net/lenni0451/commons) for the latest version.\
+Or the [snapshot server](https://maven.lenni0451.net/#/snapshots/net/lenni0451/commons) for the latest snapshot version.
 
 ### Maven
 ````xml
@@ -35,7 +36,8 @@ Check my [maven server](https://maven.lenni0451.net/#/releases/net/lenni0451/com
   <version>x.x.x</version>
 </dependency>
 ````
-Check my [maven server](https://maven.lenni0451.net/#/releases/net/lenni0451/commons) for the latest version.
+Check my [maven server](https://maven.lenni0451.net/#/releases/net/lenni0451/commons) for the latest version.\
+Or the [snapshot server](https://maven.lenni0451.net/#/snapshots/net/lenni0451/commons) for the latest snapshot version.
 
 ### Jar File
 To add `commons` as a jar library, you can download the jar file from my [Jenkins Server](https://build.lenni0451.net/job/commons/).
