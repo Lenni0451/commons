@@ -23,11 +23,7 @@ public class ThreadScheduler {
      */
     public ThreadScheduler(final boolean daemon, final boolean taskThreads) {
         this.taskThreads = taskThreads;
-        this.threadFactory = r -> {
-            Thread thread = new Thread(r, "ThreadScheduler #" + THREAD_ID.getAndIncrement());
-            if (daemon) thread.setDaemon(true);
-            return thread;
-        };
+        this.threadFactory = ThreadFactoryImpl.of("ThreadScheduler #").daemon(daemon);
         this.executor = Executors.newSingleThreadScheduledExecutor(this.threadFactory);
     }
 
