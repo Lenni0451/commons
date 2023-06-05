@@ -1,0 +1,18 @@
+repositories {
+    maven {
+        name = "OpenCollab Releases"
+        url = "https://repo.opencollab.dev/maven-releases/"
+    }
+    maven {
+        name = "OpenCollab Snapshots"
+        url = "https://repo.opencollab.dev/maven-snapshots/"
+    }
+}
+
+dependencies {
+    api project(":commons-main")
+
+    compileOnly "io.netty:netty-all:4.1.93.Final"
+    compileOnly "org.cloudburstmc.netty:netty-transport-raknet:1.0.0.CR1-SNAPSHOT"
+    compileOnly "io.jpower.kcp:kcp-netty:1.5.0"
+}

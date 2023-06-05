@@ -10,3 +10,4 @@ rootProject.name = "commons"
 include(":commons-all")
 include(":commons-functional")
 include(":commons-main")
+include(":commons-netty")
