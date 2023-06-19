@@ -9,39 +9,39 @@ class DistanceTest {
 
     @Test
     void between2DFloat() {
-        assertEquals(5.00F, MathUtils.round(Distance.between(0F, 0F, 3F, 4F), 2));
-        assertEquals(5.00F, MathUtils.round(Distance.between(0F, 0F, -3F, -4F), 2));
-        assertEquals(5.00F, MathUtils.round(Distance.between(3F, 4F, 0F, 0F), 2));
-        assertEquals(5.00F, MathUtils.round(Distance.between(-3F, -4F, 0F, 0F), 2));
+        assertEquals(5F, Distance.between(0F, 0F, 3F, 4F), 2);
+        assertEquals(5F, Distance.between(0F, 0F, -3F, -4F), 2);
+        assertEquals(5F, Distance.between(3F, 4F, 0F, 0F), 2);
+        assertEquals(5F, Distance.between(-3F, -4F, 0F, 0F), 2);
 
         assertEquals(2.83F, MathUtils.round(Distance.between(1F, 2F, 3F, 4F), 2));
         assertEquals(2.83F, MathUtils.round(Distance.between(-1F, -2F, -3F, -4F), 2));
         assertEquals(2.83F, MathUtils.round(Distance.between(4F, 3F, 2F, 1F), 2));
         assertEquals(2.83F, MathUtils.round(Distance.between(-4F, -3F, -2F, -1F), 2));
 
-        assertEquals(0F, MathUtils.round(Distance.between(0F, 0F, 0F, 0F), 2));
-        assertEquals(0F, MathUtils.round(Distance.between(1F, 1F, 1F, 1F), 2));
-        assertEquals(0F, MathUtils.round(Distance.between(-2F, -2F, -2F, -2F), 2));
-        assertEquals(0F, MathUtils.round(Distance.between(0F, 0F, 0F, 0F), 2));
+        assertEquals(0F, Distance.between(0F, 0F, 0F, 0F), 2);
+        assertEquals(0F, Distance.between(1F, 1F, 1F, 1F), 2);
+        assertEquals(0F, Distance.between(-2F, -2F, -2F, -2F), 2);
+        assertEquals(0F, Distance.between(0F, 0F, 0F, 0F), 2);
 
     }
 
     @Test
     void between2DDouble() {
-        assertEquals(5.00D, MathUtils.round(Distance.between(0D, 0D, 3D, 4D), 2));
-        assertEquals(5.00D, MathUtils.round(Distance.between(0D, 0D, -3D, -4D), 2));
-        assertEquals(5.00D, MathUtils.round(Distance.between(3D, 4D, 0D, 0D), 2));
-        assertEquals(5.00D, MathUtils.round(Distance.between(-3D, -4D, 0D, 0D), 2));
+        assertEquals(5D, Distance.between(0D, 0D, 3D, 4D), 2);
+        assertEquals(5D, Distance.between(0D, 0D, -3D, -4D), 2);
+        assertEquals(5D, Distance.between(3D, 4D, 0D, 0D), 2);
+        assertEquals(5D, Distance.between(-3D, -4D, 0D, 0D), 2);
 
         assertEquals(2.83D, MathUtils.round(Distance.between(1D, 2D, 3D, 4D), 2));
         assertEquals(2.83D, MathUtils.round(Distance.between(-1D, -2D, -3D, -4D), 2));
         assertEquals(2.83D, MathUtils.round(Distance.between(4D, 3D, 2D, 1D), 2));
         assertEquals(2.83D, MathUtils.round(Distance.between(-4D, -3D, -2D, -1D), 2));
 
-        assertEquals(0D, MathUtils.round(Distance.between(0D, 0D, 0D, 0D), 2));
-        assertEquals(0D, MathUtils.round(Distance.between(1D, 1D, 1D, 1D), 2));
-        assertEquals(0D, MathUtils.round(Distance.between(-2D, -2D, -2D, -2D), 2));
-        assertEquals(0D, MathUtils.round(Distance.between(0D, 0D, 0D, 0D), 2));
+        assertEquals(0D, Distance.between(0D, 0D, 0D, 0D), 2);
+        assertEquals(0D, Distance.between(1D, 1D, 1D, 1D), 2);
+        assertEquals(0D, Distance.between(-2D, -2D, -2D, -2D), 2);
+        assertEquals(0D, Distance.between(0D, 0D, 0D, 0D), 2);
     }
 
     @Test
