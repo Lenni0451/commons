@@ -227,4 +227,28 @@ public class MathUtils {
                 .toString();
     }
 
+    /**
+     * Round a float to a certain precision.
+     *
+     * @param value     The float to round
+     * @param precision The precision
+     * @return The rounded float
+     */
+    public static float round(float value, int precision) {
+        int scale = (int) Math.pow(10, precision);
+        return (float) Math.round(value * scale) / scale;
+    }
+
+    /**
+     * Round a double to a certain precision.
+     *
+     * @param value     The double to round
+     * @param precision The precision
+     * @return The rounded double
+     */
+    public static double round(double value, int precision) {
+        int scale = (int) Math.pow(10, precision);
+        return (double) Math.round(value * scale) / scale;
+    }
+
 }

@@ -135,4 +135,28 @@ class MathUtilsTest {
         assertEquals("-8,0 EiB", MathUtils.formatBytes(Long.MIN_VALUE + 1));
     }
 
+    @Test
+    void roundFloat() {
+        assertEquals(5.00F, MathUtils.round(5.0043F, 2));
+        assertEquals(5.01F, MathUtils.round(5.0053F, 2));
+        assertEquals(5.00F, MathUtils.round(5.001F, 2));
+        assertEquals(5.01F, MathUtils.round(5.006F, 2));
+        assertEquals(0F, MathUtils.round(0.000001F, 2));
+        assertEquals(10.00F, MathUtils.round(10F, 2));
+        assertEquals(-2.33F, MathUtils.round(-2.333F, 2));
+        assertEquals(0F, MathUtils.round(0F, 2));
+    }
+
+    @Test
+    void roundDouble() {
+        assertEquals(5.00D, MathUtils.round(5.0043D, 2));
+        assertEquals(5.01D, MathUtils.round(5.0053D, 2));
+        assertEquals(5.00D, MathUtils.round(5.001D, 2));
+        assertEquals(5.01D, MathUtils.round(5.006D, 2));
+        assertEquals(0D, MathUtils.round(0.000001D, 2));
+        assertEquals(10.00D, MathUtils.round(10D, 2));
+        assertEquals(-2.33D, MathUtils.round(-2.333D, 2));
+        assertEquals(0D, MathUtils.round(0D, 2));
+    }
+
 }
