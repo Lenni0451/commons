@@ -9,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -188,6 +189,32 @@ public class FileSystemZip implements AutoCloseable {
          */
         public boolean isDirectory() {
             return Files.isDirectory(this.path);
+        }
+
+        /**
+         * Delete the entry.<br>
+         * If the entry is a directory all sub entries will be deleted as well.
+         *
+         * @throws IOException If an I/O error occurs
+         */
+        public void delete() throws IOException {
+            if (this.isDirectory()) {
+                Files.walkFileTree(this.path, new SimpleFileVisitor<Path>() {
+                    @Override
+                    public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
+                        Files.delete(file);
+                        return FileVisitResult.CONTINUE;
+                    }
+
+                    @Override
+                    public FileVisitResult postVisitDirectory(final Path dir, final IOException exc) throws IOException {
+                        Files.delete(dir);
+                        return FileVisitResult.CONTINUE;
+                    }
+                });
+            } else {
+                Files.delete(this.path);
+            }
         }
 
         /**

@@ -93,8 +93,19 @@ class FileSystemZipTest {
         assertDoesNotThrow(() -> zip.forEach(entry -> {
             if (entry.getName().isEmpty()) assertTrue(entry.isDirectory());
             else if (entry.getName().equals("test.txt")) assertArrayEquals(TEST_PLACEHOLDER, assertDoesNotThrow(entry::getData));
-            else if (entry.getName().equals("test2/")) assertThrows(IllegalStateException.class, entry::getData);
+            else if (entry.getName().equals("test2/") || entry.getName().equals("test2")) assertThrows(IllegalStateException.class, entry::getData);
             else fail("Unknown entry: " + entry.getName());
+        }));
+    }
+
+    @Test
+    @Order(5)
+    void delete() {
+        assertDoesNotThrow(() -> zip.forEach(entry -> {
+            if (!entry.getName().isEmpty()) assertDoesNotThrow(entry::delete);
+        }));
+        assertDoesNotThrow(() -> zip.forEach(entry -> {
+            if (!entry.getName().isEmpty()) fail("Entry not deleted: " + entry.getName());
         }));
     }
 
