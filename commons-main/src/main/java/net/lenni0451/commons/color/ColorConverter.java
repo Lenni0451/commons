@@ -213,6 +213,16 @@ public class ColorConverter {
         return this.toFloats(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
     }
 
+    /**
+     * Convert a color to its float representation.<br>
+     * If the format has no alpha value, the alpha value will be ignored.
+     *
+     * @param r The red value
+     * @param g The green value
+     * @param b The blue value
+     * @param a The alpha value
+     * @return The float representation
+     */
     public float[] toFloats(final int r, final int g, final int b, final int a) {
         float[] floats = new float[this.aShift == -1 ? 3 : 4];
         int arrayOffset = floats.length - 1;
