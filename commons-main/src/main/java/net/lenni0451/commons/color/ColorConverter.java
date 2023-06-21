@@ -215,6 +215,19 @@ public class ColorConverter {
 
     /**
      * Convert a color to its float representation.<br>
+     * If the format has an alpha value, it will be set to 1.
+     *
+     * @param r The red value
+     * @param g The green value
+     * @param b The blue value
+     * @return The float representation
+     */
+    public float[] toFloats(final int r, final int g, final int b) {
+        return this.toFloats(r, g, b, 255);
+    }
+
+    /**
+     * Convert a color to its float representation.<br>
      * If the format has no alpha value, the alpha value will be ignored.
      *
      * @param r The red value
