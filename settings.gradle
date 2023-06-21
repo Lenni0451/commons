@@ -8,6 +8,7 @@ pluginManagement {
 rootProject.name = "commons"
 
 include(":commons-all")
+include(":commons-debugging")
 include(":commons-functional")
 include(":commons-main")
 include(":commons-netty")
