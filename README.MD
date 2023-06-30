@@ -5,8 +5,6 @@ When there are enough utils in one category, they will be moved into a separate 
 I will keep the package structure, so you only have to add a new module to your project.\
 If you want to avoid this, you can depend on the `all` module, which contains all other modules.
 
-It is recommended to use the snapshot version, as there will not be many releases.
-
 ## Usage
 To use `commons` in your project, you have the following options:
 ### Gradle
@@ -21,8 +19,8 @@ dependencies {
     implementation "net.lenni0451.commons:all:x.x.x"
 }
 ````
-Or the [snapshot server](https://maven.lenni0451.net/#/snapshots/net/lenni0451/commons) for the latest snapshot version (recommended).\
-Check my [maven server](https://maven.lenni0451.net/#/releases/net/lenni0451/commons) for the latest version.
+Check my [maven server](https://maven.lenni0451.net/#/releases/net/lenni0451/commons) for the latest version.\
+Or the [snapshot server](https://maven.lenni0451.net/#/snapshots/net/lenni0451/commons) for the latest snapshot version.
 
 ### Maven
 ````xml
@@ -38,8 +36,8 @@ Check my [maven server](https://maven.lenni0451.net/#/releases/net/lenni0451/com
   <version>x.x.x</version>
 </dependency>
 ````
-Or the [snapshot server](https://maven.lenni0451.net/#/snapshots/net/lenni0451/commons) for the latest snapshot version (recommended).\
-Check my [maven server](https://maven.lenni0451.net/#/releases/net/lenni0451/commons) for the latest version.
+Check my [maven server](https://maven.lenni0451.net/#/releases/net/lenni0451/commons) for the latest version.\
+Or the [snapshot server](https://maven.lenni0451.net/#/snapshots/net/lenni0451/commons) for the latest snapshot version.
 
 ### Jar File
 To add `commons` as a jar library, you can download the jar file from my [Jenkins Server](https://build.lenni0451.net/job/commons/).
