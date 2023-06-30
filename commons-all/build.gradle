@@ -1,4 +1,6 @@
 dependencies {
-    api project(':commons-functional')
-    api project(':commons-main')
+    api project(":commons-debugging")
+    api project(":commons-functional")
+    api project(":commons-main")
+    api project(":commons-netty")
 }
