@@ -65,13 +65,13 @@ class ColorUtilsTest {
         Color color1 = new Color(255, 255, 255, 255);
         Color color2 = new Color(0, 0, 0, 0);
 
-        Color interpolate0 = ColorUtils.interpolate(color1, color2, 0);
+        Color interpolate0 = ColorUtils.interpolate(0, color1, color2);
         assertEquals(255, interpolate0.getRed());
         assertEquals(255, interpolate0.getGreen());
         assertEquals(255, interpolate0.getBlue());
         assertEquals(255, interpolate0.getAlpha());
 
-        Color interpolate1 = ColorUtils.interpolate(color1, color2, 1);
+        Color interpolate1 = ColorUtils.interpolate(1, color1, color2);
         assertEquals(0, interpolate1.getRed());
         assertEquals(0, interpolate1.getGreen());
         assertEquals(0, interpolate1.getBlue());

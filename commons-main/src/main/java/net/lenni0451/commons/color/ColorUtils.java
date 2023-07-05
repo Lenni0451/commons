@@ -89,15 +89,23 @@ public class ColorUtils {
     }
 
     /**
+     * See {@link #interpolate(float, Color, Color)}.
+     */
+    @Deprecated
+    public static Color interpolate(final Color color1, final Color color2, final float progress) {
+        return interpolate(progress, color1, color2);
+    }
+
+    /**
      * Interpolate between two colors with a progress.<br>
      * The progress is a value between 0 and 1.
      *
+     * @param progress The progress between the two colors
      * @param color1   The first color
      * @param color2   The second color
-     * @param progress The progress between the two colors
      * @return The interpolated color
      */
-    public static Color interpolate(final Color color1, final Color color2, final float progress) {
+    public static Color interpolate(final float progress, final Color color1, final Color color2) {
         return new Color(
                 clamp((int) (color1.getRed() + (color2.getRed() - color1.getRed()) * progress), 0, 255),
                 clamp((int) (color1.getGreen() + (color2.getGreen() - color1.getGreen()) * progress), 0, 255),
@@ -126,7 +134,7 @@ public class ColorUtils {
         for (int i = 0; i < steps.length; i++) {
             if (progress < steps[i]) {
                 float stepProgress = (progress - steps[i - 1]) / (steps[i] - steps[i - 1]);
-                return interpolate(colors[i - 1], colors[i], stepProgress);
+                return interpolate(stepProgress, colors[i - 1], colors[i]);
             }
         }
         return colors[colors.length - 1];
@@ -144,7 +152,7 @@ public class ColorUtils {
     public static Color interpolate(final float progress, final Color... colors) {
         if (colors.length == 0) throw new IllegalArgumentException("Colors must have a length greater than 0");
         if (colors.length == 1) return colors[0];
-        if (colors.length == 2) return interpolate(colors[0], colors[1], progress);
+        if (colors.length == 2) return interpolate(progress, colors[0], colors[1]);
 
         float step = 1F / (colors.length - 1);
         float[] steps = new float[colors.length];
