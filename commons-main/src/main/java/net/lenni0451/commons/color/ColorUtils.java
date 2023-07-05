@@ -107,6 +107,52 @@ public class ColorUtils {
     }
 
     /**
+     * Interpolate between multiple colors with a progress.<br>
+     * The progress is a value between 0 and 1.<br>
+     * The colors and steps must have the same length.
+     *
+     * @param progress The progress between the colors
+     * @param colors   The colors to interpolate between
+     * @param steps    The steps between the colors
+     * @return The interpolated color
+     */
+    public static Color interpolate(final float progress, final Color[] colors, final float[] steps) {
+        if (colors.length != steps.length) throw new IllegalArgumentException("Colors and steps must have the same length");
+        if (colors.length == 0) throw new IllegalArgumentException("Colors and steps must have a length greater than 0");
+
+        if (colors.length == 1) return colors[0];
+        if (progress <= 0) return colors[0];
+        if (progress >= 1) return colors[colors.length - 1];
+        for (int i = 0; i < steps.length; i++) {
+            if (progress < steps[i]) {
+                float stepProgress = (progress - steps[i - 1]) / (steps[i] - steps[i - 1]);
+                return interpolate(colors[i - 1], colors[i], stepProgress);
+            }
+        }
+        return colors[colors.length - 1];
+    }
+
+    /**
+     * Interpolate between multiple colors with a progress.<br>
+     * The progress is a value between 0 and 1.<br>
+     * The colors must have a length greater than 0.
+     *
+     * @param progress The progress between the colors
+     * @param colors   The colors to interpolate between
+     * @return The interpolated color
+     */
+    public static Color interpolate(final float progress, final Color... colors) {
+        if (colors.length == 0) throw new IllegalArgumentException("Colors must have a length greater than 0");
+        if (colors.length == 1) return colors[0];
+        if (colors.length == 2) return interpolate(colors[0], colors[1], progress);
+
+        float step = 1F / (colors.length - 1);
+        float[] steps = new float[colors.length];
+        for (int i = 0; i < colors.length; i++) steps[i] = step * i;
+        return interpolate(progress, colors, steps);
+    }
+
+    /**
      * Get the distance between two colors.
      *
      * @param color1 The first color
