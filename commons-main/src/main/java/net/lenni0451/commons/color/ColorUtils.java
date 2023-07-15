@@ -129,8 +129,8 @@ public class ColorUtils {
         if (colors.length == 0) throw new IllegalArgumentException("Colors and steps must have a length greater than 0");
 
         if (colors.length == 1) return colors[0];
-        if (progress <= 0) return colors[0];
-        if (progress >= 1) return colors[colors.length - 1];
+        if (progress <= steps[0]) return colors[0];
+        if (progress >= steps[steps.length - 1]) return colors[colors.length - 1];
         for (int i = 0; i < steps.length; i++) {
             if (progress < steps[i]) {
                 float stepProgress = (progress - steps[i - 1]) / (steps[i] - steps[i - 1]);
