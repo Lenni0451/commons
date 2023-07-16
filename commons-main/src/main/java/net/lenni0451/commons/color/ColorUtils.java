@@ -73,6 +73,16 @@ public class ColorUtils {
     }
 
     /**
+     * Invert a color
+     *
+     * @param color The color to invert
+     * @return The inverted color
+     */
+    public static Color invert(final Color color) {
+        return new Color(255 - color.getRed(), 255 - color.getGreen(), 255 - color.getBlue(), color.getAlpha());
+    }
+
+    /**
      * Multiply a color with a factor.
      *
      * @param color  The color to multiply

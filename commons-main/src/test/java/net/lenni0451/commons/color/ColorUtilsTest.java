@@ -44,6 +44,17 @@ class ColorUtilsTest {
     }
 
     @Test
+    void invert() {
+        Color color = new Color(255, 255, 255, 255);
+
+        Color invert = ColorUtils.invert(color);
+        assertEquals(0, invert.getRed());
+        assertEquals(0, invert.getGreen());
+        assertEquals(0, invert.getBlue());
+        assertEquals(255, invert.getAlpha());
+    }
+
+    @Test
     void multiply() {
         Color color = new Color(255, 255, 255, 255);
 
@@ -138,5 +149,4 @@ class ColorUtilsTest {
 
         assertEquals(255 * 3, ColorUtils.distance(color1, color2));
     }
-
 }
