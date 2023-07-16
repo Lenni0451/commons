@@ -1,5 +1,7 @@
 package net.lenni0451.commons;
 
+import java.lang.reflect.Array;
+
 @SuppressWarnings({"unused", "unchecked"})
 public class ArrayUtils {
 
@@ -1765,11 +1767,11 @@ public class ArrayUtils {
      * @return The new array
      */
     public static <O> O[] add(final O[] array, final int index, final O o) {
-        Object[] newArray = new Object[array.length + 1];
+        O[] newArray = (O[]) Array.newInstance(array.getClass().getComponentType(), array.length + 1);
         System.arraycopy(array, 0, newArray, 0, index);
         newArray[index] = o;
         System.arraycopy(array, index, newArray, index + 1, array.length - index);
-        return (O[]) newArray;
+        return newArray;
     }
 
     /**
@@ -1806,11 +1808,11 @@ public class ArrayUtils {
      */
     @SafeVarargs
     public static <O> O[] add(final O[] array, final int index, final O... objects) {
-        Object[] newArray = new Object[array.length + objects.length];
+        O[] newArray = (O[]) Array.newInstance(array.getClass().getComponentType(), array.length + objects.length);
         System.arraycopy(array, 0, newArray, 0, index);
         System.arraycopy(objects, 0, newArray, index, objects.length);
         System.arraycopy(array, index, newArray, index + objects.length, array.length - index);
-        return (O[]) newArray;
+        return newArray;
     }
 
     /**
@@ -1849,15 +1851,15 @@ public class ArrayUtils {
     public static <O> O[] add(final O[] array, final int index, final O[]... other) {
         int length = array.length;
         for (Object[] o : other) length += o.length;
-        Object[] newArray = new Object[length];
+        O[] newArray = (O[]) Array.newInstance(array.getClass().getComponentType(), length);
         System.arraycopy(array, 0, newArray, 0, index);
         int i = index;
-        for (Object[] o : other) {
+        for (O[] o : other) {
             System.arraycopy(o, 0, newArray, i, o.length);
             i += o.length;
         }
         System.arraycopy(array, index, newArray, i, array.length - index);
-        return (O[]) newArray;
+        return newArray;
     }
 
     /**
@@ -1915,10 +1917,10 @@ public class ArrayUtils {
      * @return The new array
      */
     public static <O> O[] removeAt(final O[] array, final int index, final int length) {
-        Object[] newArray = new Object[array.length - length];
+        O[] newArray = (O[]) Array.newInstance(array.getClass().getComponentType(), array.length - length);
         System.arraycopy(array, 0, newArray, 0, index);
         System.arraycopy(array, index + length, newArray, index, array.length - index - length);
-        return (O[]) newArray;
+        return newArray;
     }
 
 }

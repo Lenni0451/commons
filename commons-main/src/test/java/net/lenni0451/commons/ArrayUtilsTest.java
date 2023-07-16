@@ -109,4 +109,13 @@ class ArrayUtilsTest {
         assertArrayEquals(new byte[]{1, 4, 5, 5}, ArrayUtils.removeAt(ARRAY, 1, 2));
     }
 
+    @Test
+    void testObjectArrays() {
+        String[] array = new String[]{"a", "b", "c", "d"};
+        array = ArrayUtils.add(array, "e");
+        array = ArrayUtils.add(array, "f", "g");
+        array = ArrayUtils.add(array, new String[]{"h", "i"}, new String[]{"j", "k"});
+        array = ArrayUtils.removeAt(array, 2, 3);
+        assertArrayEquals(new String[]{"a", "b", "f", "g", "h", "i", "j", "k"}, array);
+    }
 }
