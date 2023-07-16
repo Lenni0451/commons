@@ -1689,6 +1689,7 @@ public class ArrayUtils {
      *
      * @param array The array to search in
      * @param o     The object to search for
+     * @param <O>   The type of the array
      * @return The index of the object or -1 if not found
      */
     public static <O> int indexOf(final O[] array, final O o) {
@@ -1703,6 +1704,7 @@ public class ArrayUtils {
      *
      * @param array The array to search in
      * @param o     The object to search for
+     * @param <O>   The type of the array
      * @return The index of the object or -1 if not found
      */
     public static <O> int indexOfLast(final O[] array, final O o) {
@@ -1717,6 +1719,7 @@ public class ArrayUtils {
      *
      * @param array The array to search in
      * @param other The object array to search for
+     * @param <O>   The type of the array
      * @return The index of the object array or -1 if not found
      */
     public static <O> int indexOf(final O[] array, final O[] other) {
@@ -1741,6 +1744,7 @@ public class ArrayUtils {
      *
      * @param array The array to add the object to
      * @param o     The object to add
+     * @param <O>   The type of the array
      * @return The new array
      */
     public static <O> O[] add(final O[] array, final O o) {
@@ -1752,6 +1756,7 @@ public class ArrayUtils {
      *
      * @param array The array to add the object to
      * @param o     The object to add
+     * @param <O>   The type of the array
      * @return The new array
      */
     public static <O> O[] prepend(final O[] array, final O o) {
@@ -1764,6 +1769,7 @@ public class ArrayUtils {
      * @param array The array to add the object to
      * @param index The index to add the object at
      * @param o     The object to add
+     * @param <O>   The type of the array
      * @return The new array
      */
     public static <O> O[] add(final O[] array, final int index, final O o) {
@@ -1779,6 +1785,7 @@ public class ArrayUtils {
      *
      * @param array   The array to add the objects to
      * @param objects The objects to add
+     * @param <O>     The type of the array
      * @return The new array
      */
     @SafeVarargs
@@ -1791,6 +1798,7 @@ public class ArrayUtils {
      *
      * @param array   The array to add the objects to
      * @param objects The objects to add
+     * @param <O>     The type of the array
      * @return The new array
      */
     @SafeVarargs
@@ -1804,6 +1812,7 @@ public class ArrayUtils {
      * @param array   The array to add the objects to
      * @param index   The index to add the objects at
      * @param objects The objects to add
+     * @param <O>     The type of the array
      * @return The new array
      */
     @SafeVarargs
@@ -1820,6 +1829,7 @@ public class ArrayUtils {
      *
      * @param array The array to add the other arrays to
      * @param other The arrays to add
+     * @param <O>   The type of the array
      * @return The new array
      */
     @SafeVarargs
@@ -1832,6 +1842,7 @@ public class ArrayUtils {
      *
      * @param array The array to add the other arrays to
      * @param other The arrays to add
+     * @param <O>   The type of the array
      * @return The new array
      */
     @SafeVarargs
@@ -1845,12 +1856,13 @@ public class ArrayUtils {
      * @param array The array to add the other arrays to
      * @param index The index to add the other arrays at
      * @param other The arrays to add
+     * @param <O>   The type of the array
      * @return The new array
      */
     @SafeVarargs
     public static <O> O[] add(final O[] array, final int index, final O[]... other) {
         int length = array.length;
-        for (Object[] o : other) length += o.length;
+        for (O[] o : other) length += o.length;
         O[] newArray = (O[]) Array.newInstance(array.getClass().getComponentType(), length);
         System.arraycopy(array, 0, newArray, 0, index);
         int i = index;
@@ -1869,6 +1881,7 @@ public class ArrayUtils {
      *
      * @param array The array to remove the object from
      * @param o     The object to remove
+     * @param <O>   The type of the array
      * @return The new array
      */
     public static <O> O[] remove(final O[] array, final O o) {
@@ -1881,6 +1894,7 @@ public class ArrayUtils {
      * Remove the first object from an array.
      *
      * @param array The array to remove the object from
+     * @param <O>   The type of the array
      * @return The new array
      */
     public static <O> O[] removeFirst(final O[] array) {
@@ -1891,6 +1905,7 @@ public class ArrayUtils {
      * Remove the last object from an array.
      *
      * @param array The array to remove the object from
+     * @param <O>   The type of the array
      * @return The new array
      */
     public static <O> O[] removeLast(final O[] array) {
@@ -1902,6 +1917,7 @@ public class ArrayUtils {
      *
      * @param array The array to remove the object from
      * @param index The index to remove the object at
+     * @param <O>   The type of the array
      * @return The new array
      */
     public static <O> O[] removeAt(final O[] array, final int index) {
@@ -1914,6 +1930,7 @@ public class ArrayUtils {
      * @param array  The array to remove the objects from
      * @param index  The index to remove the objects at
      * @param length The number of objects to remove
+     * @param <O>    The type of the array
      * @return The new array
      */
     public static <O> O[] removeAt(final O[] array, final int index, final int length) {
