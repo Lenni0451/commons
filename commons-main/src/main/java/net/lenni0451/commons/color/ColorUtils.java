@@ -8,7 +8,9 @@ public class ColorUtils {
 
     /**
      * Get a color calculated by the current time.<br>
-     * Calling this method subsequently will generate an RGB rainbow color effect.
+     * Calling this method subsequently will generate an RGB rainbow color effect.<br>
+     * The offset depends on the used divider. With a divider of {@code 7.5F} the color will be the same with the offset of {@code 0} and {@code 7500}.<br>
+     * The higher the divider the slower and smoother the color will change.
      *
      * @param offset  The offset added to the current time
      * @param divider The divider for the current time
