@@ -7,6 +7,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+@SuppressWarnings({"UnusedReturnValue", "unused"})
 public class Lists {
 
     /**

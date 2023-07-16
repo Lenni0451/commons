@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * A thread scheduler that can execute tasks with a delay or repeat them.<br>
  * Internally a {@link ScheduledExecutorService} is used.
  */
+@SuppressWarnings({"unused", "UnusedReturnValue"})
 public class ThreadScheduler {
 
     private static final AtomicInteger THREAD_ID = new AtomicInteger(0);

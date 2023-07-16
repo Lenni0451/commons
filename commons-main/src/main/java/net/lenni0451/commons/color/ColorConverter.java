@@ -5,6 +5,7 @@ import java.awt.*;
 /**
  * Convert colors between different formats.
  */
+@SuppressWarnings("unused")
 public class ColorConverter {
 
     /**

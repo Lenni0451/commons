@@ -6,7 +6,7 @@ public class StringUtils {
      * Uppercase the first letter of the string and lowercase the rest.
      *
      * @param s The string to uppercase
-     * @return The uppercased string
+     * @return The uppercase string
      */
     public static String uppercaseFirst(final String s) {
         return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();

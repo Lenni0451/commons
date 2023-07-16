@@ -100,9 +100,6 @@ public class ColorUtils {
         );
     }
 
-    /**
-     * See {@link #interpolate(float, Color, Color)}.
-     */
     @Deprecated
     public static Color interpolate(final Color color1, final Color color2, final float progress) {
         return interpolate(progress, color1, color2);

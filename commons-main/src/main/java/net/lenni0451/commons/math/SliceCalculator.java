@@ -7,6 +7,7 @@ import java.util.List;
  *
  * @param <T> The type of the list
  */
+@SuppressWarnings("unused")
 public class SliceCalculator<T> {
 
     private final List<T> list;

@@ -220,11 +220,9 @@ public class MathUtils {
         bytes = Math.abs(bytes);
         if (bytes < DATA_BASE_UNIT) return bytes + " B";
         int exp = (int) (Math.log(bytes) / Math.log(DATA_BASE_UNIT));
-        return new StringBuilder()
-                .append(neg ? "-" : "")
-                .append(String.format("%.1f ", bytes / Math.pow(DATA_BASE_UNIT, exp)))
-                .append(DATA_UNITS[exp - 1])
-                .toString();
+        return (neg ? "-" : "") +
+                String.format("%.1f ", bytes / Math.pow(DATA_BASE_UNIT, exp)) +
+                DATA_UNITS[exp - 1];
     }
 
     /**

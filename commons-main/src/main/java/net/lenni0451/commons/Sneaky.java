@@ -21,6 +21,7 @@ public class Sneaky {
      * @param <T> The type of the throwable
      * @throws T The throwable
      */
+    @SuppressWarnings("unchecked")
     public static <T extends Throwable> void sneak(final Throwable t) throws T {
         throw (T) t;
     }
@@ -32,6 +33,7 @@ public class Sneaky {
      * @param <T>      The type of the throwable
      * @throws T The throwable
      */
+    @SuppressWarnings("unchecked")
     public static <T extends Throwable> void sneak(final SneakyRunnable runnable) throws T {
         try {
             runnable.run();
@@ -49,6 +51,7 @@ public class Sneaky {
      * @return The value
      * @throws T The throwable
      */
+    @SuppressWarnings("unchecked")
     public static <O, T extends Throwable> O sneak(final SneakySupplier<O> supplier) throws T {
         try {
             return supplier.get();

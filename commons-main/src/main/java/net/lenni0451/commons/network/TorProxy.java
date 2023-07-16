@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
  * Start and manage a Tor proxy instance.<br>
  * The proxy has to be provided by the user.
  */
+@SuppressWarnings("unused")
 public class TorProxy {
 
     private static final Set<TorProxy> shutdownListener = Collections.newSetFromMap(new WeakHashMap<>());
