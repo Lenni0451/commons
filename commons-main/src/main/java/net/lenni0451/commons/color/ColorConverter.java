@@ -254,10 +254,10 @@ public class ColorConverter {
      * @return The color
      */
     public Color from(final int color) {
-        return new Color(color >> rShift & 0xFF,
-                color >> gShift & 0xFF,
-                color >> bShift & 0xFF,
-                this.aShift == -1 ? 255 : color >> aShift & 0xFF
+        return new Color(color >> this.rShift & 0xFF,
+                color >> this.gShift & 0xFF,
+                color >> this.bShift & 0xFF,
+                this.aShift == -1 ? 255 : color >> this.aShift & 0xFF
         );
     }
 

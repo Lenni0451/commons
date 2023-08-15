@@ -149,4 +149,5 @@ class ColorUtilsTest {
 
         assertEquals(255 * 3, ColorUtils.distance(color1, color2));
     }
+
 }

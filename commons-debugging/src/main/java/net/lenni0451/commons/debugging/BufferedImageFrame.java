@@ -27,13 +27,13 @@ public class BufferedImageFrame extends JFrame {
         JPanel panel = new JPanel() {
             @Override
             public void paint(Graphics g) {
-                if (image == null) {
+                if (BufferedImageFrame.this.image == null) {
                     g.setColor(Color.WHITE);
                     g.fillRect(0, 0, this.getWidth(), this.getHeight());
                     g.setColor(Color.BLACK);
                     g.drawString("No Image", 0, 10);
                 } else {
-                    g.drawImage(image, 0, 0, this.getWidth(), this.getHeight(), null);
+                    g.drawImage(BufferedImageFrame.this.image, 0, 0, this.getWidth(), this.getHeight(), null);
                 }
             }
         };

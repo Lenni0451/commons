@@ -118,4 +118,5 @@ class ArrayUtilsTest {
         array = ArrayUtils.removeAt(array, 2, 3);
         assertArrayEquals(new String[]{"a", "b", "f", "g", "h", "i", "j", "k"}, array);
     }
+
 }

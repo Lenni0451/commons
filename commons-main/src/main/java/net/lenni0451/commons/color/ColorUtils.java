@@ -75,7 +75,7 @@ public class ColorUtils {
     }
 
     /**
-     * Invert a color
+     * Invert a color.
      *
      * @param color The color to invert
      * @return The inverted color
