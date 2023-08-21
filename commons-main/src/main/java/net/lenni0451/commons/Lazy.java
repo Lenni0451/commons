@@ -27,7 +27,7 @@ public class Lazy<T> {
     private final Object lock = new Object();
     private final Supplier<T> supplier;
     private T value;
-    private boolean initialized = false;
+    private volatile boolean initialized = false;
 
     public Lazy(final Supplier<T> supplier) {
         this.supplier = supplier;
@@ -37,13 +37,15 @@ public class Lazy<T> {
      * @return The value of the object
      */
     public T get() {
-        synchronized (this.lock) {
-            if (!this.initialized) {
-                this.value = this.supplier.get();
-                this.initialized = true;
+        if (!this.initialized) {
+            synchronized (this.lock) {
+                if (!this.initialized) {
+                    this.value = this.supplier.get();
+                    this.initialized = true;
+                }
             }
-            return this.value;
         }
+        return this.value;
     }
 
 }
