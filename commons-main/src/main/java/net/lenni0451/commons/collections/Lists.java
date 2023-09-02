@@ -35,6 +35,7 @@ public class Lists {
      * @param <T>    The list type
      * @return The merged list
      */
+    @SafeVarargs
     public static <T> List<T> merge(final List<T> list, final List<T>... others) {
         List<T> newList = new ArrayList<>(list);
         for (List<T> other : others) newList.addAll(other);

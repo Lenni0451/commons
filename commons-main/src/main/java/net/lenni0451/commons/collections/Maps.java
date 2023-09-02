@@ -40,6 +40,7 @@ public class Maps {
      * @param <V>    The value type
      * @return The merged map
      */
+    @SafeVarargs
     public static <K, V> Map<K, V> merge(final Map<K, V> map, final Map<K, V>... others) {
         Map<K, V> newMap = new HashMap<>(map);
         for (Map<K, V> other : others) newMap.putAll(other);

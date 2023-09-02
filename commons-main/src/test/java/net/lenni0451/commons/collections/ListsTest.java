@@ -24,6 +24,28 @@ class ListsTest {
     }
 
     @Test
+    void merge() {
+        List<String> list1 = new ArrayList<>();
+        list1.add("A");
+        list1.add("B");
+        List<String> list2 = new ArrayList<>();
+        list2.add("C");
+        list2.add("D");
+        List<String> list3 = new ArrayList<>();
+        list3.add("E");
+        list3.add("F");
+
+        List<String> list = Lists.merge(list1, list2, list3);
+        assertEquals(6, list.size());
+        assertEquals("A", list.get(0));
+        assertEquals("B", list.get(1));
+        assertEquals("C", list.get(2));
+        assertEquals("D", list.get(3));
+        assertEquals("E", list.get(4));
+        assertEquals("F", list.get(5));
+    }
+
+    @Test
     void arrayList() {
         List<String> list = Lists.arrayList("A", "B", "C");
         assertInstanceOf(ArrayList.class, list);

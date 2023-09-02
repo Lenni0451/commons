@@ -38,6 +38,28 @@ class SetsTest {
     }
 
     @Test
+    void merge() {
+        Set<String> set1 = new HashSet<>();
+        set1.add("A");
+        set1.add("B");
+        Set<String> set2 = new HashSet<>();
+        set2.add("C");
+        set2.add("D");
+        Set<String> set3 = new HashSet<>();
+        set3.add("E");
+        set3.add("F");
+
+        Set<String> set = Sets.merge(set1, set2, set3);
+        assertEquals(6, set.size());
+        assertTrue(set.contains("A"));
+        assertTrue(set.contains("B"));
+        assertTrue(set.contains("C"));
+        assertTrue(set.contains("D"));
+        assertTrue(set.contains("E"));
+        assertTrue(set.contains("F"));
+    }
+
+    @Test
     void newHashSet() {
         Set<String> set = Sets.newHashSet("A", "B");
         assertInstanceOf(HashSet.class, set);

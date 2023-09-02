@@ -33,6 +33,7 @@ public class Sets {
      * @param <T>    The set type
      * @return The merged set
      */
+    @SafeVarargs
     public static <T> Set<T> merge(final Set<T> set, final Set<T>... others) {
         Set<T> newSet = new HashSet<>(set);
         for (Set<T> other : others) newSet.addAll(other);
