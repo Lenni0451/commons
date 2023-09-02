@@ -27,6 +27,21 @@ public class Lists {
     }
 
     /**
+     * Merge multiple lists into one.<br>
+     * The lists are not modified.
+     *
+     * @param list   The first list
+     * @param others The other lists
+     * @param <T>    The list type
+     * @return The merged list
+     */
+    public static <T> List<T> merge(final List<T> list, final List<T>... others) {
+        List<T> newList = new ArrayList<>(list);
+        for (List<T> other : others) newList.addAll(other);
+        return newList;
+    }
+
+    /**
      * Create a new list with the given objects.
      *
      * @param listSupplier The supplier for the list

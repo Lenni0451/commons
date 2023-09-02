@@ -31,6 +31,22 @@ public class Maps {
     }
 
     /**
+     * Merge multiple maps into one.<br>
+     * The maps are not modified.
+     *
+     * @param map    The first map
+     * @param others The other maps
+     * @param <K>    The key type
+     * @param <V>    The value type
+     * @return The merged map
+     */
+    public static <K, V> Map<K, V> merge(final Map<K, V> map, final Map<K, V>... others) {
+        Map<K, V> newMap = new HashMap<>(map);
+        for (Map<K, V> other : others) newMap.putAll(other);
+        return newMap;
+    }
+
+    /**
      * Create a new map with the given objects.<br>
      * The objects must be in the format: {@code key, value, key, value, ...}<br>
      * The types of the keys and values are not checked.

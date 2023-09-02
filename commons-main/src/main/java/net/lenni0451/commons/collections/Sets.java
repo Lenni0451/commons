@@ -25,6 +25,21 @@ public class Sets {
     }
 
     /**
+     * Merge multiple sets into one.<br>
+     * The sets are not modified.
+     *
+     * @param set    The first set
+     * @param others The other sets
+     * @param <T>    The set type
+     * @return The merged set
+     */
+    public static <T> Set<T> merge(final Set<T> set, final Set<T>... others) {
+        Set<T> newSet = new HashSet<>(set);
+        for (Set<T> other : others) newSet.addAll(other);
+        return newSet;
+    }
+
+    /**
      * Create a new set with the given objects.
      *
      * @param setSupplier The supplier for the set
