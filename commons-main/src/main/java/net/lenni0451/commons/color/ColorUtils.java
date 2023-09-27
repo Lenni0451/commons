@@ -85,18 +85,56 @@ public class ColorUtils {
     }
 
     /**
-     * Multiply a color with a factor.
+     * Multiply a color with a factor.<br>
+     * The alpha value will not be changed.
      *
      * @param color  The color to multiply
      * @param factor The factor to multiply with
      * @return The multiplied color
      */
     public static Color multiply(final Color color, final float factor) {
+        return multiply(color, factor, factor, factor, 1);
+    }
+
+    /**
+     * Multiply the alpha value of a color with a factor.<br>
+     * The RGB values will not be changed.
+     *
+     * @param color  The color to multiply
+     * @param factor The factor to multiply with
+     * @return The multiplied color
+     */
+    public static Color multiplyAlpha(final Color color, final float factor) {
+        return multiply(color, 1, 1, 1, factor);
+    }
+
+    /**
+     * Multiply a color with a factor.
+     *
+     * @param color  The color to multiply
+     * @param factor The factor to multiply with
+     * @return The multiplied color
+     */
+    public static Color multiplyAll(final Color color, final float factor) {
+        return multiply(color, factor, factor, factor, factor);
+    }
+
+    /**
+     * Multiply a color with a factor.
+     *
+     * @param color   The color to multiply
+     * @param rFactor The factor to multiply the red value with
+     * @param gFactor The factor to multiply the green value with
+     * @param bFactor The factor to multiply the blue value with
+     * @param aFactor The factor to multiply the alpha value with
+     * @return The multiplied color
+     */
+    public static Color multiply(final Color color, final float rFactor, final float gFactor, final float bFactor, final float aFactor) {
         return new Color(
-                clamp((int) (color.getRed() * factor), 0, 255),
-                clamp((int) (color.getGreen() * factor), 0, 255),
-                clamp((int) (color.getBlue() * factor), 0, 255),
-                color.getAlpha()
+                clamp((int) (color.getRed() * rFactor), 0, 255),
+                clamp((int) (color.getGreen() * gFactor), 0, 255),
+                clamp((int) (color.getBlue() * bFactor), 0, 255),
+                clamp((int) (color.getAlpha() * aFactor), 0, 255)
         );
     }
 

@@ -72,6 +72,40 @@ class ColorUtilsTest {
     }
 
     @Test
+    void multiplyAlpha() {
+        Color color = new Color(255, 255, 255, 255);
+
+        Color multiply0 = ColorUtils.multiplyAlpha(color, 0);
+        assertEquals(255, multiply0.getRed());
+        assertEquals(255, multiply0.getGreen());
+        assertEquals(255, multiply0.getBlue());
+        assertEquals(0, multiply0.getAlpha());
+
+        Color multiply1 = ColorUtils.multiplyAlpha(color, 1);
+        assertEquals(255, multiply1.getRed());
+        assertEquals(255, multiply1.getGreen());
+        assertEquals(255, multiply1.getBlue());
+        assertEquals(255, multiply1.getAlpha());
+    }
+
+    @Test
+    void multiplyAll() {
+        Color color = new Color(255, 255, 255, 255);
+
+        Color multiply0 = ColorUtils.multiplyAll(color, 0);
+        assertEquals(0, multiply0.getRed());
+        assertEquals(0, multiply0.getGreen());
+        assertEquals(0, multiply0.getBlue());
+        assertEquals(0, multiply0.getAlpha());
+
+        Color multiply1 = ColorUtils.multiplyAll(color, 1);
+        assertEquals(255, multiply1.getRed());
+        assertEquals(255, multiply1.getGreen());
+        assertEquals(255, multiply1.getBlue());
+        assertEquals(255, multiply1.getAlpha());
+    }
+
+    @Test
     void interpolate() {
         Color color1 = new Color(255, 255, 255, 255);
         Color color2 = new Color(0, 0, 0, 0);
@@ -87,6 +121,17 @@ class ColorUtilsTest {
         assertEquals(0, interpolate1.getGreen());
         assertEquals(0, interpolate1.getBlue());
         assertEquals(0, interpolate1.getAlpha());
+    }
+
+    @Test
+    void multiplyIndividual() {
+        Color color = new Color(255, 255, 255, 255);
+
+        Color multiply = ColorUtils.multiply(color, 0, 0.4F, 0.8F, 1);
+        assertEquals(0, multiply.getRed());
+        assertEquals(102, multiply.getGreen());
+        assertEquals(204, multiply.getBlue());
+        assertEquals(255, multiply.getAlpha());
     }
 
     @Test
