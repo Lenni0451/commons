@@ -2,8 +2,13 @@ package net.lenni0451.commons.io;
 
 import javax.annotation.WillNotClose;
 import java.io.*;
-import java.util.ArrayList;
+import java.nio.file.FileVisitOption;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @SuppressWarnings("unused")
 public class FileUtils {
@@ -34,18 +39,30 @@ public class FileUtils {
      *
      * @param file The directory to list
      * @return A list of all files in the directory
+     * @throws RuntimeException If an I/O error occurs
      */
     public static List<File> listFiles(final File file) {
-        List<File> files = new ArrayList<>();
-        if (file.isFile()) {
-            files.add(file);
-        } else if (file.isDirectory()) {
-            File[] list = file.listFiles();
-            if (list != null) {
-                for (File f : list) files.addAll(listFiles(f));
-            }
+        try (Stream<Path> s = Files.walk(file.toPath(), FileVisitOption.FOLLOW_LINKS)) {
+            return s.map(Path::toFile).collect(Collectors.toList());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        return files;
+    }
+
+    /**
+     * List all files in a directory recursively.
+     *
+     * @param file   The directory to list
+     * @param filter The filter to use
+     * @return A list of all files in the directory
+     * @throws RuntimeException If an I/O error occurs
+     */
+    public static List<File> listFiles(final File file, final Predicate<File> filter) {
+        try (Stream<Path> s = Files.walk(file.toPath(), FileVisitOption.FOLLOW_LINKS)) {
+            return s.map(Path::toFile).filter(filter).collect(Collectors.toList());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
