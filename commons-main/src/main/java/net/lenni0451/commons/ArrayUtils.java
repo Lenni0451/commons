@@ -2,7 +2,6 @@ package net.lenni0451.commons;
 
 import java.lang.reflect.Array;
 
-@SuppressWarnings({"unused", "unchecked"})
 public class ArrayUtils {
 
     /*

@@ -2,7 +2,6 @@ package net.lenni0451.commons.threading;
 
 import java.util.concurrent.TimeUnit;
 
-@SuppressWarnings({"unused", "UnusedReturnValue"})
 public class ThreadUtils {
 
     private static final long SLEEP_PRECISION = TimeUnit.MILLISECONDS.toNanos(2);
@@ -12,7 +11,6 @@ public class ThreadUtils {
      * Start a thread that will sleep forever.<br>
      * This increases the precision of {@link Thread#sleep(long)}.
      */
-    @SuppressWarnings("BusyWait")
     public static void startTimerHackThread() {
         Thread thread = new Thread(() -> {
             try {

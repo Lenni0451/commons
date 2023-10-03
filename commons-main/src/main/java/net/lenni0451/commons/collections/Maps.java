@@ -9,7 +9,6 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-@SuppressWarnings("unused")
 public class Maps {
 
     /**
@@ -59,7 +58,6 @@ public class Maps {
      * @param <V>         The value type
      * @return The created map
      */
-    @SuppressWarnings("unchecked")
     public static <T extends Map<K, V>, K, V> T any(final Supplier<T> mapSupplier, final Object... objects) {
         if (objects.length % 2 != 0) throw new IllegalArgumentException("Uneven object count");
 

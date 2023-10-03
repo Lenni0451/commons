@@ -18,7 +18,6 @@ import java.util.jar.JarInputStream;
 /**
  * A class loader with the ability to load classes from a byte array.
  */
-@SuppressWarnings("unused")
 public class ByteArrayClassLoader extends ClassLoader {
 
     private final Map<String, byte[]> content = new HashMap<>();

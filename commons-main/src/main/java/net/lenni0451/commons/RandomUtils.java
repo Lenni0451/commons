@@ -3,7 +3,6 @@ package net.lenni0451.commons;
 import java.util.List;
 import java.util.Random;
 
-@SuppressWarnings("unused")
 public class RandomUtils {
 
     private static final Random RND = new Random();

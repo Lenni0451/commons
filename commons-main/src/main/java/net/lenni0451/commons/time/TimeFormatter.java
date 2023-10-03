@@ -3,7 +3,6 @@ package net.lenni0451.commons.time;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 
-@SuppressWarnings("unused")
 public class TimeFormatter {
 
     /**

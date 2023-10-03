@@ -16,7 +16,6 @@ import java.util.stream.Stream;
 /**
  * A fast zip file using the {@link FileSystem} API.
  */
-@SuppressWarnings("unused")
 public class FileSystemZip implements AutoCloseable {
 
     private final File file;
