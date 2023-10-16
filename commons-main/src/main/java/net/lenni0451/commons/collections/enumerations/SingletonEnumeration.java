@@ -1,4 +1,4 @@
-package net.lenni0451.commons.collections;
+package net.lenni0451.commons.collections.enumerations;
 
 import java.util.Enumeration;
 import java.util.NoSuchElementException;

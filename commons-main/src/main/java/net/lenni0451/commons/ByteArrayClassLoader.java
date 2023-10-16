@@ -1,6 +1,6 @@
 package net.lenni0451.commons;
 
-import net.lenni0451.commons.collections.SingletonEnumeration;
+import net.lenni0451.commons.collections.enumerations.SingletonEnumeration;
 import net.lenni0451.commons.io.IOUtils;
 
 import java.io.ByteArrayInputStream;
