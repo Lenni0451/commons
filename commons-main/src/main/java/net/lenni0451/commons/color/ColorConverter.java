@@ -278,4 +278,29 @@ public class ColorConverter {
                 this.aShift == -1 ? 1 : color[arrayOffset - (this.aShift / 8)]);
     }
 
+    /**
+     * Convert the float representation of a color to a color.
+     *
+     * @param r The red value
+     * @param g The green value
+     * @param b The blue value
+     * @return The color
+     */
+    public Color from(final float r, final float g, final float b) {
+        return this.from(r, g, b, 1);
+    }
+
+    /**
+     * Convert the float representation of a color to a color.
+     *
+     * @param r The red value
+     * @param g The green value
+     * @param b The blue value
+     * @param a The alpha value
+     * @return The color
+     */
+    public Color from(final float r, final float g, final float b, final float a) {
+        return new Color(r, g, b, a);
+    }
+
 }

@@ -76,8 +76,26 @@ class ColorConverterTest {
     }
 
     @Test
-    void fromFloats() {
+    void fromFloats1() {
         Color color = ColorConverter.ARGB.from(new float[]{1, 1, 1, 1});
+        assertEquals(0xFF, color.getRed());
+        assertEquals(0xFF, color.getGreen());
+        assertEquals(0xFF, color.getBlue());
+        assertEquals(0xFF, color.getAlpha());
+    }
+
+    @Test
+    void fromFloats2() {
+        Color color = ColorConverter.ARGB.from(1, 1, 1);
+        assertEquals(0xFF, color.getRed());
+        assertEquals(0xFF, color.getGreen());
+        assertEquals(0xFF, color.getBlue());
+        assertEquals(0xFF, color.getAlpha());
+    }
+
+    @Test
+    void fromFloats3() {
+        Color color = ColorConverter.ARGB.from(1, 1, 1, 1);
         assertEquals(0xFF, color.getRed());
         assertEquals(0xFF, color.getGreen());
         assertEquals(0xFF, color.getBlue());
