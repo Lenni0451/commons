@@ -1,7 +1,10 @@
 package net.lenni0451.commons.threading;
 
+import lombok.experimental.UtilityClass;
+
 import java.util.concurrent.TimeUnit;
 
+@UtilityClass
 public class ThreadUtils {
 
     private static final long SLEEP_PRECISION = TimeUnit.MILLISECONDS.toNanos(2);

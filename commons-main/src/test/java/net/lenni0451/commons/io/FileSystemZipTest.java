@@ -4,6 +4,7 @@ import org.junit.jupiter.api.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -17,7 +18,7 @@ class FileSystemZipTest {
     private static FileSystemZip zip;
 
     @BeforeAll
-    static void setUp() throws IOException {
+    static void setUp() throws IOException, URISyntaxException {
         tempFile = File.createTempFile("FileSystemZipTest", ".zip");
         tempFile.delete(); //Delete the file again to let the file system create a new one
         zip = new FileSystemZip(tempFile);

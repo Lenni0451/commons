@@ -1,5 +1,7 @@
 package net.lenni0451.commons.collections;
 
+import lombok.experimental.UtilityClass;
+
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -9,6 +11,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+@UtilityClass
 public class Maps {
 
     /**

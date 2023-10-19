@@ -1,8 +1,11 @@
 package net.lenni0451.commons;
 
+import lombok.experimental.UtilityClass;
+
 import java.util.List;
 import java.util.Random;
 
+@UtilityClass
 public class RandomUtils {
 
     private static final Random RND = new Random();

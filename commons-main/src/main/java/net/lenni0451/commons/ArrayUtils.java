@@ -1,7 +1,10 @@
 package net.lenni0451.commons;
 
+import lombok.experimental.UtilityClass;
+
 import java.lang.reflect.Array;
 
+@UtilityClass
 public class ArrayUtils {
 
     /*

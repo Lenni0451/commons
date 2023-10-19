@@ -1,5 +1,9 @@
 package net.lenni0451.commons;
 
+import lombok.SneakyThrows;
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
 public class Sneaky {
 
     /**
@@ -16,27 +20,21 @@ public class Sneaky {
     /**
      * Throw a throwable without having to declare it in the method signature.
      *
-     * @param t   The throwable to throw
-     * @param <T> The type of the throwable
-     * @throws T The throwable
+     * @param t The throwable to throw
      */
-    public static <T extends Throwable> void sneak(final Throwable t) throws T {
-        throw (T) t;
+    @SneakyThrows
+    public static void sneak(final Throwable t) {
+        throw t;
     }
 
     /**
      * Run a runnable without having to declare the throwable in the method signature.
      *
      * @param runnable The runnable to run
-     * @param <T>      The type of the throwable
-     * @throws T The throwable
      */
-    public static <T extends Throwable> void sneak(final SneakyRunnable runnable) throws T {
-        try {
-            runnable.run();
-        } catch (Throwable t) {
-            throw (T) t;
-        }
+    @SneakyThrows
+    public static void sneak(final SneakyRunnable runnable) {
+        runnable.run();
     }
 
     /**
@@ -44,16 +42,11 @@ public class Sneaky {
      *
      * @param supplier The supplier to get the value from
      * @param <O>      The type of the value
-     * @param <T>      The type of the throwable
      * @return The value
-     * @throws T The throwable
      */
-    public static <O, T extends Throwable> O sneak(final SneakySupplier<O> supplier) throws T {
-        try {
-            return supplier.get();
-        } catch (Throwable t) {
-            throw (T) t;
-        }
+    @SneakyThrows
+    public static <O> O sneak(final SneakySupplier<O> supplier) {
+        return supplier.get();
     }
 
 

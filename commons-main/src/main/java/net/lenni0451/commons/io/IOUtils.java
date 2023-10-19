@@ -1,11 +1,14 @@
 package net.lenni0451.commons.io;
 
+import lombok.experimental.UtilityClass;
+
 import javax.annotation.WillNotClose;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Optional;
 
+@UtilityClass
 public class IOUtils {
 
     /**

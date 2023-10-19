@@ -1,5 +1,8 @@
 package net.lenni0451.commons.network;
 
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
 public class IPv4 {
 
     /**

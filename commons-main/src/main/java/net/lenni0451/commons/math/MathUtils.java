@@ -1,5 +1,8 @@
 package net.lenni0451.commons.math;
 
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
 public class MathUtils {
 
     private static final int DATA_BASE_UNIT = 1024;

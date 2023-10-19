@@ -1,6 +1,5 @@
 package net.lenni0451.commons.io;
 
-import net.lenni0451.commons.Sneaky;
 import net.lenni0451.commons.collections.Maps;
 
 import javax.annotation.Nullable;
@@ -8,6 +7,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.function.Consumer;
@@ -29,13 +29,10 @@ public class FileSystemZip implements AutoCloseable {
      * @param file The file to read/write
      * @throws IOException If an I/O error occurs
      */
-    public FileSystemZip(final File file) throws IOException {
+    public FileSystemZip(final File file) throws IOException, URISyntaxException {
         this.file = file;
-        this.zipFileSystem = Sneaky.sneak(() -> FileSystems.newFileSystem(new URI("jar:" + file.toURI()), Maps.hashMap("create", "true")));
+        this.zipFileSystem = FileSystems.newFileSystem(new URI("jar:" + file.toURI()), Maps.hashMap("create", "true"));
         this.rootPath = this.zipFileSystem.getRootDirectories().iterator().next();
-
-        //Fake exception to let the compiler know that the exception can actually be thrown
-        Sneaky.fake(IOException.class);
     }
 
     /**

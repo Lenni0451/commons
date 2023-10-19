@@ -1,8 +1,11 @@
 package net.lenni0451.commons.time;
 
+import lombok.experimental.UtilityClass;
+
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 
+@UtilityClass
 public class TimeFormatter {
 
     /**

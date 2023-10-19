@@ -1,9 +1,11 @@
 package net.lenni0451.commons.color;
 
+import lombok.experimental.UtilityClass;
+import net.lenni0451.commons.math.MathUtils;
+
 import java.awt.*;
 
-import static net.lenni0451.commons.math.MathUtils.clamp;
-
+@UtilityClass
 public class ColorUtils {
 
     /**
@@ -32,7 +34,7 @@ public class ColorUtils {
      */
     public static Color setRed(final Color color, final int r) {
         if (color.getRed() == r) return color;
-        return new Color(clamp(r, 0, 255), color.getGreen(), color.getBlue(), color.getAlpha());
+        return new Color(MathUtils.clamp(r, 0, 255), color.getGreen(), color.getBlue(), color.getAlpha());
     }
 
     /**
@@ -45,7 +47,7 @@ public class ColorUtils {
      */
     public static Color setGreen(final Color color, final int g) {
         if (color.getGreen() == g) return color;
-        return new Color(color.getRed(), clamp(g, 0, 255), color.getBlue(), color.getAlpha());
+        return new Color(color.getRed(), MathUtils.clamp(g, 0, 255), color.getBlue(), color.getAlpha());
     }
 
     /**
@@ -58,7 +60,7 @@ public class ColorUtils {
      */
     public static Color setBlue(final Color color, final int b) {
         if (color.getBlue() == b) return color;
-        return new Color(color.getRed(), color.getGreen(), clamp(b, 0, 255), color.getAlpha());
+        return new Color(color.getRed(), color.getGreen(), MathUtils.clamp(b, 0, 255), color.getAlpha());
     }
 
     /**
@@ -71,7 +73,7 @@ public class ColorUtils {
      */
     public static Color setAlpha(final Color color, final int a) {
         if (color.getAlpha() == a) return color;
-        return new Color(color.getRed(), color.getGreen(), color.getBlue(), clamp(a, 0, 255));
+        return new Color(color.getRed(), color.getGreen(), color.getBlue(), MathUtils.clamp(a, 0, 255));
     }
 
     /**
@@ -131,10 +133,10 @@ public class ColorUtils {
      */
     public static Color multiply(final Color color, final float rFactor, final float gFactor, final float bFactor, final float aFactor) {
         return new Color(
-                clamp((int) (color.getRed() * rFactor), 0, 255),
-                clamp((int) (color.getGreen() * gFactor), 0, 255),
-                clamp((int) (color.getBlue() * bFactor), 0, 255),
-                clamp((int) (color.getAlpha() * aFactor), 0, 255)
+                MathUtils.clamp((int) (color.getRed() * rFactor), 0, 255),
+                MathUtils.clamp((int) (color.getGreen() * gFactor), 0, 255),
+                MathUtils.clamp((int) (color.getBlue() * bFactor), 0, 255),
+                MathUtils.clamp((int) (color.getAlpha() * aFactor), 0, 255)
         );
     }
 
@@ -154,10 +156,10 @@ public class ColorUtils {
      */
     public static Color interpolate(final float progress, final Color color1, final Color color2) {
         return new Color(
-                clamp((int) (color1.getRed() + (color2.getRed() - color1.getRed()) * progress), 0, 255),
-                clamp((int) (color1.getGreen() + (color2.getGreen() - color1.getGreen()) * progress), 0, 255),
-                clamp((int) (color1.getBlue() + (color2.getBlue() - color1.getBlue()) * progress), 0, 255),
-                clamp((int) (color1.getAlpha() + (color2.getAlpha() - color1.getAlpha()) * progress), 0, 255)
+                MathUtils.clamp((int) (color1.getRed() + (color2.getRed() - color1.getRed()) * progress), 0, 255),
+                MathUtils.clamp((int) (color1.getGreen() + (color2.getGreen() - color1.getGreen()) * progress), 0, 255),
+                MathUtils.clamp((int) (color1.getBlue() + (color2.getBlue() - color1.getBlue()) * progress), 0, 255),
+                MathUtils.clamp((int) (color1.getAlpha() + (color2.getAlpha() - color1.getAlpha()) * progress), 0, 255)
         );
     }
 
