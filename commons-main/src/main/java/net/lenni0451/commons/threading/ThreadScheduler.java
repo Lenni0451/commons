@@ -1,15 +1,12 @@
 package net.lenni0451.commons.threading;
 
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * A thread scheduler that can execute tasks with a delay or repeat them.<br>
  * Internally a {@link ScheduledExecutorService} is used.
  */
 public class ThreadScheduler {
-
-    private static final AtomicInteger THREAD_ID = new AtomicInteger(0);
 
     private final boolean taskThreads;
     private final ThreadFactory threadFactory;
