@@ -1,0 +1,18 @@
+version: "2"
+updates:
+- package-ecosystem: "gradle"
+  directory: "/commons-debugging"
+  schedule:
+    interval: "daily"
+- package-ecosystem: "gradle"
+  directory: "/commons-functional"
+  schedule:
+    interval: "daily"
+- package-ecosystem: "gradle"
+  directory: "/commons-main"
+  schedule:
+    interval: "daily"
+- package-ecosystem: "gradle"
+  directory: "/commons-netty"
+  schedule:
+    interval: "daily"
