@@ -1,4 +1,4 @@
-package net.lenni0451.commons;
+package net.lenni0451.commons.arrays;
 
 import org.junit.jupiter.api.Test;
 
