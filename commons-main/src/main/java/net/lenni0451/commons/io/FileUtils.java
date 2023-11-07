@@ -2,13 +2,13 @@ package net.lenni0451.commons.io;
 
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
-import net.lenni0451.commons.Sneaky;
 
 import javax.annotation.WillNotClose;
 import java.io.*;
 import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -39,7 +39,8 @@ public class FileUtils {
     }
 
     /**
-     * List all files in a directory recursively.
+     * List all files in a directory recursively.<br>
+     * If the file is not a directory an empty list will be returned.
      *
      * @param file The directory to list
      * @return A list of all files in the directory
@@ -47,14 +48,15 @@ public class FileUtils {
      */
     @SneakyThrows
     public static List<File> listFiles(final File file) {
-        Sneaky.fake(IOException.class);
+        if (!file.isDirectory()) return Collections.emptyList();
         try (Stream<Path> s = Files.walk(file.toPath(), FileVisitOption.FOLLOW_LINKS)) {
             return s.map(Path::toFile).collect(Collectors.toList());
         }
     }
 
     /**
-     * List all files in a directory recursively.
+     * List all files in a directory recursively.<br>
+     * If the file is not a directory an empty list will be returned.
      *
      * @param file   The directory to list
      * @param filter The filter to use
@@ -63,7 +65,7 @@ public class FileUtils {
      */
     @SneakyThrows
     public static List<File> listFiles(final File file, final Predicate<File> filter) {
-        Sneaky.fake(IOException.class);
+        if (!file.isDirectory()) return Collections.emptyList();
         try (Stream<Path> s = Files.walk(file.toPath(), FileVisitOption.FOLLOW_LINKS)) {
             return s.map(Path::toFile).filter(filter).collect(Collectors.toList());
         }

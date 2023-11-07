@@ -33,6 +33,10 @@ subprojects {
         withJavadocJar()
     }
 
+    javadoc {
+        failOnError = false
+    }
+
     artifacts {
         archives javadocJar, sourcesJar
     }

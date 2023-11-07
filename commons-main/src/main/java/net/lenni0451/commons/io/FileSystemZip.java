@@ -27,7 +27,8 @@ public class FileSystemZip implements AutoCloseable {
      * If the file does not exist a new zip file will be created.
      *
      * @param file The file to read/write
-     * @throws IOException If an I/O error occurs
+     * @throws IOException        If an I/O error occurs
+     * @throws URISyntaxException If the file path is invalid
      */
     public FileSystemZip(final File file) throws IOException, URISyntaxException {
         this.file = file;
