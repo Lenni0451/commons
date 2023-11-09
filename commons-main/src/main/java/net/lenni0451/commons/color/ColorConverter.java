@@ -64,6 +64,38 @@ public class ColorConverter {
         return to.toFloats(r, g, b, a);
     }
 
+    /**
+     * Convert a float color representation to an int color representation.
+     *
+     * @param color The color to convert
+     * @param from  The format the color is in
+     * @param to    The format to convert the color to
+     * @return The converted color
+     */
+    public static int convertToInt(final float[] color, final ColorConverter from, final ColorConverter to) {
+        float r = from.getRed(color);
+        float g = from.getGreen(color);
+        float b = from.getBlue(color);
+        float a = from.getAlpha(color);
+        return to.to(r, g, b, a);
+    }
+
+    /**
+     * Convert an int color representation to a float color representation.
+     *
+     * @param color The color to convert
+     * @param from  The format the color is in
+     * @param to    The format to convert the color to
+     * @return The converted color
+     */
+    public static float[] convertToFloats(final int color, final ColorConverter from, final ColorConverter to) {
+        int r = from.getRed(color);
+        int g = from.getGreen(color);
+        int b = from.getBlue(color);
+        int a = from.getAlpha(color);
+        return to.toFloats(r, g, b, a);
+    }
+
 
     private final int rShift;
     private final int gShift;
@@ -307,6 +339,23 @@ public class ColorConverter {
                 g << this.gShift |
                 b << this.bShift |
                 (this.aShift == -1 ? 0 : a << this.aShift);
+    }
+
+    /**
+     * Convert a color to its int representation.<br>
+     * If the format has no alpha value, the alpha value will be ignored.
+     *
+     * @param r The red value
+     * @param g The green value
+     * @param b The blue value
+     * @param a The alpha value
+     * @return The int representation
+     */
+    public int to(final float r, final float g, final float b, final float a) {
+        return (int) (r * 255) << this.rShift |
+                (int) (g * 255) << this.gShift |
+                (int) (b * 255) << this.bShift |
+                (this.aShift == -1 ? 0 : (int) (a * 255) << this.aShift);
     }
 
     /**

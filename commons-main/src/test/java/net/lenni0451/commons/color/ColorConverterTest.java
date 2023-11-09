@@ -1,5 +1,6 @@
 package net.lenni0451.commons.color;
 
+import net.lenni0451.commons.math.MathUtils;
 import org.junit.jupiter.api.Test;
 
 import java.awt.*;
@@ -12,7 +13,9 @@ class ColorConverterTest {
     @Test
     void convert() {
         assertEquals(0xCCBBAA, ColorConverter.convert(0xAABBCC, ColorConverter.BGR, ColorConverter.RGB));
+        assertEquals(0xCCBBAA, ColorConverter.convertToInt(new float[]{0xAA / 255F, 0xBB / 255F, 0xCC / 255F}, ColorConverter.BGR, ColorConverter.RGB));
         assertArrayEquals(new float[]{0, 0.25F, 0.5F, 0.75F}, ColorConverter.convert(new float[]{0.75F, 0.5F, 0.25F, 0}, ColorConverter.BGRA, ColorConverter.ARGB));
+        assertArrayEquals(new float[]{0, 0.25F, 0.5F, 0.75F}, MathUtils.round(ColorConverter.convertToFloats(ColorConverter.BGRA.to(0.25F, 0.5F, 0.75F, 0), ColorConverter.BGRA, ColorConverter.ARGB), 2));
     }
 
     @Test
@@ -72,6 +75,7 @@ class ColorConverterTest {
     @Test
     void to() {
         assertEquals(0xDDAABBCC, ColorConverter.ARGB.to(0xAA, 0xBB, 0xCC, 0xDD));
+        assertEquals(0xDDAABBCC, ColorConverter.ARGB.to(0xAA / 255F, 0xBB / 255F, 0xCC / 255F, 0xDD / 255F));
     }
 
     @Test
