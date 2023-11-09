@@ -48,6 +48,22 @@ public class ColorConverter {
         return to.to(r, g, b, a);
     }
 
+    /**
+     * Convert a color from one format to another.
+     *
+     * @param color The color to convert
+     * @param from  The format the color is in
+     * @param to    The format to convert the color to
+     * @return The converted color
+     */
+    public static float[] convert(final float[] color, final ColorConverter from, final ColorConverter to) {
+        float r = from.getRed(color);
+        float g = from.getGreen(color);
+        float b = from.getBlue(color);
+        float a = from.getAlpha(color);
+        return to.toFloats(r, g, b, a);
+    }
+
 
     private final int rShift;
     private final int gShift;
@@ -93,6 +109,16 @@ public class ColorConverter {
     }
 
     /**
+     * Get the red value of a color.
+     *
+     * @param color The color
+     * @return The red value
+     */
+    public float getRed(final float[] color) {
+        return color[color.length - 1 - (this.rShift / 8)];
+    }
+
+    /**
      * Set the red value of a color.
      *
      * @param color The color to modify
@@ -106,6 +132,18 @@ public class ColorConverter {
     }
 
     /**
+     * Set the red value of a color.
+     *
+     * @param color The color to modify
+     * @param r     The red value
+     * @return The new color
+     */
+    public float[] setRed(float[] color, final float r) {
+        color[color.length - 1 - (this.rShift / 8)] = r;
+        return color;
+    }
+
+    /**
      * Get the green value of a color.
      *
      * @param color The color
@@ -113,6 +151,16 @@ public class ColorConverter {
      */
     public int getGreen(final int color) {
         return (color >> this.gShift) & 0xFF;
+    }
+
+    /**
+     * Get the green value of a color.
+     *
+     * @param color The color
+     * @return The green value
+     */
+    public float getGreen(final float[] color) {
+        return color[color.length - 1 - (this.gShift / 8)];
     }
 
     /**
@@ -129,6 +177,18 @@ public class ColorConverter {
     }
 
     /**
+     * Set the green value of a color.
+     *
+     * @param color The color to modify
+     * @param g     The green value
+     * @return The new color
+     */
+    public float[] setGreen(float[] color, final float g) {
+        color[color.length - 1 - (this.gShift / 8)] = g;
+        return color;
+    }
+
+    /**
      * Get the blue value of a color.
      *
      * @param color The color
@@ -136,6 +196,16 @@ public class ColorConverter {
      */
     public int getBlue(final int color) {
         return (color >> this.bShift) & 0xFF;
+    }
+
+    /**
+     * Get the blue value of a color.
+     *
+     * @param color The color
+     * @return The blue value
+     */
+    public float getBlue(final float[] color) {
+        return color[color.length - 1 - (this.bShift / 8)];
     }
 
     /**
@@ -152,6 +222,18 @@ public class ColorConverter {
     }
 
     /**
+     * Set the blue value of a color.
+     *
+     * @param color The color to modify
+     * @param b     The blue value
+     * @return The new color
+     */
+    public float[] setBlue(float[] color, final float b) {
+        color[color.length - 1 - (this.bShift / 8)] = b;
+        return color;
+    }
+
+    /**
      * Get the alpha value of a color.
      *
      * @param color The color
@@ -160,6 +242,17 @@ public class ColorConverter {
     public int getAlpha(final int color) {
         if (this.aShift == -1) return 255;
         return (color >> this.aShift) & 0xFF;
+    }
+
+    /**
+     * Get the alpha value of a color.
+     *
+     * @param color The color
+     * @return The alpha value
+     */
+    public float getAlpha(final float[] color) {
+        if (this.aShift == -1) return 1;
+        return color[color.length - 1 - (this.aShift / 8)];
     }
 
     /**
@@ -173,6 +266,19 @@ public class ColorConverter {
         if (this.aShift == -1) return color;
         color &= ~(0xFF << this.aShift);
         color |= (a & 0xFF) << this.aShift;
+        return color;
+    }
+
+    /**
+     * Set the alpha value of a color.
+     *
+     * @param color The color to modify
+     * @param a     The alpha value
+     * @return The new color
+     */
+    public float[] setAlpha(float[] color, final float a) {
+        if (this.aShift == -1) return color;
+        color[color.length - 1 - (this.aShift / 8)] = a;
         return color;
     }
 
@@ -243,6 +349,26 @@ public class ColorConverter {
         floats[arrayOffset - (this.gShift / 8)] = g / 255F;
         floats[arrayOffset - (this.bShift / 8)] = b / 255F;
         if (this.aShift != -1) floats[arrayOffset - (this.aShift / 8)] = a / 255F;
+        return floats;
+    }
+
+    /**
+     * Convert a color to its float representation.<br>
+     * If the format has no alpha value, the alpha value will be ignored.
+     *
+     * @param r The red value
+     * @param g The green value
+     * @param b The blue value
+     * @param a The alpha value
+     * @return The float representation
+     */
+    public float[] toFloats(final float r, final float g, final float b, final float a) {
+        float[] floats = new float[this.aShift == -1 ? 3 : 4];
+        int arrayOffset = floats.length - 1;
+        floats[arrayOffset - (this.rShift / 8)] = r;
+        floats[arrayOffset - (this.gShift / 8)] = g;
+        floats[arrayOffset - (this.bShift / 8)] = b;
+        if (this.aShift != -1) floats[arrayOffset - (this.aShift / 8)] = a;
         return floats;
     }
 

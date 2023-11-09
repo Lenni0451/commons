@@ -12,48 +12,61 @@ class ColorConverterTest {
     @Test
     void convert() {
         assertEquals(0xCCBBAA, ColorConverter.convert(0xAABBCC, ColorConverter.BGR, ColorConverter.RGB));
+        assertArrayEquals(new float[]{0, 0.25F, 0.5F, 0.75F}, ColorConverter.convert(new float[]{0.75F, 0.5F, 0.25F, 0}, ColorConverter.BGRA, ColorConverter.ARGB));
     }
 
     @Test
     void getRed() {
         assertEquals(0xAA, ColorConverter.RGB.getRed(0xAABBCC));
+        assertEquals(1, ColorConverter.RGB.getRed(new float[]{1, 0, 0}));
     }
 
     @Test
     void setRed() {
         assertEquals(0xAABBCC, ColorConverter.RGB.setRed(0x00BBCC, 0xAA));
+        assertArrayEquals(new float[]{1, 0, 0}, ColorConverter.RGB.setRed(new float[3], 1));
     }
 
     @Test
     void getGreen() {
         assertEquals(0xBB, ColorConverter.RGB.getGreen(0xAABBCC));
+        assertEquals(1, ColorConverter.RGB.getGreen(new float[]{0, 1, 0}));
     }
 
     @Test
     void setGreen() {
         assertEquals(0xAABBCC, ColorConverter.RGB.setGreen(0xAA00CC, 0xBB));
+        assertArrayEquals(new float[]{0, 1, 0}, ColorConverter.RGB.setGreen(new float[3], 1));
     }
 
     @Test
     void getBlue() {
         assertEquals(0xCC, ColorConverter.RGB.getBlue(0xAABBCC));
+        assertEquals(1, ColorConverter.RGB.getBlue(new float[]{0, 0, 1}));
     }
 
     @Test
     void setBlue() {
         assertEquals(0xAABBCC, ColorConverter.RGB.setBlue(0xAABB00, 0xCC));
+        assertArrayEquals(new float[]{0, 0, 1}, ColorConverter.RGB.setBlue(new float[3], 1));
     }
 
     @Test
     void getAlpha() {
         assertEquals(0xFF, ColorConverter.RGB.getAlpha(0xAABBCC));
         assertEquals(0xDD, ColorConverter.ARGB.getAlpha(0xDD000000));
+
+        assertEquals(1, ColorConverter.RGB.getAlpha(new float[]{0, 0, 0}));
+        assertEquals(0.5F, ColorConverter.ARGB.getAlpha(new float[]{0.5F, 0, 0, 0}));
     }
 
     @Test
     void setAlpha() {
         assertEquals(0xAABBCC, ColorConverter.RGB.setAlpha(0xAABBCC, 0xFF));
         assertEquals(0xDDAABBCC, ColorConverter.ARGB.setAlpha(0xAABBCC, 0xDD));
+
+        assertArrayEquals(new float[]{0, 0, 0}, ColorConverter.RGB.setAlpha(new float[3], 1));
+        assertArrayEquals(new float[]{0.5F, 0, 0, 0}, ColorConverter.ARGB.setAlpha(new float[4], 0.5F));
     }
 
     @Test
@@ -64,6 +77,7 @@ class ColorConverterTest {
     @Test
     void toFloats() {
         assertArrayEquals(new float[]{1, 1, 1, 1}, ColorConverter.ARGB.toFloats(0xFF, 0xFF, 0xFF, 0xFF));
+        assertArrayEquals(new float[]{0.75F, 0, 0.25F, 0.5F}, ColorConverter.ARGB.toFloats(0, 0.25F, 0.5F, 0.75F));
     }
 
     @Test
