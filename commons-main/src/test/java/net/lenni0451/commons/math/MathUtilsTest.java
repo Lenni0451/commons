@@ -137,26 +137,18 @@ class MathUtilsTest {
 
     @Test
     void roundFloat() {
-        assertEquals(5.00F, MathUtils.round(5.0043F, 2));
-        assertEquals(5.01F, MathUtils.round(5.0053F, 2));
-        assertEquals(5.00F, MathUtils.round(5.001F, 2));
-        assertEquals(5.01F, MathUtils.round(5.006F, 2));
-        assertEquals(0F, MathUtils.round(0.000001F, 2));
-        assertEquals(10.00F, MathUtils.round(10F, 2));
-        assertEquals(-2.33F, MathUtils.round(-2.333F, 2));
-        assertEquals(0F, MathUtils.round(0F, 2));
+        float[] in = {5.0043F, 5.0053F, 5.001F, 5.006F, 0.000001F, 10F, -2.333F, 0F};
+        float[] out = {5.00F, 5.01F, 5.00F, 5.01F, 0F, 10.00F, -2.33F, 0F};
+        for (int i = 0; i < in.length; i++) assertEquals(out[i], MathUtils.round(in[i], 2));
+        assertArrayEquals(out, MathUtils.round(in, 2));
     }
 
     @Test
     void roundDouble() {
-        assertEquals(5.00D, MathUtils.round(5.0043D, 2));
-        assertEquals(5.01D, MathUtils.round(5.0053D, 2));
-        assertEquals(5.00D, MathUtils.round(5.001D, 2));
-        assertEquals(5.01D, MathUtils.round(5.006D, 2));
-        assertEquals(0D, MathUtils.round(0.000001D, 2));
-        assertEquals(10.00D, MathUtils.round(10D, 2));
-        assertEquals(-2.33D, MathUtils.round(-2.333D, 2));
-        assertEquals(0D, MathUtils.round(0D, 2));
+        double[] in = {5.0043D, 5.0053D, 5.001D, 5.006D, 0.000001D, 10D, -2.333D, 0D};
+        double[] out = {5.00D, 5.01D, 5.00D, 5.01D, 0D, 10.00D, -2.33D, 0D};
+        for (int i = 0; i < in.length; i++) assertEquals(out[i], MathUtils.round(in[i], 2));
+        assertArrayEquals(out, MathUtils.round(in, 2));
     }
 
 }

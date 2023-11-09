@@ -241,6 +241,18 @@ public class MathUtils {
     }
 
     /**
+     * Round all floats in an array to a certain precision.
+     *
+     * @param values    The floats to round
+     * @param precision The precision
+     * @return The rounded floats
+     */
+    public static float[] round(float[] values, int precision) {
+        for (int i = 0; i < values.length; i++) values[i] = round(values[i], precision);
+        return values;
+    }
+
+    /**
      * Round a double to a certain precision.
      *
      * @param value     The double to round
@@ -250,6 +262,18 @@ public class MathUtils {
     public static double round(double value, int precision) {
         int scale = (int) Math.pow(10, precision);
         return (double) Math.round(value * scale) / scale;
+    }
+
+    /**
+     * Round all doubles in an array to a certain precision.
+     *
+     * @param values    The doubles to round
+     * @param precision The precision
+     * @return The rounded doubles
+     */
+    public static double[] round(double[] values, int precision) {
+        for (int i = 0; i < values.length; i++) values[i] = round(values[i], precision);
+        return values;
     }
 
 }
