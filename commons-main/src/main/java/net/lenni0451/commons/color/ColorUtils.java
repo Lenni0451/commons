@@ -222,4 +222,20 @@ public class ColorUtils {
                 + Math.abs(color1.getBlue() - color2.getBlue());
     }
 
+    /**
+     * Mix two colors together.
+     *
+     * @param color1 The first color
+     * @param color2 The second color
+     * @return The mixed color
+     */
+    public static Color mix(final Color color1, final Color color2) {
+        return new Color(
+                color1.getRed() * color2.getRed() / 255,
+                color1.getGreen() * color2.getGreen() / 255,
+                color1.getBlue() * color2.getBlue() / 255,
+                color1.getAlpha() * color2.getAlpha() / 255
+        );
+    }
+
 }

@@ -195,4 +195,23 @@ class ColorUtilsTest {
         assertEquals(255 * 3, ColorUtils.distance(color1, color2));
     }
 
+    @Test
+    void mix() {
+        Color color255 = new Color(255, 255, 255, 255);
+        Color color1 = new Color(1, 1, 1, 1);
+        Color color0 = new Color(0, 0, 0, 0);
+
+        Color mix0 = ColorUtils.mix(color255, color0);
+        assertEquals(0, mix0.getRed());
+        assertEquals(0, mix0.getGreen());
+        assertEquals(0, mix0.getBlue());
+        assertEquals(0, mix0.getAlpha());
+
+        Color mix1 = ColorUtils.mix(color255, color1);
+        assertEquals(1, mix1.getRed());
+        assertEquals(1, mix1.getGreen());
+        assertEquals(1, mix1.getBlue());
+        assertEquals(1, mix1.getAlpha());
+    }
+
 }
