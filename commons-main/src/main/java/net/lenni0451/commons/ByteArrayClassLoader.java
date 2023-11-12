@@ -1,15 +1,15 @@
 package net.lenni0451.commons;
 
+import lombok.SneakyThrows;
 import net.lenni0451.commons.collections.enumerations.SingletonEnumeration;
+import net.lenni0451.commons.io.ByteArrayURLStreamHandler;
 import net.lenni0451.commons.io.IOUtils;
 
+import javax.annotation.Nullable;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLStreamHandler;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +24,7 @@ public class ByteArrayClassLoader extends ClassLoader {
     private final Map<String, byte[]> content = new HashMap<>();
     private final Map<String, Class<?>> loadedClasses = new HashMap<>();
 
-    public ByteArrayClassLoader(final ClassLoader parent) {
+    public ByteArrayClassLoader(@Nullable final ClassLoader parent) {
         super(parent);
     }
 
@@ -39,7 +39,7 @@ public class ByteArrayClassLoader extends ClassLoader {
         final JarInputStream jis = new JarInputStream(new ByteArrayInputStream(data));
         JarEntry entry;
         while ((entry = jis.getNextJarEntry()) != null) {
-            if (entry.getName().endsWith("/")) continue;
+            if (entry.isDirectory()) continue;
             this.addEntry(entry.getName(), IOUtils.readAll(jis));
         }
     }
@@ -79,29 +79,11 @@ public class ByteArrayClassLoader extends ClassLoader {
     }
 
     @Override
+    @SneakyThrows
     public URL getResource(String name) {
         byte[] data = this.content.get(name);
         if (data == null) return super.getResource(name);
-        try {
-            return new URL("x-buffer", null, -1, name, new URLStreamHandler() {
-                @Override
-                protected URLConnection openConnection(final URL url) {
-                    return new URLConnection(url) {
-                        @Override
-                        public void connect() {
-                        }
-
-                        @Override
-                        public InputStream getInputStream() {
-                            return new ByteArrayInputStream(data);
-                        }
-                    };
-                }
-            });
-        } catch (MalformedURLException ignored) {
-            //This should never happen
-            return null;
-        }
+        return ByteArrayURLStreamHandler.makeURL(name, data);
     }
 
     @Override
