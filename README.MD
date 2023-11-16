@@ -2,17 +2,14 @@
 A java library with many useful functions and classes.\
 The idea is to put similar classes and utils into one subpackage category like `network` or `collections`.\
 When there are enough utils in one category, they will be moved into a separate module.
-I will keep the package structure, so you only have to add a new module to your project.\
-If you want to avoid this, you can depend on the `all` module, which contains all other modules.
+I will keep the package structure, so you only have to add a new module to your project.
 
 ## Usage
 To use `commons` in your project, you have the following options:
 ### Gradle
 ````groovy
 repositories {
-    maven {
-        url "https://maven.lenni0451.net/releases"
-    }
+    mavenCentral()
 }
 
 dependencies {
@@ -24,12 +21,6 @@ Or the [snapshot server](https://maven.lenni0451.net/#/snapshots/net/lenni0451/c
 
 ### Maven
 ````xml
-<repository>
-    <id>lenni0451-maven-releases</id>
-    <name>Lenni0451 Maven Repository</name>
-    <url>https://maven.lenni0451.net/releases</url>
-</repository>
-
 <dependency>
   <groupId>net.lenni0451.commons</groupId>
   <artifactId>all</artifactId>
