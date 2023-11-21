@@ -2,6 +2,7 @@ package net.lenni0451.commons;
 
 import lombok.experimental.UtilityClass;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 
@@ -132,9 +133,12 @@ public class RandomUtils {
      *
      * @param array The array to get the element from
      * @param <T>   The type of the array
-     * @return The random element
+     * @return The random element or null if the array is empty
      */
+    @Nullable
     public static <T> T randomElement(final T[] array) {
+        if (array.length == 0) return null;
+        if (array.length == 1) return array[0];
         return array[RND.nextInt(array.length)];
     }
 
@@ -143,9 +147,12 @@ public class RandomUtils {
      *
      * @param list The list to get the element from
      * @param <T>  The type of the list
-     * @return The random element
+     * @return The random element or null if the list is empty
      */
+    @Nullable
     public static <T> T randomElement(final List<T> list) {
+        if (list.isEmpty()) return null;
+        if (list.size() == 1) return list.get(0);
         return list.get(RND.nextInt(list.size()));
     }
 
