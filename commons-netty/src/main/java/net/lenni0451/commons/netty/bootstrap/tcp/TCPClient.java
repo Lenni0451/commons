@@ -3,10 +3,7 @@ package net.lenni0451.commons.netty.bootstrap.tcp;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
-import io.netty.channel.epoll.Epoll;
-import io.netty.channel.epoll.EpollSocketChannel;
-import io.netty.channel.socket.nio.NioSocketChannel;
-import net.lenni0451.commons.netty.LazyGroups;
+import net.lenni0451.commons.netty.TCPChannelType;
 import net.lenni0451.commons.netty.bootstrap.types.AReliableClient;
 
 /**
@@ -14,6 +11,7 @@ import net.lenni0451.commons.netty.bootstrap.types.AReliableClient;
  */
 public class TCPClient extends AReliableClient {
 
+    private final TCPChannelType channelType;
     private int connectTimeout = 5_000;
 
     /**
@@ -22,7 +20,25 @@ public class TCPClient extends AReliableClient {
      * @param channelInitializer The channel initializer to use
      */
     public TCPClient(final ChannelInitializer<Channel> channelInitializer) {
+        this(channelInitializer, TCPChannelType.getBest());
+    }
+
+    /**
+     * Create a new TCP client.
+     *
+     * @param channelInitializer The channel initializer to use
+     * @param channelType        The channel type to use
+     */
+    public TCPClient(final ChannelInitializer<Channel> channelInitializer, final TCPChannelType channelType) {
         super(channelInitializer);
+        this.channelType = channelType;
+    }
+
+    /**
+     * @return The channel type
+     */
+    public TCPChannelType getChannelType() {
+        return this.channelType;
     }
 
     /**
@@ -43,17 +59,10 @@ public class TCPClient extends AReliableClient {
 
     @Override
     protected void configureBootstrap() {
-        if (Epoll.isAvailable()) {
-            this.bootstrap
-                    .group(LazyGroups.EPOLL_CLIENT_LOOP_GROUP.get())
-                    .channel(EpollSocketChannel.class);
-        } else {
-            this.bootstrap
-                    .group(LazyGroups.NIO_CLIENT_LOOP_GROUP.get())
-                    .channel(NioSocketChannel.class);
-        }
-
         this.bootstrap
+                .group(this.channelType.getClientLoopGroup())
+                .channel(this.channelType.getClientChannel())
+
                 .option(ChannelOption.TCP_NODELAY, true)
                 .option(ChannelOption.SO_KEEPALIVE, true)
                 .option(ChannelOption.IP_TOS, 0x18)

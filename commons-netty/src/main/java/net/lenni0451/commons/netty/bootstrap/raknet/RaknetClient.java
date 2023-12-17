@@ -3,10 +3,8 @@ package net.lenni0451.commons.netty.bootstrap.raknet;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
-import io.netty.channel.epoll.Epoll;
-import io.netty.channel.epoll.EpollDatagramChannel;
-import io.netty.channel.socket.nio.NioDatagramChannel;
-import net.lenni0451.commons.netty.LazyGroups;
+import io.netty.channel.socket.DatagramChannel;
+import net.lenni0451.commons.netty.UDPChannelType;
 import net.lenni0451.commons.netty.bootstrap.types.AReliableClient;
 import org.cloudburstmc.netty.channel.raknet.RakChannelFactory;
 import org.cloudburstmc.netty.channel.raknet.config.RakChannelOption;
@@ -22,6 +20,7 @@ public class RaknetClient extends AReliableClient {
     public static final int MAX_ORDERING_CHANNELS = 16;
     private static final Random RND = new Random();
 
+    private final UDPChannelType channelType;
     private long connectTimeout = 5_000;
     private long sessionTimeout = 30_000;
 
@@ -31,7 +30,27 @@ public class RaknetClient extends AReliableClient {
      * @param channelInitializer The channel initializer to use
      */
     public RaknetClient(final ChannelInitializer<Channel> channelInitializer) {
+        this(channelInitializer, UDPChannelType.getBest());
+    }
+
+    /**
+     * Create a new RakNet client.
+     *
+     * @param channelInitializer The channel initializer to use
+     * @param channelType        The channel type to use
+     */
+    public RaknetClient(final ChannelInitializer<Channel> channelInitializer, final UDPChannelType channelType) {
         super(channelInitializer);
+        this.channelType = channelType;
+
+        if (!DatagramChannel.class.isAssignableFrom(this.channelType.getChannelClass())) throw new IllegalArgumentException("RakNet does not support Unix Domain Sockets");
+    }
+
+    /**
+     * @return The channel type
+     */
+    public UDPChannelType getChannelType() {
+        return this.channelType;
     }
 
     /**
@@ -68,17 +87,10 @@ public class RaknetClient extends AReliableClient {
 
     @Override
     protected void configureBootstrap() {
-        if (Epoll.isAvailable()) {
-            this.bootstrap
-                    .group(LazyGroups.EPOLL_CLIENT_LOOP_GROUP.get())
-                    .channelFactory(RakChannelFactory.client(EpollDatagramChannel.class));
-        } else {
-            this.bootstrap
-                    .group(LazyGroups.NIO_CLIENT_LOOP_GROUP.get())
-                    .channelFactory(RakChannelFactory.client(NioDatagramChannel.class));
-        }
-
         this.bootstrap
+                .group(this.channelType.getClientLoopGroup())
+                .channelFactory(RakChannelFactory.client((Class<? extends DatagramChannel>) this.channelType.getChannelClass()))
+
                 .option(ChannelOption.IP_TOS, 0x18)
                 .option(RakChannelOption.RAK_CONNECT_TIMEOUT, this.connectTimeout)
                 .option(RakChannelOption.RAK_SESSION_TIMEOUT, this.sessionTimeout)

@@ -5,6 +5,9 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+
 /**
  * An abstract server implementation for reliable protocols.
  */
@@ -33,8 +36,18 @@ public abstract class AReliableServer {
      * @param sync        If the method should wait for the bind to complete
      */
     public void bind(final String bindAddress, final int bindPort, final boolean sync) {
+        this.bind(new InetSocketAddress(bindAddress, bindPort), sync);
+    }
+
+    /**
+     * Bind the server to the given socket address.
+     *
+     * @param bindAddress The address to bind to
+     * @param sync        If the method should wait for the bind to complete
+     */
+    public void bind(final SocketAddress bindAddress, final boolean sync) {
         this.configureBootstrap();
-        this.channelFuture = this.bootstrap.bind(bindAddress, bindPort);
+        this.channelFuture = this.bootstrap.bind(bindAddress);
         if (sync) this.channelFuture.syncUninterruptibly();
     }
 

@@ -3,10 +3,8 @@ package net.lenni0451.commons.netty.bootstrap.raknet;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
-import io.netty.channel.epoll.Epoll;
-import io.netty.channel.epoll.EpollDatagramChannel;
-import io.netty.channel.socket.nio.NioDatagramChannel;
-import net.lenni0451.commons.netty.LazyGroups;
+import io.netty.channel.socket.DatagramChannel;
+import net.lenni0451.commons.netty.UDPChannelType;
 import net.lenni0451.commons.netty.bootstrap.types.AReliableServer;
 import org.cloudburstmc.netty.channel.raknet.RakChannelFactory;
 import org.cloudburstmc.netty.channel.raknet.config.RakChannelOption;
@@ -22,6 +20,7 @@ public class RaknetServer extends AReliableServer {
     public static final int MAX_ORDERING_CHANNELS = 16;
     private static final Random RND = new Random();
 
+    private final UDPChannelType channelType;
     private long sessionTimeout = 30_000;
 
     /**
@@ -30,7 +29,27 @@ public class RaknetServer extends AReliableServer {
      * @param channelInitializer The channel initializer to use
      */
     public RaknetServer(final ChannelInitializer<Channel> channelInitializer) {
+        this(channelInitializer, UDPChannelType.getBest());
+    }
+
+    /**
+     * Create a new RakNet server.
+     *
+     * @param channelInitializer The channel initializer to use
+     * @param channelType        The channel type to use
+     */
+    public RaknetServer(final ChannelInitializer<Channel> channelInitializer, final UDPChannelType channelType) {
         super(channelInitializer);
+        this.channelType = channelType;
+
+        if (!DatagramChannel.class.isAssignableFrom(this.channelType.getChannelClass())) throw new IllegalArgumentException("RakNet does not support Unix Domain Sockets");
+    }
+
+    /**
+     * @return The channel type
+     */
+    public UDPChannelType getChannelType() {
+        return this.channelType;
     }
 
     /**
@@ -51,17 +70,10 @@ public class RaknetServer extends AReliableServer {
 
     @Override
     protected void configureBootstrap() {
-        if (Epoll.isAvailable()) {
-            this.bootstrap
-                    .group(LazyGroups.EPOLL_SERVER_PARENT_LOOP_GROUP.get(), LazyGroups.EPOLL_SERVER_CHILD_LOOP_GROUP.get())
-                    .channelFactory(RakChannelFactory.server(EpollDatagramChannel.class));
-        } else {
-            this.bootstrap
-                    .group(LazyGroups.NIO_SERVER_PARENT_LOOP_GROUP.get(), LazyGroups.NIO_SERVER_CHILD_LOOP_GROUP.get())
-                    .channelFactory(RakChannelFactory.server(NioDatagramChannel.class));
-        }
-
         this.bootstrap
+                .group(this.channelType.getServerParentLoopGroup(), this.channelType.getServerChildLoopGroup())
+                .channelFactory(RakChannelFactory.server((Class<? extends DatagramChannel>) this.channelType.getChannelClass()))
+
                 .childOption(ChannelOption.IP_TOS, 0x18)
                 .childOption(RakChannelOption.RAK_SESSION_TIMEOUT, this.sessionTimeout)
                 .childOption(RakChannelOption.RAK_ORDERING_CHANNELS, MAX_ORDERING_CHANNELS)

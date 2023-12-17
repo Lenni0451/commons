@@ -3,12 +3,9 @@ package net.lenni0451.commons.netty.bootstrap.udp;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
-import io.netty.channel.epoll.Epoll;
-import io.netty.channel.epoll.EpollDatagramChannel;
 import io.netty.channel.socket.DatagramChannel;
-import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.util.AttributeKey;
-import net.lenni0451.commons.netty.LazyGroups;
+import net.lenni0451.commons.netty.UDPChannelType;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -21,6 +18,7 @@ public class UDPClientServer {
     public static final AttributeKey<UDPClientServer> ATTRIBUTE_CLIENT_SERVER = AttributeKey.valueOf("commons-netty UDPClientServer");
 
     protected final ChannelInitializer<DatagramChannel> channelInitializer;
+    protected final UDPChannelType channelType;
     protected final Bootstrap bootstrap;
 
     protected ChannelFuture channelFuture;
@@ -31,25 +29,36 @@ public class UDPClientServer {
      * @param channelInitializer The channel initializer to use
      */
     public UDPClientServer(final ChannelInitializer<DatagramChannel> channelInitializer) {
+        this(channelInitializer, UDPChannelType.getBest());
+    }
+
+    /**
+     * Create a new UDP client/server.
+     *
+     * @param channelInitializer The channel initializer to use
+     * @param channelType        The channel type to use
+     */
+    public UDPClientServer(final ChannelInitializer<DatagramChannel> channelInitializer, final UDPChannelType channelType) {
         this.channelInitializer = channelInitializer;
+        this.channelType = channelType;
         this.bootstrap = new Bootstrap();
+    }
+
+    /**
+     * @return The channel type
+     */
+    public UDPChannelType getChannelType() {
+        return this.channelType;
     }
 
     /**
      * Configure the bootstrap channel, event group and options.
      */
     protected void configureBootstrap() {
-        if (Epoll.isAvailable()) {
-            this.bootstrap
-                    .group(LazyGroups.EPOLL_CLIENT_LOOP_GROUP.get())
-                    .channel(EpollDatagramChannel.class);
-        } else {
-            this.bootstrap
-                    .group(LazyGroups.NIO_CLIENT_LOOP_GROUP.get())
-                    .channel(NioDatagramChannel.class);
-        }
-
         this.bootstrap
+                .group(this.channelType.getClientLoopGroup())
+                .channel(this.channelType.getChannelClass())
+
                 .attr(ATTRIBUTE_CLIENT_SERVER, this)
                 .handler(this.channelInitializer);
     }
