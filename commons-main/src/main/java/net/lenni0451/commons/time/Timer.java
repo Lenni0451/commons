@@ -6,8 +6,9 @@ package net.lenni0451.commons.time;
  */
 public class Timer {
 
-    private final long delay;
-    private long time;
+    protected final long delay;
+    protected long time;
+    protected boolean forcePass = false;
 
     public Timer(final long delay) {
         this.delay = delay;
@@ -33,13 +34,14 @@ public class Timer {
      */
     public void reset() {
         this.time = System.currentTimeMillis();
+        this.forcePass = false;
     }
 
     /**
      * Force the timer to tick.
      */
     public void forcePass() {
-        this.time = 0;
+        this.forcePass = true;
     }
 
     /**
@@ -56,7 +58,7 @@ public class Timer {
      * @return If the delay has passed
      */
     public boolean hasPassed() {
-        if (this.getPassedTime() >= this.delay) {
+        if (this.getPassedTime() >= this.delay || this.forcePass) {
             this.reset();
             return true;
         }
@@ -77,7 +79,7 @@ public class Timer {
      * @throws InterruptedException If the thread is interrupted
      */
     public void waitUntil() throws InterruptedException {
-        Thread.sleep(this.timeUntil());
+        if (!this.forcePass) Thread.sleep(this.timeUntil());
         this.reset();
     }
 

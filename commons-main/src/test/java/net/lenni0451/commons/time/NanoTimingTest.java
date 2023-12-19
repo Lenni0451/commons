@@ -6,54 +6,53 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class TimerTest {
+class NanoTimingTest {
 
-    private static final long DELAY = 500L;
-    private static final long MS_OFFSET = 1L;
-    private static final long MAX_DIFF = 50L;
+    private static final long DELAY = 500_000_000L;
+    private static final long MS_OFFSET = 1_000_000L;
+    private static final long MAX_DIFF = 50_000_000L;
     private static final long MIN_DELAY = DELAY - MAX_DIFF;
     private static final long MAX_DELAY = DELAY + MAX_DIFF;
 
-    private Timer timer;
+    private NanoTiming timing;
 
     @BeforeEach
     void setUp() {
-        this.timer = new Timer(DELAY);
+        this.timing = new NanoTiming();
     }
 
     @Test
     void forcePass() {
-        Timer timer = new Timer(DELAY * 2);
-        assertFalse(timer.hasPassed());
-        timer.forcePass();
-        assertTrue(timer.hasPassed());
+        assertFalse(this.timing.hasPassed(DELAY * 2));
+        this.timing.forcePass();
+        assertTrue(this.timing.hasPassed(DELAY * 2));
     }
 
     @Test
     void getPassedTime() throws InterruptedException {
         Thread.sleep(DELAY / MS_OFFSET);
-        assertTrue(this.timer.getPassedTime() >= MIN_DELAY);
+        assertTrue(this.timing.getPassedTime() >= MIN_DELAY);
     }
 
     @Test
     void hasPassed() throws InterruptedException {
-        assertFalse(this.timer.hasPassed());
+        assertFalse(this.timing.hasPassed(MAX_DELAY));
         Thread.sleep(DELAY / MS_OFFSET);
-        assertTrue(this.timer.hasPassed());
+        assertTrue(this.timing.hasPassed(MIN_DELAY));
     }
 
     @Test
     void timeUntil() throws InterruptedException {
-        assertTrue(this.timer.timeUntil() <= MAX_DELAY);
+        assertTrue(this.timing.timeUntil(DELAY) <= MAX_DELAY);
         Thread.sleep(DELAY / MS_OFFSET);
-        assertTrue(this.timer.timeUntil() <= MAX_DIFF);
+        assertTrue(this.timing.timeUntil(DELAY) <= MAX_DIFF);
     }
 
     @Test
     void waitUntil() throws InterruptedException {
-        long start = this.timer.getTime();
-        this.timer.waitUntil();
-        assertTrue(System.currentTimeMillis() - start >= MIN_DELAY);
+        long start = this.timing.getTime();
+        this.timing.waitUntil(DELAY);
+        assertTrue(System.nanoTime() - start >= MIN_DELAY);
     }
 
 }

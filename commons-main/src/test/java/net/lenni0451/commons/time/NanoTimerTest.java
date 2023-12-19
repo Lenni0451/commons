@@ -6,19 +6,19 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class TimerTest {
+class NanoTimerTest {
 
-    private static final long DELAY = 500L;
-    private static final long MS_OFFSET = 1L;
-    private static final long MAX_DIFF = 50L;
+    private static final long DELAY = 500_000_000L;
+    private static final long MS_OFFSET = 1_000_000L;
+    private static final long MAX_DIFF = 50_000_000L;
     private static final long MIN_DELAY = DELAY - MAX_DIFF;
     private static final long MAX_DELAY = DELAY + MAX_DIFF;
 
-    private Timer timer;
+    private NanoTimer timer;
 
     @BeforeEach
     void setUp() {
-        this.timer = new Timer(DELAY);
+        this.timer = new NanoTimer(DELAY);
     }
 
     @Test
@@ -53,7 +53,7 @@ class TimerTest {
     void waitUntil() throws InterruptedException {
         long start = this.timer.getTime();
         this.timer.waitUntil();
-        assertTrue(System.currentTimeMillis() - start >= MIN_DELAY);
+        assertTrue(System.nanoTime() - start >= MIN_DELAY);
     }
 
 }

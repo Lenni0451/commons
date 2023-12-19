@@ -6,7 +6,8 @@ package net.lenni0451.commons.time;
  */
 public class Timing {
 
-    private long time;
+    protected long time;
+    protected boolean forcePass = false;
 
     public Timing() {
         this.reset();
@@ -30,7 +31,7 @@ public class Timing {
      * Force the time to have passed.
      */
     public void forcePass() {
-        this.time = 0;
+        this.forcePass = true;
     }
 
     /**
@@ -47,6 +48,10 @@ public class Timing {
      * @return If the time has passed
      */
     public boolean hasPassed(final long time) {
+        if (this.forcePass) {
+            this.forcePass = false;
+            return true;
+        }
         return this.getPassedTime() >= time;
     }
 
@@ -67,6 +72,10 @@ public class Timing {
      * @throws InterruptedException If the thread is interrupted
      */
     public void waitUntil(final long time) throws InterruptedException {
+        if (this.forcePass) {
+            this.forcePass = false;
+            return;
+        }
         Thread.sleep(this.timeUntil(time));
     }
 
