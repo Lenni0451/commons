@@ -15,6 +15,13 @@ public class Timer {
     }
 
     /**
+     * @return The delay of this timer
+     */
+    public long getDelay() {
+        return this.delay;
+    }
+
+    /**
      * @return The time since the last reset
      */
     public long getTime() {
