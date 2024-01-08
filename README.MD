@@ -2,7 +2,8 @@
 A java library with many useful functions and classes.\
 The idea is to put similar classes and utils into one subpackage category like `network` or `collections`.\
 When there are enough utils in one category, they will be moved into a separate module.
-I will keep the package structure, so you only have to add a new module to your project.
+I will keep the package structure, so you only have to add a new module to your project.\
+If you don't want to add new modules, you can use the `core` module which contains all `main` utils even if they are split at some point.
 
 ## Usage
 To use `commons` in your project, you have the following options:
@@ -13,7 +14,7 @@ repositories {
 }
 
 dependencies {
-    implementation "net.lenni0451.commons:all:x.x.x"
+    implementation "net.lenni0451.commons:core:x.x.x"
 }
 ````
 Check my [maven server](https://maven.lenni0451.net/#/releases/net/lenni0451/commons) for the latest version.\
