@@ -3,4 +3,5 @@ dependencies {
     api project(":commons-functional")
     api project(":commons-main")
     api project(":commons-netty")
+    api project(":commons-swing")
 }
