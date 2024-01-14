@@ -77,9 +77,10 @@ public class HttpRequest {
         return this.cookieManagerSet;
     }
 
-    public void unsetCookieManager() {
+    public HttpRequest unsetCookieManager() {
         this.cookieManager = null;
         this.cookieManagerSet = false;
+        return this;
     }
 
     @Nullable

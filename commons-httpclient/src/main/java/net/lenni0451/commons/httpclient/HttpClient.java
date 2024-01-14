@@ -23,6 +23,8 @@ public class HttpClient implements HttpRequestBuilder {
     @Nullable
     private CookieManager cookieManager = new CookieManager();
     private boolean followRedirects = true;
+    private int connectTimeout = 10_000;
+    private int readTimeout = 10_000;
 
     public Map<String, List<String>> getDefaultHeaders() {
         return Collections.unmodifiableMap(this.defaultHeaders);
@@ -69,6 +71,24 @@ public class HttpClient implements HttpRequestBuilder {
         return this;
     }
 
+    public int getConnectTimeout() {
+        return this.connectTimeout;
+    }
+
+    public HttpClient setConnectTimeout(final int connectTimeout) {
+        this.connectTimeout = connectTimeout;
+        return this;
+    }
+
+    public int getReadTimeout() {
+        return this.readTimeout;
+    }
+
+    public HttpClient setReadTimeout(final int readTimeout) {
+        this.readTimeout = readTimeout;
+        return this;
+    }
+
     public <R> R execute(final HttpRequest request, final Function<HttpResponse, R> responseHandler) throws IOException {
         return responseHandler.apply(this.execute(request));
     }
@@ -89,6 +109,8 @@ public class HttpClient implements HttpRequestBuilder {
                 request.getHeaders()
         ));
 
+        connection.setConnectTimeout(this.connectTimeout);
+        connection.setReadTimeout(this.readTimeout);
         connection.setRequestMethod(request.getMethod());
         connection.setDoInput(true);
         connection.setDoOutput(request instanceof HttpContentRequest && ((HttpContentRequest) request).getContent() != null);
