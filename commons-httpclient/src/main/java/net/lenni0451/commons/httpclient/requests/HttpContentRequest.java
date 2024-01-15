@@ -20,15 +20,27 @@ public class HttpContentRequest extends HttpRequest {
         super(method, url);
     }
 
+    /**
+     * @return If this request has content
+     */
     public boolean hasContent() {
         return this.content != null;
     }
 
+    /**
+     * @return The content of this request
+     */
     @Nullable
     public HttpContent getContent() {
         return this.content;
     }
 
+    /**
+     * Set the content of this request.
+     *
+     * @param content The content to set
+     * @return This instance for chaining
+     */
     public HttpRequest setContent(@Nullable final HttpContent content) {
         this.content = content;
         return this;

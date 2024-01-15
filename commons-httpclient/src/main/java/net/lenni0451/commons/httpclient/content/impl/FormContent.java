@@ -40,6 +40,13 @@ public class FormContent implements HttpContent {
         this.charset = charset;
     }
 
+    /**
+     * Add a new entry to the form.
+     *
+     * @param key   The key
+     * @param value The value
+     * @return This instance for chaining
+     */
     public FormContent put(final String key, final String value) {
         this.entries.add(new FormEntry(key, value));
         this.cache = null;
@@ -82,24 +89,24 @@ public class FormContent implements HttpContent {
         private final String key;
         private final String value;
 
-        public FormEntry(String key, String value) {
+        private FormEntry(String key, String value) {
             this.key = key;
             this.value = value;
         }
 
-        public String getKey() {
+        private String getKey() {
             return this.key;
         }
 
-        public String encodeKey(Charset charset) throws UnsupportedEncodingException {
+        private String encodeKey(Charset charset) throws UnsupportedEncodingException {
             return URLEncoder.encode(this.key, charset.name());
         }
 
-        public String getValue() {
+        private String getValue() {
             return this.value;
         }
 
-        public String encodeValue(Charset charset) throws UnsupportedEncodingException {
+        private String encodeValue(Charset charset) throws UnsupportedEncodingException {
             return URLEncoder.encode(this.value, charset.name());
         }
     }

@@ -320,6 +320,9 @@ public class StatusCodes {
      */
     public static final int NETWORK_AUTHENTICATION_REQUIRED = 511;
 
+    /**
+     * A map of all status codes and their messages.
+     */
     public static final Map<Integer, String> STATUS_CODES;
 
     static {
