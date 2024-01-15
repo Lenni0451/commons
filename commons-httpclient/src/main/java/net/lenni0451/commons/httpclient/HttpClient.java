@@ -1,5 +1,6 @@
 package net.lenni0451.commons.httpclient;
 
+import net.lenni0451.commons.httpclient.handler.HttpResponseHandler;
 import net.lenni0451.commons.httpclient.requests.HttpContentRequest;
 import net.lenni0451.commons.httpclient.requests.HttpRequest;
 import net.lenni0451.commons.httpclient.utils.HttpRequestUtils;
@@ -12,8 +13,6 @@ import java.net.CookieManager;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @ParametersAreNonnullByDefault
@@ -166,22 +165,8 @@ public class HttpClient implements HttpRequestBuilder {
      * @return The return value of the response handler
      * @throws IOException If an I/O error occurs
      */
-    public <R> R execute(final HttpRequest request, final Function<HttpResponse, R> responseHandler) throws IOException {
-        return responseHandler.apply(this.execute(request));
-    }
-
-    /**
-     * Execute a request and pass the response to the response handler.
-     *
-     * @param request         The request to execute
-     * @param responseHandler The response handler
-     * @return The response
-     * @throws IOException If an I/O error occurs
-     */
-    public HttpResponse execute(final HttpRequest request, final Consumer<HttpResponse> responseHandler) throws IOException {
-        HttpResponse response = this.execute(request);
-        responseHandler.accept(response);
-        return response;
+    public <R> R execute(final HttpRequest request, final HttpResponseHandler<R> responseHandler) throws IOException {
+        return responseHandler.handle(this.execute(request));
     }
 
     /**
