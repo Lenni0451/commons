@@ -1,6 +1,7 @@
 package net.lenni0451.commons.httpclient;
 
 import net.lenni0451.commons.httpclient.constants.Headers;
+import net.lenni0451.commons.httpclient.content.HttpContent;
 import net.lenni0451.commons.httpclient.handler.HttpResponseHandler;
 import net.lenni0451.commons.httpclient.requests.HttpContentRequest;
 import net.lenni0451.commons.httpclient.requests.HttpRequest;
@@ -125,37 +126,9 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
      */
     public HttpResponse execute(final HttpRequest request) throws IOException {
         URL url = request.getURL();
-        CookieManager cookieManager = request.isCookieManagerSet() ? request.getCookieManager() : this.cookieManager;
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        Map<String, List<String>> headers = new HashMap<>();
-        if (request instanceof HttpContentRequest && ((HttpContentRequest) request).hasContent()) {
-            HttpContentRequest contentRequest = (HttpContentRequest) request;
-            headers.put(Headers.CONTENT_TYPE, Collections.singletonList(contentRequest.getContent().getDefaultContentType()));
-            headers.put(Headers.CONTENT_LENGTH, Collections.singletonList(String.valueOf(contentRequest.getContent().getContentLength())));
-        }
-        HttpRequestUtils.setHeaders(connection, HttpRequestUtils.mergeHeaders(
-                HttpRequestUtils.getCookieHeaders(cookieManager, url),
-                headers,
-                this.getHeaders(),
-                request.getHeaders()
-        ));
-
-        connection.setConnectTimeout(this.connectTimeout);
-        connection.setReadTimeout(this.readTimeout);
-        connection.setRequestMethod(request.getMethod());
-        connection.setDoInput(true);
-        connection.setDoOutput(request instanceof HttpContentRequest && ((HttpContentRequest) request).getContent() != null);
-        switch (request.getFollowRedirects()) {
-            case NOT_SET:
-                connection.setInstanceFollowRedirects(this.followRedirects);
-                break;
-            case FOLLOW:
-                connection.setInstanceFollowRedirects(true);
-                break;
-            case IGNORE:
-                connection.setInstanceFollowRedirects(false);
-                break;
-        }
+        CookieManager cookieManager = request.isCookieManagerSet() ? request.getCookieManager() : this.cookieManager;
+        this.setup(connection, cookieManager, request);
         connection.connect();
         try {
             if (connection.getDoOutput()) {
@@ -180,6 +153,40 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
             return response;
         } finally {
             connection.disconnect();
+        }
+    }
+
+    private void setup(final HttpURLConnection connection, @Nullable final CookieManager cookieManager, final HttpRequest request) throws IOException {
+        Map<String, List<String>> headers = new HashMap<>();
+        if (request instanceof HttpContentRequest) {
+            HttpContent content = ((HttpContentRequest) request).getContent();
+            if (content != null) {
+                headers.put(Headers.CONTENT_TYPE, Collections.singletonList(content.getDefaultContentType()));
+                headers.put(Headers.CONTENT_LENGTH, Collections.singletonList(String.valueOf(content.getContentLength())));
+            }
+        }
+        HttpRequestUtils.setHeaders(connection, HttpRequestUtils.mergeHeaders(
+                HttpRequestUtils.getCookieHeaders(cookieManager, request.getURL()),
+                headers,
+                this.getHeaders(),
+                request.getHeaders()
+        ));
+
+        connection.setConnectTimeout(this.connectTimeout);
+        connection.setReadTimeout(this.readTimeout);
+        connection.setRequestMethod(request.getMethod());
+        connection.setDoInput(true);
+        connection.setDoOutput(request instanceof HttpContentRequest && ((HttpContentRequest) request).getContent() != null);
+        switch (request.getFollowRedirects()) {
+            case NOT_SET:
+                connection.setInstanceFollowRedirects(this.followRedirects);
+                break;
+            case FOLLOW:
+                connection.setInstanceFollowRedirects(true);
+                break;
+            case IGNORE:
+                connection.setInstanceFollowRedirects(false);
+                break;
         }
     }
 
