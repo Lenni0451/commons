@@ -13,12 +13,13 @@ public class HttpResponse extends HeaderStore<HttpResponse> {
 
     private final URL url;
     private final int statusCode;
-    private final byte[] body;
+    private final byte[] content;
 
-    public HttpResponse(final URL url, final int statusCode, final byte[] body, final Map<String, List<String>> headers) {
+    public HttpResponse(final URL url, final int statusCode, final byte[] content, final Map<String, List<String>> headers) {
+        super(headers);
         this.url = url;
         this.statusCode = statusCode;
-        this.body = body;
+        this.content = content;
     }
 
     /**
@@ -45,15 +46,15 @@ public class HttpResponse extends HeaderStore<HttpResponse> {
     /**
      * @return The response body
      */
-    public byte[] getBody() {
-        return this.body;
+    public byte[] getContent() {
+        return this.content;
     }
 
     /**
      * @return The response body as a string
      */
-    public String getBodyAsString() {
-        return this.getBodyAsString(Charset.defaultCharset());
+    public String getContentAsString() {
+        return this.getContentAsString(Charset.defaultCharset());
     }
 
     /**
@@ -62,8 +63,8 @@ public class HttpResponse extends HeaderStore<HttpResponse> {
      * @param charset The charset to use
      * @return The response body as a string
      */
-    public String getBodyAsString(final Charset charset) {
-        return new String(this.body, charset);
+    public String getContentAsString(final Charset charset) {
+        return new String(this.content, charset);
     }
 
 }

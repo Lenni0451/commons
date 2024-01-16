@@ -3,16 +3,32 @@ package net.lenni0451.commons.httpclient;
 import net.lenni0451.commons.httpclient.model.HttpHeader;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public abstract class HeaderStore<T extends HeaderStore<T>> {
 
     private final Map<String, List<String>> headers = new HashMap<>();
 
+    public HeaderStore() {
+    }
+
+    public HeaderStore(final Map<String, List<String>> headers) {
+        headers.forEach((k, v) -> this.headers.put(k.toLowerCase(Locale.ROOT), new ArrayList<>(v)));
+    }
+
     /**
      * @return The headers
      */
     public Map<String, List<String>> getHeaders() {
-        return Collections.unmodifiableMap(this.headers);
+        return Collections.unmodifiableMap(
+                this.headers
+                        .entrySet()
+                        .stream()
+                        .collect(Collectors.toMap(
+                                Map.Entry::getKey,
+                                e -> new ArrayList<>(e.getValue())
+                        ))
+        );
     }
 
     /**
