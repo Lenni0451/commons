@@ -5,7 +5,6 @@ import net.lenni0451.commons.httpclient.content.HttpContent;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
@@ -16,11 +15,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @ParametersAreNonnullByDefault
-public class FormContent implements HttpContent {
+public class FormContent extends HttpContent {
 
     private final List<FormEntry> entries;
     private final Charset charset;
-    private byte[] cache;
 
     public FormContent() {
         this(StandardCharsets.UTF_8);
@@ -49,7 +47,7 @@ public class FormContent implements HttpContent {
      */
     public FormContent put(final String key, final String value) {
         this.entries.add(new FormEntry(key, value));
-        this.cache = null;
+        this.content = null;
         return this;
     }
 
@@ -59,20 +57,13 @@ public class FormContent implements HttpContent {
     }
 
     @Override
+    @SneakyThrows
     public int getContentLength() {
-        this.buildCache();
-        return this.cache.length;
+        return this.getAsBytes().length;
     }
 
     @Override
-    public void writeContent(OutputStream outputStream) throws IOException {
-        this.buildCache();
-        outputStream.write(this.cache);
-    }
-
-    @SneakyThrows
-    private void buildCache() {
-        if (this.cache != null) return;
+    protected byte[] compute() throws IOException {
         StringBuilder builder = new StringBuilder();
         for (FormEntry entry : this.entries) {
             if (builder.length() != 0) builder.append("&");
@@ -81,9 +72,8 @@ public class FormContent implements HttpContent {
                     .append("=")
                     .append(entry.encodeValue(this.charset));
         }
-        this.cache = builder.toString().getBytes(this.charset);
+        return builder.toString().getBytes(this.charset);
     }
-
 
     private static class FormEntry {
         private final String key;

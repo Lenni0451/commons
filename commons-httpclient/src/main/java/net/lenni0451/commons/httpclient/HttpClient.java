@@ -149,7 +149,7 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
         try {
             if (connection.getDoOutput()) {
                 OutputStream os = connection.getOutputStream();
-                ((HttpContentRequest) request).getContent().writeContent(os);
+                os.write(((HttpContentRequest) request).getContent().getAsBytes());
                 os.flush();
             }
             byte[] body = HttpRequestUtils.readBody(connection);

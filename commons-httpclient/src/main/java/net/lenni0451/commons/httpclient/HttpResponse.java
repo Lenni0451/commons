@@ -5,6 +5,7 @@ import net.lenni0451.commons.httpclient.constants.StatusCodes;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
@@ -54,7 +55,7 @@ public class HttpResponse extends HeaderStore<HttpResponse> {
      * @return The response body as a string
      */
     public String getContentAsString() {
-        return this.getContentAsString(Charset.defaultCharset());
+        return this.getContentAsString(StandardCharsets.UTF_8);
     }
 
     /**

@@ -8,12 +8,12 @@ import net.lenni0451.commons.httpclient.content.impl.StringContent;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 @ParametersAreNonnullByDefault
-public interface HttpContent {
+public abstract class HttpContent {
 
     /**
      * Create a new content from the given bytes.
@@ -21,7 +21,7 @@ public interface HttpContent {
      * @param content The bytes to send
      * @return The created content
      */
-    static HttpContent bytes(final byte[] content) {
+    public static HttpContent bytes(final byte[] content) {
         return new ByteArrayContent(content);
     }
 
@@ -33,7 +33,7 @@ public interface HttpContent {
      * @param length  The length of the bytes to read
      * @return The created content
      */
-    static HttpContent bytes(final byte[] content, final int offset, final int length) {
+    public static HttpContent bytes(final byte[] content, final int offset, final int length) {
         return new ByteArrayContent(content, offset, length);
     }
 
@@ -43,7 +43,7 @@ public interface HttpContent {
      * @param content The string to send
      * @return The created content
      */
-    static HttpContent string(final String content) {
+    public static HttpContent string(final String content) {
         return new StringContent(content);
     }
 
@@ -54,7 +54,7 @@ public interface HttpContent {
      * @param charset The charset to use
      * @return The created content
      */
-    static HttpContent string(final String content, final Charset charset) {
+    public static HttpContent string(final String content, final Charset charset) {
         return new StringContent(content, charset);
     }
 
@@ -64,7 +64,7 @@ public interface HttpContent {
      * @param file The file to send
      * @return The created content
      */
-    static HttpContent file(final File file) {
+    public static HttpContent file(final File file) {
         return new FileContent(file);
     }
 
@@ -75,7 +75,7 @@ public interface HttpContent {
      * @param value The value
      * @return The created content
      */
-    static HttpContent form(final String key, final String value) {
+    public static HttpContent form(final String key, final String value) {
         return new FormContent().put(key, value);
     }
 
@@ -85,27 +85,51 @@ public interface HttpContent {
      * @param form The form data
      * @return The created content
      */
-    static HttpContent form(final Map<String, String> form) {
+    public static HttpContent form(final Map<String, String> form) {
         return new FormContent(form);
     }
 
 
+    protected byte[] content;
+
+    /**
+     * @return The content as bytes
+     */
+    public byte[] getAsBytes() throws IOException {
+        if (this.content == null) this.content = this.compute();
+        return this.content;
+    }
+
+    /**
+     * @return The content as a UTF-8 string
+     */
+    public String getAsString() throws IOException {
+        return this.getAsString(StandardCharsets.UTF_8);
+    }
+
+    /**
+     * Get the content as a string with the given charset.
+     *
+     * @param charset The charset to use
+     * @return The content as a string
+     */
+    public String getAsString(final Charset charset) throws IOException {
+        return new String(this.getAsBytes(), charset);
+    }
+
     /**
      * @return The default content type
      */
-    String getDefaultContentType();
+    public abstract String getDefaultContentType();
 
     /**
      * @return The content length
      */
-    int getContentLength();
+    public abstract int getContentLength();
 
     /**
-     * Write the content to the given output stream.
-     *
-     * @param outputStream The output stream to write to
-     * @throws IOException If an I/O error occurs
+     * @return The content
      */
-    void writeContent(final OutputStream outputStream) throws IOException;
+    protected abstract byte[] compute() throws IOException;
 
 }

@@ -3,13 +3,13 @@ package net.lenni0451.commons.httpclient.content.impl;
 import net.lenni0451.commons.httpclient.content.HttpContent;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 
 @ParametersAreNonnullByDefault
-public class FileContent implements HttpContent {
+public class FileContent extends HttpContent {
 
     private final File file;
 
@@ -28,11 +28,13 @@ public class FileContent implements HttpContent {
     }
 
     @Override
-    public void writeContent(OutputStream outputStream) throws IOException {
-        try (FileInputStream is = new FileInputStream(this.file)) {
-            byte[] buf = new byte[1024];
+    protected byte[] compute() throws IOException {
+        try (FileInputStream fis = new FileInputStream(this.file)) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            byte[] buffer = new byte[1024];
             int len;
-            while ((len = is.read(buf)) != -1) outputStream.write(buf, 0, len);
+            while ((len = fis.read(buffer)) != -1) baos.write(buffer, 0, len);
+            return baos.toByteArray();
         }
     }
 

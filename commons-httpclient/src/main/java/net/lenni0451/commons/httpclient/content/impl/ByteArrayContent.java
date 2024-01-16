@@ -3,11 +3,10 @@ package net.lenni0451.commons.httpclient.content.impl;
 import net.lenni0451.commons.httpclient.content.HttpContent;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.util.Arrays;
 
 @ParametersAreNonnullByDefault
-public class ByteArrayContent implements HttpContent {
+public class ByteArrayContent extends HttpContent {
 
     private final byte[] content;
     private final int start;
@@ -34,8 +33,8 @@ public class ByteArrayContent implements HttpContent {
     }
 
     @Override
-    public void writeContent(OutputStream outputStream) throws IOException {
-        outputStream.write(this.content, this.start, this.length);
+    protected byte[] compute() {
+        return Arrays.copyOfRange(this.content, this.start, this.start + this.length);
     }
 
 }
