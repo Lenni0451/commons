@@ -4,6 +4,7 @@ import net.lenni0451.commons.httpclient.content.impl.ByteArrayContent;
 import net.lenni0451.commons.httpclient.content.impl.FileContent;
 import net.lenni0451.commons.httpclient.content.impl.FormContent;
 import net.lenni0451.commons.httpclient.content.impl.StringContent;
+import net.lenni0451.commons.httpclient.model.ContentType;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.File;
@@ -90,7 +91,19 @@ public abstract class HttpContent {
     }
 
 
+    private final ContentType contentType;
     protected byte[] content;
+
+    public HttpContent(final ContentType contentType) {
+        this.contentType = contentType;
+    }
+
+    /**
+     * @return The content type
+     */
+    public ContentType getContentType() {
+        return this.contentType;
+    }
 
     /**
      * @return The content as bytes
@@ -116,11 +129,6 @@ public abstract class HttpContent {
     public String getAsString(final Charset charset) throws IOException {
         return new String(this.getAsBytes(), charset);
     }
-
-    /**
-     * @return The default content type
-     */
-    public abstract String getDefaultContentType();
 
     /**
      * @return The content length

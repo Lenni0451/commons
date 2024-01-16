@@ -1,6 +1,7 @@
 package net.lenni0451.commons.httpclient;
 
 import net.lenni0451.commons.httpclient.constants.StatusCodes;
+import net.lenni0451.commons.httpclient.model.ContentType;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.net.URL;
@@ -8,6 +9,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @ParametersAreNonnullByDefault
 public class HttpResponse extends HeaderStore<HttpResponse> {
@@ -66,6 +68,13 @@ public class HttpResponse extends HeaderStore<HttpResponse> {
      */
     public String getContentAsString(final Charset charset) {
         return new String(this.content, charset);
+    }
+
+    /**
+     * @return The content type of the response
+     */
+    public Optional<ContentType> getContentType() {
+        return this.getFirstHeader("Content-Type").map(ContentType::parse);
     }
 
 }

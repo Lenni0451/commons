@@ -1,6 +1,8 @@
 package net.lenni0451.commons.httpclient.content.impl;
 
+import net.lenni0451.commons.httpclient.constants.ContentTypes;
 import net.lenni0451.commons.httpclient.content.HttpContent;
+import net.lenni0451.commons.httpclient.model.ContentType;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.ByteArrayOutputStream;
@@ -14,12 +16,12 @@ public class FileContent extends HttpContent {
     private final File file;
 
     public FileContent(final File file) {
-        this.file = file;
+        this(ContentTypes.APPLICATION_OCTET_STREAM, file);
     }
 
-    @Override
-    public String getDefaultContentType() {
-        return "application/octet-stream";
+    public FileContent(final ContentType contentType, final File file) {
+        super(contentType);
+        this.file = file;
     }
 
     @Override

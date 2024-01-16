@@ -1,6 +1,7 @@
 package net.lenni0451.commons.httpclient.content.impl;
 
 import lombok.SneakyThrows;
+import net.lenni0451.commons.httpclient.constants.ContentTypes;
 import net.lenni0451.commons.httpclient.content.HttpContent;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -29,11 +30,13 @@ public class FormContent extends HttpContent {
     }
 
     public FormContent(final Charset charset) {
+        super(ContentTypes.APPLICATION_FORM_URLENCODED);
         this.entries = new ArrayList<>();
         this.charset = charset;
     }
 
     public FormContent(final Map<String, String> entries, final Charset charset) {
+        super(ContentTypes.APPLICATION_FORM_URLENCODED);
         this.entries = entries.entrySet().stream().map(e -> new FormEntry(e.getKey(), e.getValue())).collect(Collectors.toList());
         this.charset = charset;
     }
@@ -49,11 +52,6 @@ public class FormContent extends HttpContent {
         this.entries.add(new FormEntry(key, value));
         this.content = null;
         return this;
-    }
-
-    @Override
-    public String getDefaultContentType() {
-        return "application/x-www-form-urlencoded";
     }
 
     @Override

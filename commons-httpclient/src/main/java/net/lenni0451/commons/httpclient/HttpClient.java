@@ -161,7 +161,7 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
         if (request instanceof HttpContentRequest) {
             HttpContent content = ((HttpContentRequest) request).getContent();
             if (content != null) {
-                headers.put(Headers.CONTENT_TYPE, Collections.singletonList(content.getDefaultContentType()));
+                headers.put(Headers.CONTENT_TYPE, Collections.singletonList(content.getContentType().toString()));
                 headers.put(Headers.CONTENT_LENGTH, Collections.singletonList(String.valueOf(content.getContentLength())));
             }
         }
