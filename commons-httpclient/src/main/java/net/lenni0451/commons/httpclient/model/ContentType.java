@@ -1,10 +1,10 @@
 package net.lenni0451.commons.httpclient.model;
 
-import javax.annotation.Nullable;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Optional;
 
 public class ContentType {
 
@@ -67,17 +67,15 @@ public class ContentType {
     /**
      * @return The charset of the content type
      */
-    @Nullable
-    public Charset getCharset() {
-        return this.charset;
+    public Optional<Charset> getCharset() {
+        return Optional.ofNullable(this.charset);
     }
 
     /**
      * @return The boundary of the content type
      */
-    @Nullable
-    public String getBoundary() {
-        return this.boundary;
+    public Optional<String> getBoundary() {
+        return Optional.ofNullable(this.boundary);
     }
 
     @Override

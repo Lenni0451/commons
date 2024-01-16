@@ -57,7 +57,7 @@ public class HttpResponse extends HeaderStore<HttpResponse> {
      * @return The response body as a string
      */
     public String getContentAsString() {
-        return this.getContentAsString(StandardCharsets.UTF_8);
+        return this.getContentAsString(this.getContentType().flatMap(ContentType::getCharset).orElse(StandardCharsets.UTF_8));
     }
 
     /**

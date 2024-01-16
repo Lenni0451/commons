@@ -49,4 +49,13 @@ class HttpClientTest {
         assertEquals("content=Hello+World", response.getContentAsString());
     }
 
+    @Test
+    void testEmptyGet() {
+        HttpRequest request = assertDoesNotThrow(() -> this.client.get("https://lenni0451.net/debug/empty.php"));
+        HttpResponse response = assertDoesNotThrow(() -> this.client.execute(request));
+        assertEquals(200, response.getStatusCode());
+        assertEquals(0, response.getContent().length);
+        assertEquals("", response.getContentAsString());
+    }
+
 }
