@@ -109,7 +109,7 @@ public abstract class HeaderStore<T extends HeaderStore<T>> {
     public T setHeader(final String name, final String value) {
         List<String> values = new ArrayList<>();
         values.add(value);
-        this.headers.put(name.toLowerCase(), values);
+        this.headers.put(name.toLowerCase(Locale.ROOT), values);
         return (T) this;
     }
 
@@ -146,7 +146,7 @@ public abstract class HeaderStore<T extends HeaderStore<T>> {
      * @return This instance for chaining
      */
     public T removeHeader(final String name) {
-        this.headers.remove(name.toLowerCase());
+        this.headers.remove(name.toLowerCase(Locale.ROOT));
         return (T) this;
     }
 
@@ -167,7 +167,7 @@ public abstract class HeaderStore<T extends HeaderStore<T>> {
      * @return Whether the header is set
      */
     public boolean hasHeader(final String name) {
-        return this.headers.containsKey(name.toLowerCase());
+        return this.headers.containsKey(name.toLowerCase(Locale.ROOT));
     }
 
     /**
@@ -178,7 +178,7 @@ public abstract class HeaderStore<T extends HeaderStore<T>> {
      * @return Whether the header is set
      */
     public boolean hasHeader(final String name, final String value) {
-        return this.headers.get(name.toLowerCase()).contains(value);
+        return this.headers.get(name.toLowerCase(Locale.ROOT)).contains(value);
     }
 
     /**
