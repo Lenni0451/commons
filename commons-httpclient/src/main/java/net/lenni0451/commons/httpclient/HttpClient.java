@@ -1,5 +1,6 @@
 package net.lenni0451.commons.httpclient;
 
+import net.lenni0451.commons.httpclient.constants.Headers;
 import net.lenni0451.commons.httpclient.handler.HttpResponseHandler;
 import net.lenni0451.commons.httpclient.requests.HttpContentRequest;
 import net.lenni0451.commons.httpclient.requests.HttpRequest;
@@ -12,6 +13,9 @@ import java.io.OutputStream;
 import java.net.CookieManager;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -123,8 +127,15 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
         URL url = request.getURL();
         CookieManager cookieManager = request.isCookieManagerSet() ? request.getCookieManager() : this.cookieManager;
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        Map<String, List<String>> headers = new HashMap<>();
+        if (request instanceof HttpContentRequest && ((HttpContentRequest) request).hasContent()) {
+            HttpContentRequest contentRequest = (HttpContentRequest) request;
+            headers.put(Headers.CONTENT_TYPE, Collections.singletonList(contentRequest.getContent().getDefaultContentType()));
+            headers.put(Headers.CONTENT_LENGTH, Collections.singletonList(String.valueOf(contentRequest.getContent().getContentLength())));
+        }
         HttpRequestUtils.setHeaders(connection, HttpRequestUtils.mergeHeaders(
                 HttpRequestUtils.getCookieHeaders(cookieManager, url),
+                headers,
                 this.getHeaders(),
                 request.getHeaders()
         ));
