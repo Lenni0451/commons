@@ -20,6 +20,7 @@ public interface HttpResponseHandler<R> {
      *
      * @param response The response to handle
      * @return The result
+     * @throws IOException If an I/O error occurs
      */
     R handle(final HttpResponse response) throws IOException;
 
