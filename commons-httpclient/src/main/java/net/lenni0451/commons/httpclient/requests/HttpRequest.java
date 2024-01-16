@@ -1,14 +1,18 @@
 package net.lenni0451.commons.httpclient.requests;
 
+import net.lenni0451.commons.httpclient.HeaderStore;
+
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.net.CookieManager;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @ParametersAreNonnullByDefault
-public class HttpRequest {
+public class HttpRequest extends HeaderStore<HttpRequest> {
 
     private final String method;
     private final URL url;
@@ -38,62 +42,6 @@ public class HttpRequest {
      */
     public URL getURL() {
         return this.url;
-    }
-
-    /**
-     * @return The request headers
-     */
-    public Map<String, List<String>> getHeaders() {
-        return Collections.unmodifiableMap(this.headers);
-    }
-
-    /**
-     * Add a header to the request.<br>
-     * If the header already exists it will be appended to the list.
-     *
-     * @param name  The name of the header
-     * @param value The value of the header
-     * @return This instance for chaining
-     */
-    public HttpRequest addHeader(final String name, final String value) {
-        this.headers.computeIfAbsent(name.toLowerCase(Locale.ROOT), n -> new ArrayList<>()).add(value);
-        return this;
-    }
-
-    /**
-     * Set a header to the request.<br>
-     * If the header already exists it will be overwritten.
-     *
-     * @param name  The name of the header
-     * @param value The value of the header
-     * @return This instance for chaining
-     */
-    public HttpRequest setHeader(final String name, final String value) {
-        List<String> values = new ArrayList<>();
-        values.add(value);
-        this.headers.put(name.toLowerCase(Locale.ROOT), values);
-        return this;
-    }
-
-    /**
-     * Remove a header from the request.
-     *
-     * @param name The name of the header
-     * @return This instance for chaining
-     */
-    public HttpRequest removeHeader(final String name) {
-        this.headers.remove(name.toLowerCase(Locale.ROOT));
-        return this;
-    }
-
-    /**
-     * Remove all headers from the request.
-     *
-     * @return This instance for chaining
-     */
-    public HttpRequest clearHeaders() {
-        this.headers.clear();
-        return this;
     }
 
     /**

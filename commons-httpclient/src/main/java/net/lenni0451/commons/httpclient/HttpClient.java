@@ -12,74 +12,17 @@ import java.io.OutputStream;
 import java.net.CookieManager;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.*;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @ParametersAreNonnullByDefault
-public class HttpClient implements HttpRequestBuilder {
+public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBuilder {
 
-    private final Map<String, List<String>> defaultHeaders = new HashMap<>();
     @Nullable
     private CookieManager cookieManager = new CookieManager();
     private boolean followRedirects = true;
     private int connectTimeout = 10_000;
     private int readTimeout = 10_000;
-
-    /**
-     * @return The default headers
-     */
-    public Map<String, List<String>> getDefaultHeaders() {
-        return Collections.unmodifiableMap(this.defaultHeaders);
-    }
-
-    /**
-     * Add a default header to all requests.<br>
-     * If the header already exists it will be appended to the list.
-     *
-     * @param name  The name of the header
-     * @param value The value of the header
-     * @return This instance for chaining
-     */
-    public HttpClient addDefaultHeader(final String name, final String value) {
-        this.defaultHeaders.computeIfAbsent(name.toLowerCase(Locale.ROOT), n -> new ArrayList<>()).add(value);
-        return this;
-    }
-
-    /**
-     * Set a default header to all requests.<br>
-     * If the header already exists it will be overwritten.
-     *
-     * @param name  The name of the header
-     * @param value The value of the header
-     * @return This instance for chaining
-     */
-    public HttpClient setDefaultHeader(final String name, final String value) {
-        List<String> values = new ArrayList<>();
-        values.add(value);
-        this.defaultHeaders.put(name.toLowerCase(Locale.ROOT), values);
-        return this;
-    }
-
-    /**
-     * Remove a default header from all requests.
-     *
-     * @param name The name of the header
-     * @return This instance for chaining
-     */
-    public HttpClient removeDefaultHeader(final String name) {
-        this.defaultHeaders.remove(name.toLowerCase(Locale.ROOT));
-        return this;
-    }
-
-    /**
-     * Remove all default headers from all requests.
-     *
-     * @return This instance for chaining
-     */
-    public HttpClient clearDefaultHeaders() {
-        this.defaultHeaders.clear();
-        return this;
-    }
 
     /**
      * @return The cookie manager
@@ -182,7 +125,7 @@ public class HttpClient implements HttpRequestBuilder {
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         HttpRequestUtils.setHeaders(connection, HttpRequestUtils.mergeHeaders(
                 HttpRequestUtils.getCookieHeaders(cookieManager, url),
-                this.defaultHeaders,
+                this.getHeaders(),
                 request.getHeaders()
         ));
 
