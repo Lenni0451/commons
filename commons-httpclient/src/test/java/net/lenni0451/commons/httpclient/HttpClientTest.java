@@ -76,4 +76,12 @@ class HttpClientTest {
         assertEquals("", response.getContentAsString());
     }
 
+    @Test
+    void testEmptyPost() {
+        HttpRequest request = assertDoesNotThrow(() -> this.client.post(baseUrl + "/echo"));
+        HttpResponse response = assertDoesNotThrow(() -> this.client.execute(request));
+        assertEquals(200, response.getStatusCode());
+        assertEquals(0, response.getContent().length);
+    }
+
 }
