@@ -107,6 +107,7 @@ public abstract class HttpContent {
 
     /**
      * @return The content as bytes
+     * @throws IOException If an I/O error occurs
      */
     public byte[] getAsBytes() throws IOException {
         if (this.content == null) this.content = this.compute();
@@ -115,6 +116,7 @@ public abstract class HttpContent {
 
     /**
      * @return The content as a UTF-8 string
+     * @throws IOException If an I/O error occurs
      */
     public String getAsString() throws IOException {
         return this.getAsString(StandardCharsets.UTF_8);
@@ -125,6 +127,7 @@ public abstract class HttpContent {
      *
      * @param charset The charset to use
      * @return The content as a string
+     * @throws IOException If an I/O error occurs
      */
     public String getAsString(final Charset charset) throws IOException {
         return new String(this.getAsBytes(), charset);
@@ -137,6 +140,7 @@ public abstract class HttpContent {
 
     /**
      * @return The content
+     * @throws IOException If an I/O error occurs
      */
     protected abstract byte[] compute() throws IOException;
 

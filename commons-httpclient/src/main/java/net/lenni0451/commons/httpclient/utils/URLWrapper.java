@@ -46,6 +46,7 @@ public class URLWrapper {
      * e.g. {@code https}
      *
      * @param protocol The new protocol
+     * @return The URLWrapper
      */
     public URLWrapper setProtocol(final String protocol) {
         this.protocol = protocol;
@@ -64,6 +65,7 @@ public class URLWrapper {
      * e.g. {@code www.example.com}
      *
      * @param host The new host
+     * @return The URLWrapper
      */
     public URLWrapper setHost(final String host) {
         this.host = host;
@@ -82,6 +84,7 @@ public class URLWrapper {
      * e.g. {@code 443}
      *
      * @param port The new port
+     * @return The URLWrapper
      */
     public URLWrapper setPort(final int port) {
         this.port = port;
@@ -100,6 +103,7 @@ public class URLWrapper {
      * e.g. {@code /search}
      *
      * @param path The new file
+     * @return The URLWrapper
      */
     public URLWrapper setPath(final String path) {
         this.path = path;
@@ -118,6 +122,7 @@ public class URLWrapper {
      * e.g. {@code q=hello}
      *
      * @param query The new query
+     * @return The URLWrapper
      */
     public URLWrapper setQuery(final String query) {
         this.query = query;
@@ -145,6 +150,7 @@ public class URLWrapper {
      * e.g. {@code user:password}
      *
      * @param userInfo The new user info
+     * @return The URLWrapper
      */
     public URLWrapper setUserInfo(final String userInfo) {
         this.userInfo = userInfo;
@@ -163,6 +169,7 @@ public class URLWrapper {
      * e.g. {@code ref}
      *
      * @param ref The new ref
+     * @return The URLWrapper
      */
     public URLWrapper setRef(final String ref) {
         this.ref = ref;
@@ -171,8 +178,14 @@ public class URLWrapper {
 
     /**
      * @return The wrapped URL
+     * @throws MalformedURLException If the URL is invalid
      */
     public URL toURL() throws MalformedURLException {
+        return new URL(this.toString());
+    }
+
+    @Override
+    public String toString() {
         String url = this.protocol + "://";
         if (this.userInfo != null) url += this.userInfo + "@";
         url += this.host;
@@ -180,9 +193,8 @@ public class URLWrapper {
         if (this.path != null) url += this.path;
         if (this.query != null) url += "?" + this.query;
         if (this.ref != null) url += "#" + this.ref;
-        return new URL(url);
+        return url;
     }
-
 
     public class QueryWrapper {
         private final Map<String, String> queries = new HashMap<>();
@@ -223,6 +235,7 @@ public class URLWrapper {
          *
          * @param key   The key of the query parameter
          * @param value The value of the query parameter
+         * @return The URLWrapper
          */
         public QueryWrapper setQuery(final String key, final String value) {
             this.queries.put(key, value);
@@ -244,6 +257,7 @@ public class URLWrapper {
          * Remove a query parameter.
          *
          * @param key The key of the query parameter
+         * @return The URLWrapper
          */
         public QueryWrapper removeQuery(final String key) {
             this.queries.remove(key);
