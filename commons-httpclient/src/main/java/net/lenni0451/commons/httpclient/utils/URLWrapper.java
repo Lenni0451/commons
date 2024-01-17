@@ -227,6 +227,17 @@ public class URLWrapper {
         }
 
         /**
+         * Add multiple query parameters.
+         *
+         * @param queries The query parameters to add
+         * @return The URLWrapper
+         */
+        public QueryWrapper addQueries(final Map<String, String> queries) {
+            this.queries.putAll(queries);
+            return this;
+        }
+
+        /**
          * Remove a query parameter.
          *
          * @param key The key of the query parameter
