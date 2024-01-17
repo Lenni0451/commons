@@ -12,6 +12,12 @@ import java.util.*;
 
 public class HttpRequestUtils {
 
+    /**
+     * Merge multiple headers into one map.
+     *
+     * @param maps The headers to merge
+     * @return The merged headers
+     */
     @SafeVarargs
     public static Map<String, List<String>> mergeHeaders(final Map<String, List<String>>... maps) {
         Map<String, List<String>> headers = new HashMap<>();
@@ -23,6 +29,14 @@ public class HttpRequestUtils {
         return headers;
     }
 
+    /**
+     * Get the cookie headers for a URL.
+     *
+     * @param cookieManager The cookie manager to use
+     * @param url           The URL to get the cookies for
+     * @return The cookie headers
+     * @throws IOException If an I/O error occurs
+     */
     public static Map<String, List<String>> getCookieHeaders(@Nullable final CookieManager cookieManager, final URL url) throws IOException {
         try {
             if (cookieManager == null) return Collections.emptyMap();
@@ -32,6 +46,14 @@ public class HttpRequestUtils {
         }
     }
 
+    /**
+     * Update the cookies for a URL.
+     *
+     * @param cookieManager The cookie manager to use
+     * @param url           The URL to update the cookies for
+     * @param headers       The headers to update the cookies from
+     * @throws IOException If an I/O error occurs
+     */
     public static void updateCookies(@Nullable final CookieManager cookieManager, final URL url, final Map<String, List<String>> headers) throws IOException {
         if (cookieManager == null) return;
         try {
@@ -41,12 +63,25 @@ public class HttpRequestUtils {
         }
     }
 
+    /**
+     * Set the headers for a connection.
+     *
+     * @param connection The connection to set the headers for
+     * @param headers    The headers to set
+     */
     public static void setHeaders(final HttpURLConnection connection, final Map<String, List<String>> headers) {
         for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
             connection.setRequestProperty(entry.getKey(), String.join("; ", entry.getValue()));
         }
     }
 
+    /**
+     * Read the body of a connection.
+     *
+     * @param connection The connection to read the body from
+     * @return The body of the connection
+     * @throws IOException If an I/O error occurs
+     */
     public static byte[] readBody(final HttpURLConnection connection) throws IOException {
         InputStream is;
         if (connection.getResponseCode() >= 400) is = connection.getErrorStream();
