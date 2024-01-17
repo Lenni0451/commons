@@ -3,11 +3,10 @@ package net.lenni0451.commons.httpclient.content.impl;
 import lombok.SneakyThrows;
 import net.lenni0451.commons.httpclient.constants.ContentTypes;
 import net.lenni0451.commons.httpclient.content.HttpContent;
+import net.lenni0451.commons.httpclient.utils.URLCoder;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -86,16 +85,16 @@ public class FormContent extends HttpContent {
             return this.key;
         }
 
-        private String encodeKey(Charset charset) throws UnsupportedEncodingException {
-            return URLEncoder.encode(this.key, charset.name());
+        private String encodeKey(Charset charset) {
+            return URLCoder.encode(this.key, charset);
         }
 
         private String getValue() {
             return this.value;
         }
 
-        private String encodeValue(Charset charset) throws UnsupportedEncodingException {
-            return URLEncoder.encode(this.value, charset.name());
+        private String encodeValue(Charset charset) {
+            return URLCoder.encode(this.value, charset);
         }
     }
 
