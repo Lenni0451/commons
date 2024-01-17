@@ -86,12 +86,21 @@ public class HttpRequestUtils {
         InputStream is;
         if (connection.getResponseCode() >= 400) is = connection.getErrorStream();
         else is = connection.getInputStream();
+        return readFromStream(is);
+    }
 
+    /**
+     * Read the body of a connection.
+     *
+     * @param is The input stream to read the body from
+     * @return The body of the connection
+     * @throws IOException If an I/O error occurs
+     */
+    public static byte[] readFromStream(final InputStream is) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         byte[] buf = new byte[1024];
         int len;
         while ((len = is.read(buf)) != -1) baos.write(buf, 0, len);
-
         return baos.toByteArray();
     }
 
