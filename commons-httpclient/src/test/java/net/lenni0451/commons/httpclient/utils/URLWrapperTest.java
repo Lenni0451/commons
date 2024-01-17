@@ -56,7 +56,7 @@ class URLWrapperTest {
     @Test
     void testQueryWrapperGet() {
         URLWrapper wrapper = new URLWrapper(url);
-        assertEquals("1", wrapper.wrapQuery().getQuery("query"));
+        assertEquals("1", wrapper.wrapQuery().getQuery("query").orElse(null));
     }
 
     @Test
