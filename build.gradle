@@ -45,6 +45,10 @@ subprojects {
         archives javadocJar, sourcesJar
     }
 
+    sourcesJar {
+        from delombok
+    }
+
     test {
         useJUnitPlatform()
         testLogging {
