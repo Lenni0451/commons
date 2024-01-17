@@ -2,6 +2,7 @@ package net.lenni0451.commons.httpclient.utils;
 
 import javax.annotation.Nonnull;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
@@ -16,7 +17,7 @@ public class URLWrapper {
     private String path;
     private String query;
     private String userInfo;
-    private String ref;
+    private String reference;
 
     public URLWrapper() {
     }
@@ -32,7 +33,17 @@ public class URLWrapper {
         this.path = url.getPath();
         this.query = url.getQuery();
         this.userInfo = url.getUserInfo();
-        this.ref = url.getRef();
+        this.reference = url.getRef();
+    }
+
+    public URLWrapper(@Nonnull final URI uri) {
+        this.protocol = uri.getScheme();
+        this.host = uri.getHost();
+        this.port = uri.getPort();
+        this.path = uri.getPath();
+        this.query = uri.getQuery();
+        this.userInfo = uri.getUserInfo();
+        this.reference = uri.getFragment();
     }
 
     /**
@@ -159,21 +170,21 @@ public class URLWrapper {
     }
 
     /**
-     * @return The ref of the URL. e.g. {@code ref}
+     * @return The reference of the URL. e.g. {@code reference}
      */
-    public String getRef() {
-        return this.ref;
+    public String getReference() {
+        return this.reference;
     }
 
     /**
-     * Set the ref of the URL.<br>
-     * e.g. {@code ref}
+     * Set the reference of the URL.<br>
+     * e.g. {@code reference}
      *
-     * @param ref The new ref
+     * @param reference The new reference
      * @return The URLWrapper
      */
-    public URLWrapper setRef(@Nonnull final String ref) {
-        this.ref = ref;
+    public URLWrapper setReference(@Nonnull final String reference) {
+        this.reference = reference;
         return this;
     }
 
@@ -193,7 +204,7 @@ public class URLWrapper {
         if (this.port >= 0) url += ":" + this.port;
         if (this.path != null) url += this.path;
         if (this.query != null) url += "?" + this.query;
-        if (this.ref != null) url += "#" + this.ref;
+        if (this.reference != null) url += "#" + this.reference;
         return url;
     }
 

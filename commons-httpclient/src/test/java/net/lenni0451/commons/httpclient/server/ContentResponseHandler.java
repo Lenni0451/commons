@@ -10,7 +10,7 @@ public class ContentResponseHandler implements HttpHandler {
 
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
-        URLWrapper.QueryWrapper wrapper = new URLWrapper().setQuery(httpExchange.getRequestURI().getQuery()).wrapQuery();
+        URLWrapper.QueryWrapper wrapper = new URLWrapper(httpExchange.getRequestURI()).wrapQuery();
         int responseCode = wrapper.getQuery("code").map(Integer::parseInt).orElse(200);
         String response = wrapper.getQuery("content").orElse("<none>");
         httpExchange.sendResponseHeaders(responseCode, response.length());

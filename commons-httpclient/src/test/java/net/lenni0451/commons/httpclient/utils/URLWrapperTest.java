@@ -27,7 +27,19 @@ class URLWrapperTest {
         assertEquals("/test", wrapper.getPath());
         assertEquals("query=1", wrapper.getQuery());
         assertEquals("admin:123456", wrapper.getUserInfo());
-        assertEquals("ref", wrapper.getRef());
+        assertEquals("ref", wrapper.getReference());
+    }
+
+    @Test
+    void testGetURI() {
+        URLWrapper wrapper = new URLWrapper(assertDoesNotThrow(() -> url.toURI()));
+        assertEquals("https", wrapper.getProtocol());
+        assertEquals("www.example.com", wrapper.getHost());
+        assertEquals(443, wrapper.getPort());
+        assertEquals("/test", wrapper.getPath());
+        assertEquals("query=1", wrapper.getQuery());
+        assertEquals("admin:123456", wrapper.getUserInfo());
+        assertEquals("ref", wrapper.getReference());
     }
 
     @Test
@@ -39,7 +51,7 @@ class URLWrapperTest {
                 .setPath("/test")
                 .setQuery("query=1")
                 .setUserInfo("admin:123456")
-                .setRef("ref");
+                .setReference("ref");
 
         assertEquals(url, assertDoesNotThrow(wrapper::toURL));
     }
