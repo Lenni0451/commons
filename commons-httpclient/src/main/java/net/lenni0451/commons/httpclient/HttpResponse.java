@@ -3,7 +3,7 @@ package net.lenni0451.commons.httpclient;
 import net.lenni0451.commons.httpclient.constants.StatusCodes;
 import net.lenni0451.commons.httpclient.model.ContentType;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import javax.annotation.Nonnull;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -11,14 +11,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-@ParametersAreNonnullByDefault
 public class HttpResponse extends HeaderStore<HttpResponse> {
 
     private final URL url;
     private final int statusCode;
     private final byte[] content;
 
-    public HttpResponse(final URL url, final int statusCode, final byte[] content, final Map<String, List<String>> headers) {
+    public HttpResponse(@Nonnull final URL url, final int statusCode, @Nonnull final byte[] content, @Nonnull final Map<String, List<String>> headers) {
         super(headers);
         this.url = url;
         this.statusCode = statusCode;
@@ -66,7 +65,7 @@ public class HttpResponse extends HeaderStore<HttpResponse> {
      * @param charset The charset to use
      * @return The response body as a string
      */
-    public String getContentAsString(final Charset charset) {
+    public String getContentAsString(@Nonnull final Charset charset) {
         return new String(this.content, charset);
     }
 

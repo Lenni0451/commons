@@ -2,18 +2,17 @@ package net.lenni0451.commons.httpclient.content;
 
 import net.lenni0451.commons.httpclient.content.impl.ByteArrayContent;
 import net.lenni0451.commons.httpclient.content.impl.FileContent;
-import net.lenni0451.commons.httpclient.content.impl.FormContent;
 import net.lenni0451.commons.httpclient.content.impl.StringContent;
+import net.lenni0451.commons.httpclient.content.impl.URLEncodedFormContent;
 import net.lenni0451.commons.httpclient.model.ContentType;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
-@ParametersAreNonnullByDefault
 public abstract class HttpContent {
 
     /**
@@ -22,7 +21,7 @@ public abstract class HttpContent {
      * @param content The bytes to send
      * @return The created content
      */
-    public static HttpContent bytes(final byte[] content) {
+    public static HttpContent bytes(@Nonnull final byte[] content) {
         return new ByteArrayContent(content);
     }
 
@@ -34,7 +33,7 @@ public abstract class HttpContent {
      * @param length  The length of the bytes to read
      * @return The created content
      */
-    public static HttpContent bytes(final byte[] content, final int offset, final int length) {
+    public static HttpContent bytes(@Nonnull final byte[] content, final int offset, final int length) {
         return new ByteArrayContent(content, offset, length);
     }
 
@@ -44,7 +43,7 @@ public abstract class HttpContent {
      * @param content The string to send
      * @return The created content
      */
-    public static HttpContent string(final String content) {
+    public static HttpContent string(@Nonnull final String content) {
         return new StringContent(content);
     }
 
@@ -55,7 +54,7 @@ public abstract class HttpContent {
      * @param charset The charset to use
      * @return The created content
      */
-    public static HttpContent string(final String content, final Charset charset) {
+    public static HttpContent string(@Nonnull final String content, @Nonnull final Charset charset) {
         return new StringContent(content, charset);
     }
 
@@ -65,7 +64,7 @@ public abstract class HttpContent {
      * @param file The file to send
      * @return The created content
      */
-    public static HttpContent file(final File file) {
+    public static HttpContent file(@Nonnull final File file) {
         return new FileContent(file);
     }
 
@@ -76,8 +75,8 @@ public abstract class HttpContent {
      * @param value The value
      * @return The created content
      */
-    public static HttpContent form(final String key, final String value) {
-        return new FormContent().put(key, value);
+    public static HttpContent form(@Nonnull final String key, @Nonnull final String value) {
+        return new URLEncodedFormContent().put(key, value);
     }
 
     /**
@@ -86,8 +85,8 @@ public abstract class HttpContent {
      * @param form The form data
      * @return The created content
      */
-    public static HttpContent form(final Map<String, String> form) {
-        return new FormContent(form);
+    public static HttpContent form(@Nonnull final Map<String, String> form) {
+        return new URLEncodedFormContent(form);
     }
 
 
@@ -129,7 +128,7 @@ public abstract class HttpContent {
      * @return The content as a string
      * @throws IOException If an I/O error occurs
      */
-    public String getAsString(final Charset charset) throws IOException {
+    public String getAsString(@Nonnull final Charset charset) throws IOException {
         return new String(this.getAsBytes(), charset);
     }
 

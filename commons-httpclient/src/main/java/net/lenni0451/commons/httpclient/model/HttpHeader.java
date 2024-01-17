@@ -1,5 +1,6 @@
 package net.lenni0451.commons.httpclient.model;
 
+import javax.annotation.Nonnull;
 import java.util.Objects;
 
 public class HttpHeader {
@@ -7,7 +8,7 @@ public class HttpHeader {
     private final String name;
     private final String value;
 
-    public HttpHeader(final String name, final String value) {
+    public HttpHeader(@Nonnull final String name, @Nonnull final String value) {
         this.name = name;
         this.value = value;
     }

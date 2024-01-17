@@ -1,5 +1,7 @@
 package net.lenni0451.commons.httpclient.model;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.Locale;
@@ -14,7 +16,7 @@ public class ContentType {
      * @param contentType The content type string
      * @return The parsed content type
      */
-    public static ContentType parse(final String contentType) {
+    public static ContentType parse(@Nonnull final String contentType) {
         if (!contentType.contains(";")) return new ContentType(contentType.toLowerCase(Locale.ROOT), null, null);
         String[] parts = contentType.split(";");
         String type = parts[0].toLowerCase(Locale.ROOT);
@@ -39,19 +41,19 @@ public class ContentType {
     private final Charset charset;
     private final String boundary;
 
-    public ContentType(final String mimeType) {
+    public ContentType(@Nonnull final String mimeType) {
         this(mimeType, null, null);
     }
 
-    public ContentType(final String mimeType, final Charset charset) {
+    public ContentType(@Nonnull final String mimeType, @Nullable final Charset charset) {
         this(mimeType, charset, null);
     }
 
-    public ContentType(final String mimeType, final String boundary) {
+    public ContentType(@Nonnull final String mimeType, @Nullable final String boundary) {
         this(mimeType, null, boundary);
     }
 
-    public ContentType(final String mimeType, final Charset charset, final String boundary) {
+    public ContentType(@Nonnull final String mimeType, @Nullable final Charset charset, @Nullable final String boundary) {
         this.mimeType = mimeType;
         this.charset = charset;
         this.boundary = boundary;

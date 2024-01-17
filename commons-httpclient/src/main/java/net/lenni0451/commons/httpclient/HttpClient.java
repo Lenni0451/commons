@@ -7,8 +7,8 @@ import net.lenni0451.commons.httpclient.requests.HttpContentRequest;
 import net.lenni0451.commons.httpclient.requests.HttpRequest;
 import net.lenni0451.commons.httpclient.utils.HttpRequestUtils;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.CookieManager;
@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@ParametersAreNonnullByDefault
 public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBuilder {
 
     @Nullable
@@ -113,7 +112,7 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
      * @return The return value of the response handler
      * @throws IOException If an I/O error occurs
      */
-    public <R> R execute(final HttpRequest request, final HttpResponseHandler<R> responseHandler) throws IOException {
+    public <R> R execute(@Nonnull final HttpRequest request, @Nonnull final HttpResponseHandler<R> responseHandler) throws IOException {
         return responseHandler.handle(this.execute(request));
     }
 
@@ -124,7 +123,7 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
      * @return The response
      * @throws IOException If an I/O error occurs
      */
-    public HttpResponse execute(final HttpRequest request) throws IOException {
+    public HttpResponse execute(@Nonnull final HttpRequest request) throws IOException {
         URL url = request.getURL();
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         CookieManager cookieManager = request.isCookieManagerSet() ? request.getCookieManager() : this.cookieManager;
@@ -156,7 +155,7 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
         }
     }
 
-    private void setup(final HttpURLConnection connection, @Nullable final CookieManager cookieManager, final HttpRequest request) throws IOException {
+    private void setup(@Nonnull final HttpURLConnection connection, @Nullable final CookieManager cookieManager, @Nonnull final HttpRequest request) throws IOException {
         Map<String, List<String>> headers = new HashMap<>();
         if (request instanceof HttpContentRequest) {
             HttpContent content = ((HttpContentRequest) request).getContent();

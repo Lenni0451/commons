@@ -5,21 +5,20 @@ import net.lenni0451.commons.httpclient.content.HttpContent;
 import net.lenni0451.commons.httpclient.model.ContentType;
 import net.lenni0451.commons.httpclient.utils.HttpRequestUtils;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-@ParametersAreNonnullByDefault
 public class FileContent extends HttpContent {
 
     private final File file;
 
-    public FileContent(final File file) {
+    public FileContent(@Nonnull final File file) {
         this(ContentTypes.APPLICATION_OCTET_STREAM, file);
     }
 
-    public FileContent(final ContentType contentType, final File file) {
+    public FileContent(@Nonnull final ContentType contentType, @Nonnull final File file) {
         super(contentType);
         this.file = file;
     }

@@ -2,6 +2,7 @@ package net.lenni0451.commons.httpclient;
 
 import net.lenni0451.commons.httpclient.model.HttpHeader;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -12,7 +13,7 @@ public abstract class HeaderStore<T extends HeaderStore<T>> {
     public HeaderStore() {
     }
 
-    public HeaderStore(final Map<String, List<String>> headers) {
+    public HeaderStore(@Nonnull final Map<String, List<String>> headers) {
         headers.forEach((k, v) -> this.headers.put(k.toLowerCase(Locale.ROOT), new ArrayList<>(v)));
     }
 
@@ -37,7 +38,7 @@ public abstract class HeaderStore<T extends HeaderStore<T>> {
      * @param name The name of the header
      * @return The header or null if not set
      */
-    public List<String> getHeader(final String name) {
+    public List<String> getHeader(@Nonnull final String name) {
         return this.headers.get(name.toLowerCase());
     }
 
@@ -47,7 +48,7 @@ public abstract class HeaderStore<T extends HeaderStore<T>> {
      * @param name The name of the header
      * @return The response header
      */
-    public Optional<String> getFirstHeader(final String name) {
+    public Optional<String> getFirstHeader(@Nonnull final String name) {
         List<String> values = this.headers.get(name.toLowerCase(Locale.ROOT));
         if (values == null || values.isEmpty()) return Optional.empty();
         return Optional.of(values.get(0));
@@ -59,7 +60,7 @@ public abstract class HeaderStore<T extends HeaderStore<T>> {
      * @param name The name of the header
      * @return The response header
      */
-    public Optional<String> getLastHeader(final String name) {
+    public Optional<String> getLastHeader(@Nonnull final String name) {
         List<String> values = this.headers.get(name.toLowerCase(Locale.ROOT));
         if (values == null || values.isEmpty()) return Optional.empty();
         return Optional.of(values.get(values.size() - 1));
@@ -72,7 +73,7 @@ public abstract class HeaderStore<T extends HeaderStore<T>> {
      * @param value The value of the header
      * @return This instance for chaining
      */
-    public T appendHeader(final String name, final String value) {
+    public T appendHeader(@Nonnull final String name, @Nonnull final String value) {
         this.headers.computeIfAbsent(name.toLowerCase(Locale.ROOT), n -> new ArrayList<>()).add(value);
         return (T) this;
     }
@@ -83,7 +84,7 @@ public abstract class HeaderStore<T extends HeaderStore<T>> {
      * @param headers The headers to add
      * @return This instance for chaining
      */
-    public T appendHeader(final HttpHeader... headers) {
+    public T appendHeader(@Nonnull final HttpHeader... headers) {
         for (HttpHeader header : headers) this.appendHeader(header.getName(), header.getValue());
         return (T) this;
     }
@@ -94,7 +95,7 @@ public abstract class HeaderStore<T extends HeaderStore<T>> {
      * @param headers The headers to add
      * @return This instance for chaining
      */
-    public T appendHeader(final Collection<HttpHeader> headers) {
+    public T appendHeader(@Nonnull final Collection<HttpHeader> headers) {
         for (HttpHeader header : headers) this.appendHeader(header.getName(), header.getValue());
         return (T) this;
     }
@@ -106,7 +107,7 @@ public abstract class HeaderStore<T extends HeaderStore<T>> {
      * @param value The value of the header
      * @return This instance for chaining
      */
-    public T setHeader(final String name, final String value) {
+    public T setHeader(@Nonnull final String name, @Nonnull final String value) {
         List<String> values = new ArrayList<>();
         values.add(value);
         this.headers.put(name.toLowerCase(Locale.ROOT), values);
@@ -119,7 +120,7 @@ public abstract class HeaderStore<T extends HeaderStore<T>> {
      * @param headers The headers to set
      * @return This instance for chaining
      */
-    public T setHeader(final HttpHeader... headers) {
+    public T setHeader(@Nonnull final HttpHeader... headers) {
         for (HttpHeader h : headers) {
             this.setHeader(h.getName(), h.getValue());
         }
@@ -132,7 +133,7 @@ public abstract class HeaderStore<T extends HeaderStore<T>> {
      * @param headers The headers to set
      * @return This instance for chaining
      */
-    public T setHeader(final Collection<HttpHeader> headers) {
+    public T setHeader(@Nonnull final Collection<HttpHeader> headers) {
         for (HttpHeader h : headers) {
             this.setHeader(h.getName(), h.getValue());
         }
@@ -145,7 +146,7 @@ public abstract class HeaderStore<T extends HeaderStore<T>> {
      * @param name The name of the header
      * @return This instance for chaining
      */
-    public T removeHeader(final String name) {
+    public T removeHeader(@Nonnull final String name) {
         this.headers.remove(name.toLowerCase(Locale.ROOT));
         return (T) this;
     }
@@ -166,7 +167,7 @@ public abstract class HeaderStore<T extends HeaderStore<T>> {
      * @param name The name of the header
      * @return Whether the header is set
      */
-    public boolean hasHeader(final String name) {
+    public boolean hasHeader(@Nonnull final String name) {
         return this.headers.containsKey(name.toLowerCase(Locale.ROOT));
     }
 
@@ -177,7 +178,7 @@ public abstract class HeaderStore<T extends HeaderStore<T>> {
      * @param value The value of the header
      * @return Whether the header is set
      */
-    public boolean hasHeader(final String name, final String value) {
+    public boolean hasHeader(@Nonnull final String name, @Nonnull final String value) {
         return this.headers.get(name.toLowerCase(Locale.ROOT)).contains(value);
     }
 
@@ -187,7 +188,7 @@ public abstract class HeaderStore<T extends HeaderStore<T>> {
      * @param header The header to check
      * @return Whether the header is set
      */
-    public boolean hasHeader(final HttpHeader header) {
+    public boolean hasHeader(@Nonnull final HttpHeader header) {
         return this.hasHeader(header.getName(), header.getValue());
     }
 

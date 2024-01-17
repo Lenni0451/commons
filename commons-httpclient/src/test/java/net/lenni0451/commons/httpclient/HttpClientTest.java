@@ -1,7 +1,7 @@
 package net.lenni0451.commons.httpclient;
 
-import net.lenni0451.commons.httpclient.content.impl.FormContent;
 import net.lenni0451.commons.httpclient.content.impl.StringContent;
+import net.lenni0451.commons.httpclient.content.impl.URLEncodedFormContent;
 import net.lenni0451.commons.httpclient.requests.HttpRequest;
 import net.lenni0451.commons.httpclient.server.TestWebServer;
 import org.junit.jupiter.api.AfterAll;
@@ -61,7 +61,7 @@ class HttpClientTest {
 
     @Test
     void testPostForm() {
-        HttpRequest request = assertDoesNotThrow(() -> this.client.post(baseUrl + "/echo").setContent(new FormContent().put("content", "Hello World")));
+        HttpRequest request = assertDoesNotThrow(() -> this.client.post(baseUrl + "/echo").setContent(new URLEncodedFormContent().put("content", "Hello World")));
         HttpResponse response = assertDoesNotThrow(() -> this.client.execute(request));
         assertEquals(200, response.getStatusCode());
         assertEquals("content=Hello+World", response.getContentAsString());

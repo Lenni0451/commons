@@ -1,5 +1,6 @@
 package net.lenni0451.commons.httpclient.utils;
 
+import javax.annotation.Nonnull;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
@@ -20,11 +21,11 @@ public class URLWrapper {
     public URLWrapper() {
     }
 
-    public URLWrapper(final String url) throws MalformedURLException {
+    public URLWrapper(@Nonnull final String url) throws MalformedURLException {
         this(new URL(url));
     }
 
-    public URLWrapper(final URL url) {
+    public URLWrapper(@Nonnull final URL url) {
         this.protocol = url.getProtocol();
         this.host = url.getHost();
         this.port = url.getPort();
@@ -48,7 +49,7 @@ public class URLWrapper {
      * @param protocol The new protocol
      * @return The URLWrapper
      */
-    public URLWrapper setProtocol(final String protocol) {
+    public URLWrapper setProtocol(@Nonnull final String protocol) {
         this.protocol = protocol;
         return this;
     }
@@ -67,7 +68,7 @@ public class URLWrapper {
      * @param host The new host
      * @return The URLWrapper
      */
-    public URLWrapper setHost(final String host) {
+    public URLWrapper setHost(@Nonnull final String host) {
         this.host = host;
         return this;
     }
@@ -105,7 +106,7 @@ public class URLWrapper {
      * @param path The new file
      * @return The URLWrapper
      */
-    public URLWrapper setPath(final String path) {
+    public URLWrapper setPath(@Nonnull final String path) {
         this.path = path;
         return this;
     }
@@ -124,7 +125,7 @@ public class URLWrapper {
      * @param query The new query
      * @return The URLWrapper
      */
-    public URLWrapper setQuery(final String query) {
+    public URLWrapper setQuery(@Nonnull final String query) {
         this.query = query;
         return this;
     }
@@ -152,7 +153,7 @@ public class URLWrapper {
      * @param userInfo The new user info
      * @return The URLWrapper
      */
-    public URLWrapper setUserInfo(final String userInfo) {
+    public URLWrapper setUserInfo(@Nonnull final String userInfo) {
         this.userInfo = userInfo;
         return this;
     }
@@ -171,7 +172,7 @@ public class URLWrapper {
      * @param ref The new ref
      * @return The URLWrapper
      */
-    public URLWrapper setRef(final String ref) {
+    public URLWrapper setRef(@Nonnull final String ref) {
         this.ref = ref;
         return this;
     }
@@ -226,7 +227,7 @@ public class URLWrapper {
          * @param key The key of the query parameter
          * @return The value of the query parameter or null if it does not exist
          */
-        public Optional<String> getQuery(final String key) {
+        public Optional<String> getQuery(@Nonnull final String key) {
             return Optional.ofNullable(this.queries.get(key));
         }
 
@@ -237,7 +238,7 @@ public class URLWrapper {
          * @param value The value of the query parameter
          * @return The URLWrapper
          */
-        public QueryWrapper setQuery(final String key, final String value) {
+        public QueryWrapper setQuery(@Nonnull final String key, @Nonnull final String value) {
             this.queries.put(key, value);
             return this;
         }
@@ -248,7 +249,7 @@ public class URLWrapper {
          * @param queries The query parameters to add
          * @return The URLWrapper
          */
-        public QueryWrapper addQueries(final Map<String, String> queries) {
+        public QueryWrapper addQueries(@Nonnull final Map<String, String> queries) {
             this.queries.putAll(queries);
             return this;
         }
