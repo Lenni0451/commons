@@ -1,6 +1,5 @@
 package net.lenni0451.commons.httpclient.content.impl;
 
-import net.lenni0451.commons.httpclient.constants.ContentTypes;
 import net.lenni0451.commons.httpclient.model.ContentType;
 
 import javax.annotation.Nonnull;
@@ -23,11 +22,6 @@ public class StringContent extends ByteArrayContent {
 
     public StringContent(@Nonnull final ContentType contentType, @Nonnull final String content, @Nonnull final Charset charset) {
         super(contentType, content.getBytes(charset));
-    }
-
-    @Override
-    public ContentType getContentType() {
-        return ContentTypes.TEXT_PLAIN;
     }
 
 }
