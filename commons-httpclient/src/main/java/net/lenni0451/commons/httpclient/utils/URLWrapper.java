@@ -1,11 +1,11 @@
 package net.lenni0451.commons.httpclient.utils;
 
-import javax.annotation.Nullable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class URLWrapper {
 
@@ -214,9 +214,8 @@ public class URLWrapper {
          * @param key The key of the query parameter
          * @return The value of the query parameter or null if it does not exist
          */
-        @Nullable
-        public String getQuery(final String key) {
-            return this.queries.get(key);
+        public Optional<String> getQuery(final String key) {
+            return Optional.ofNullable(this.queries.get(key));
         }
 
         /**
