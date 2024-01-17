@@ -20,6 +20,10 @@ public class URLWrapper {
     public URLWrapper() {
     }
 
+    public URLWrapper(final String url) throws MalformedURLException {
+        this(new URL(url));
+    }
+
     public URLWrapper(final URL url) {
         this.protocol = url.getProtocol();
         this.host = url.getHost();
