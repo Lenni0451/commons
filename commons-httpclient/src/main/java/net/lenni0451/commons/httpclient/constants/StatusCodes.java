@@ -103,7 +103,7 @@ public class StatusCodes {
      * This response code means that the URI of requested resource has been changed <i>temporarily</i>.<br>
      * Further changes in the URI might be made in the future. Therefore, this same URI should be used by the client in future requests.
      */
-    public static final int FOUND = 302;
+    public static final int MOVED_TEMPORARILY = 302;
     /**
      * The server sent this response to direct the client to get the requested resource at another URI with a GET request.
      */
@@ -343,7 +343,7 @@ public class StatusCodes {
         statusCodes.put(IM_USED, "IM Used");
         statusCodes.put(MULTIPLE_CHOICES, "Multiple Choices");
         statusCodes.put(MOVED_PERMANENTLY, "Moved Permanently");
-        statusCodes.put(FOUND, "Found");
+        statusCodes.put(MOVED_TEMPORARILY, "Moved Temporarily");
         statusCodes.put(SEE_OTHER, "See Other");
         statusCodes.put(NOT_MODIFIED, "Not Modified");
         statusCodes.put(USE_PROXY, "Use Proxy");
