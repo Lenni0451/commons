@@ -88,6 +88,7 @@ public class HttpRequestUtils {
         InputStream is;
         if (connection.getResponseCode() >= 400) is = connection.getErrorStream();
         else is = connection.getInputStream();
+        if (is == null) return new byte[0];
         return readFromStream(is);
     }
 
