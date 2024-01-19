@@ -9,11 +9,10 @@ import net.lenni0451.commons.httpclient.utils.HttpRequestUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.net.ssl.SSLException;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.CookieManager;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.*;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +26,7 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
     private boolean followRedirects = true;
     private int connectTimeout = 10_000;
     private int readTimeout = 10_000;
+    private RetryHandler retryHandler = new RetryHandler();
 
     /**
      * @return The cookie manager
@@ -103,6 +103,24 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
     }
 
     /**
+     * @return The retry handler
+     */
+    public RetryHandler getRetryHandler() {
+        return this.retryHandler;
+    }
+
+    /**
+     * Set the retry handler for all requests.
+     *
+     * @param retryHandler The retry handler
+     * @return This instance for chaining
+     */
+    public HttpClient setRetryHandler(final RetryHandler retryHandler) {
+        this.retryHandler = retryHandler;
+        return this;
+    }
+
+    /**
      * Execute a request and pass the response to the response handler.<br>
      * The return value of the response handler will be returned.
      *
@@ -124,38 +142,32 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
      * @throws IOException If an I/O error occurs
      */
     public HttpResponse execute(@Nonnull final HttpRequest request) throws IOException {
-        URL url = request.getURL();
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         CookieManager cookieManager = request.isCookieManagerSet() ? request.getCookieManager() : this.cookieManager;
-        this.setup(connection, cookieManager, request);
-        connection.connect();
-        try {
-            if (connection.getDoOutput()) {
-                OutputStream os = connection.getOutputStream();
-                os.write(((HttpContentRequest) request).getContent().getAsBytes());
-                os.flush();
-            }
-            byte[] body = HttpRequestUtils.readBody(connection);
+        HttpURLConnection connection;
 
-            HttpResponse response = new HttpResponse(
-                    url,
-                    connection.getResponseCode(),
-                    body,
-                    connection
-                            .getHeaderFields()
-                            .entrySet()
-                            .stream()
-                            .filter(e -> e.getKey() != null)
-                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
-            );
-            HttpRequestUtils.updateCookies(cookieManager, url, connection.getHeaderFields());
-            return response;
-        } finally {
-            connection.disconnect();
+        for (int i = 0; i <= this.retryHandler.getMaxConnectRetries(); i++) {
+            try {
+                connection = this.openConnection(request, cookieManager);
+                return this.executeRequest(connection, cookieManager, request);
+            } catch (UnknownHostException | SSLException | ProtocolException e) {
+                //No need to retry these as they are not going to change
+                throw e;
+            } catch (IOException e) {
+                if (i >= this.retryHandler.getMaxConnectRetries()) throw e;
+            }
         }
+        throw new IllegalStateException("Connect retry failed but no exception was thrown");
     }
 
-    private void setup(@Nonnull final HttpURLConnection connection, @Nullable final CookieManager cookieManager, @Nonnull final HttpRequest request) throws IOException {
+    private HttpURLConnection openConnection(final HttpRequest request, final CookieManager cookieManager) throws IOException {
+        URL url = request.getURL();
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        this.setupConnection(connection, cookieManager, request);
+        connection.connect();
+        return connection;
+    }
+
+    private void setupConnection(@Nonnull final HttpURLConnection connection, @Nullable final CookieManager cookieManager, @Nonnull final HttpRequest request) throws IOException {
         Map<String, List<String>> headers = new HashMap<>();
         if (request instanceof HttpContentRequest) {
             HttpContent content = ((HttpContentRequest) request).getContent();
@@ -186,6 +198,33 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
             case IGNORE:
                 connection.setInstanceFollowRedirects(false);
                 break;
+        }
+    }
+
+    private HttpResponse executeRequest(@Nonnull final HttpURLConnection connection, @Nullable final CookieManager cookieManager, @Nonnull final HttpRequest request) throws IOException {
+        try {
+            if (connection.getDoOutput()) {
+                OutputStream os = connection.getOutputStream();
+                os.write(((HttpContentRequest) request).getContent().getAsBytes());
+                os.flush();
+            }
+            byte[] body = HttpRequestUtils.readBody(connection);
+
+            HttpResponse response = new HttpResponse(
+                    request.getURL(),
+                    connection.getResponseCode(),
+                    body,
+                    connection
+                            .getHeaderFields()
+                            .entrySet()
+                            .stream()
+                            .filter(e -> e.getKey() != null)
+                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
+            );
+            HttpRequestUtils.updateCookies(cookieManager, request.getURL(), connection.getHeaderFields());
+            return response;
+        } finally {
+            connection.disconnect();
         }
     }
 
