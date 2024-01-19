@@ -32,6 +32,7 @@ public class RetryHandler {
      * @return This instance for chaining
      */
     public RetryHandler setMaxConnectRetries(final int maxConnectRetries) {
+        if (maxConnectRetries < 0) throw new IllegalArgumentException("maxConnectRetries must be >= 0");
         this.maxConnectRetries = maxConnectRetries;
         return this;
     }
@@ -53,6 +54,7 @@ public class RetryHandler {
      * @return This instance for chaining
      */
     public RetryHandler setMaxHeaderRetries(final int maxHeaderRetries) {
+        if (maxHeaderRetries < 0) throw new IllegalArgumentException("maxHeaderRetries must be >= 0");
         this.maxHeaderRetries = maxHeaderRetries;
         return this;
     }
