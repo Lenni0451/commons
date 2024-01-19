@@ -6,6 +6,8 @@ import net.lenni0451.commons.httpclient.constants.StatusCodes;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +35,13 @@ public class RetryCookieHandler implements HttpHandler {
             }
         } else {
             httpExchange.getResponseHeaders().add("Set-Cookie", "retryCount=" + retryCount);
-            httpExchange.getResponseHeaders().add("Retry-After", "1");
+            if (retryCount % 2 == 0) {
+                httpExchange.getResponseHeaders().add("Retry-After", "1");
+            } else {
+                ZonedDateTime now = ZonedDateTime.now().plusSeconds(1);
+                String httpDate = DateTimeFormatter.RFC_1123_DATE_TIME.format(now);
+                httpExchange.getResponseHeaders().add("Retry-After", httpDate);
+            }
             httpExchange.sendResponseHeaders(StatusCodes.SERVICE_UNAVAILABLE, -1);
         }
     }

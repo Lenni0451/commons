@@ -10,6 +10,9 @@ import java.net.CookieManager;
 import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 
 public class HttpRequestUtils {
@@ -105,6 +108,38 @@ public class HttpRequestUtils {
         int len;
         while ((len = is.read(buf)) != -1) baos.write(buf, 0, len);
         return baos.toByteArray();
+    }
+
+    /**
+     * Parse a HTTP date.
+     *
+     * @param httpDate The HTTP date to parse
+     * @return The parsed date
+     * @throws DateTimeParseException If the date could not be parsed
+     */
+    public static Instant parseHttpDate(final String httpDate) throws DateTimeParseException {
+        return Instant.from(DateTimeFormatter.RFC_1123_DATE_TIME.parse(httpDate));
+    }
+
+    /**
+     * Parse an HTTP date or seconds string as milliseconds until the date.
+     *
+     * @param value The value to parse
+     * @return The parsed value in milliseconds
+     */
+    @Nullable
+    public static Long parseSecondsOrHttpDate(final String value) {
+        try {
+            Instant date = HttpRequestUtils.parseHttpDate(value);
+            return date.toEpochMilli() - Instant.now().toEpochMilli();
+        } catch (DateTimeParseException ignored) {
+        }
+        try {
+            int seconds = Integer.parseInt(value);
+            return (long) seconds * 1000;
+        } catch (NumberFormatException ignored) {
+        }
+        return null;
     }
 
 }
