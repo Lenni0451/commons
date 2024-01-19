@@ -151,7 +151,8 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
                     Optional<String> retryAfter = response.getFirstHeader(Headers.RETRY_AFTER);
                     if (retryAfter.isPresent()) {
                         if (headers >= this.retryHandler.getMaxHeaderRetries()) break;
-                        long delay = HttpRequestUtils.parseSecondsOrHttpDate(retryAfter.get());
+                        Long delay = HttpRequestUtils.parseSecondsOrHttpDate(retryAfter.get());
+                        if (delay == null) return response; //An invalid retry after header. Treat as no retry
                         if (delay > 0) Thread.sleep(delay);
                     } else {
                         return response;
