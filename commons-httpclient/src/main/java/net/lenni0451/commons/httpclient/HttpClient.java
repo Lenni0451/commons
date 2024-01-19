@@ -2,6 +2,7 @@ package net.lenni0451.commons.httpclient;
 
 import net.lenni0451.commons.httpclient.constants.Headers;
 import net.lenni0451.commons.httpclient.content.HttpContent;
+import net.lenni0451.commons.httpclient.exceptions.RetryExceededException;
 import net.lenni0451.commons.httpclient.handler.HttpResponseHandler;
 import net.lenni0451.commons.httpclient.requests.HttpContentRequest;
 import net.lenni0451.commons.httpclient.requests.HttpRequest;
@@ -136,7 +137,9 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
      *
      * @param request The request to execute
      * @return The response
-     * @throws IOException If an I/O error occurs
+     * @throws IOException            If an I/O error occurs
+     * @throws RetryExceededException If the maximum header retry count was exceeded
+     * @throws IllegalStateException  If the maximum retry count was exceeded but no exception was thrown
      */
     public HttpResponse execute(@Nonnull final HttpRequest request) throws IOException {
         CookieManager cookieManager = request.isCookieManagerSet() ? request.getCookieManager() : this.cookieManager;
@@ -158,12 +161,9 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
                         return response;
                     }
                 }
-                if (this.retryHandler.getMaxHeaderRetries() == 0) {
-                    if (response == null) throw new IllegalStateException("Response not received but no exception was thrown");
-                    return response;
-                } else {
-                    throw new IOException("Max header retries reached");
-                }
+                if (response == null) throw new IllegalStateException("Response not received but no exception was thrown");
+                if (this.retryHandler.getMaxHeaderRetries() == 0) return response;
+                else throw new RetryExceededException(response);
             } catch (InterruptedException e) {
                 throw new IOException(e);
             } catch (UnknownHostException | SSLException | ProtocolException e) {

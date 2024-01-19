@@ -4,6 +4,7 @@ import net.lenni0451.commons.httpclient.constants.Headers;
 import net.lenni0451.commons.httpclient.constants.StatusCodes;
 import net.lenni0451.commons.httpclient.content.impl.StringContent;
 import net.lenni0451.commons.httpclient.content.impl.URLEncodedFormContent;
+import net.lenni0451.commons.httpclient.exceptions.RetryExceededException;
 import net.lenni0451.commons.httpclient.requests.HttpRequest;
 import net.lenni0451.commons.httpclient.server.TestWebServer;
 import org.junit.jupiter.api.AfterAll;
@@ -113,7 +114,7 @@ class HttpClientTest {
     void failingHeaderRetry() {
         this.client.setRetryHandler(new RetryHandler(0, 1));
         HttpRequest request = assertDoesNotThrow(() -> this.client.get(baseUrl + "/retryCookie"));
-        assertThrows(IOException.class, () -> this.client.execute(request));
+        assertThrows(RetryExceededException.class, () -> this.client.execute(request));
     }
 
 }
