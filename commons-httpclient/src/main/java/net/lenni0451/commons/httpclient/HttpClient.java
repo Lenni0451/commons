@@ -13,10 +13,7 @@ import javax.net.ssl.SSLException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.*;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBuilder {
@@ -145,15 +142,33 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
         CookieManager cookieManager = request.isCookieManagerSet() ? request.getCookieManager() : this.cookieManager;
         HttpURLConnection connection;
 
-        for (int i = 0; i <= this.retryHandler.getMaxConnectRetries(); i++) {
+        for (int connects = 0; connects <= this.retryHandler.getMaxConnectRetries(); connects++) {
             try {
-                connection = this.openConnection(request, cookieManager);
-                return this.executeRequest(connection, cookieManager, request);
+                HttpResponse response = null;
+                for (int headers = 0; headers <= this.retryHandler.getMaxHeaderRetries(); headers++) {
+                    connection = this.openConnection(request, cookieManager);
+                    response = this.executeRequest(connection, cookieManager, request);
+                    Optional<String> retryAfter = response.getFirstHeader(Headers.RETRY_AFTER);
+                    if (retryAfter.isPresent()) {
+                        if (headers >= this.retryHandler.getMaxHeaderRetries()) break;
+                        int seconds = Integer.parseInt(retryAfter.get());
+                        try {
+                            Thread.sleep(seconds * 1000L);
+                        } catch (InterruptedException e) {
+                            throw new IOException(e);
+                        }
+                    } else {
+                        return response;
+                    }
+                }
+//                if (response == null) throw new IllegalStateException("Response was not received but no exception was thrown");
+//                return response;
+                throw new IOException("Max header retries reached");
             } catch (UnknownHostException | SSLException | ProtocolException e) {
                 //No need to retry these as they are not going to change
                 throw e;
             } catch (IOException e) {
-                if (i >= this.retryHandler.getMaxConnectRetries()) throw e;
+                if (connects >= this.retryHandler.getMaxConnectRetries()) throw e;
             }
         }
         throw new IllegalStateException("Connect retry failed but no exception was thrown");

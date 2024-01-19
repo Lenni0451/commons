@@ -90,4 +90,20 @@ class HttpClientTest {
         assertThrows(UnknownHostException.class, () -> this.client.execute(request));
     }
 
+    @Test
+    void headerRetry() throws IOException {
+        this.client.setRetryHandler(new RetryHandler(0, 4/*1 initial request + 4 retries*/));
+        HttpRequest request = this.client.get(baseUrl + "/retryCookie");
+        HttpResponse response = this.client.execute(request);
+        assertEquals(200, response.getStatusCode());
+        assertEquals("OK", response.getContentAsString());
+    }
+
+    @Test
+    void failingHeaderRetry() {
+        this.client.setRetryHandler(new RetryHandler(0, 1));
+        HttpRequest request = assertDoesNotThrow(() -> this.client.get(baseUrl + "/retryCookie"));
+        assertThrows(IOException.class, () -> this.client.execute(request));
+    }
+
 }

@@ -16,6 +16,7 @@ public class TestWebServer {
         this.server.createContext("/echo", new ContentEchoHandler());
         this.server.createContext("/response", new ContentResponseHandler());
         this.server.createContext("/empty", new EmptyContentHandler());
+        this.server.createContext("/retryCookie", new RetryCookieHandler());
     }
 
     public int bind() throws IOException {
