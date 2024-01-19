@@ -1,5 +1,7 @@
 package net.lenni0451.commons.httpclient;
 
+import net.lenni0451.commons.httpclient.constants.Headers;
+import net.lenni0451.commons.httpclient.constants.StatusCodes;
 import net.lenni0451.commons.httpclient.content.impl.StringContent;
 import net.lenni0451.commons.httpclient.content.impl.URLEncodedFormContent;
 import net.lenni0451.commons.httpclient.requests.HttpRequest;
@@ -97,6 +99,14 @@ class HttpClientTest {
         HttpResponse response = this.client.execute(request);
         assertEquals(200, response.getStatusCode());
         assertEquals("OK", response.getContentAsString());
+    }
+
+    @Test
+    void getWithRetry() throws IOException {
+        HttpRequest request = this.client.get(baseUrl + "/retryCookie");
+        HttpResponse response = this.client.execute(request);
+        assertEquals(StatusCodes.SERVICE_UNAVAILABLE, response.getStatusCode());
+        assertTrue(response.hasHeader(Headers.RETRY_AFTER));
     }
 
     @Test

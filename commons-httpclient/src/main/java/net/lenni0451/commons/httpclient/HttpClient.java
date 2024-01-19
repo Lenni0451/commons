@@ -158,10 +158,12 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
                         return response;
                     }
                 }
-                //TODO: Throw exception or return last response?
-//                if (response == null) throw new IllegalStateException("Response was not received but no exception was thrown");
-//                return response;
-                throw new IOException("Max header retries reached");
+                if (this.retryHandler.getMaxHeaderRetries() == 0) {
+                    if (response == null) throw new IllegalStateException("Response not received but no exception was thrown");
+                    return response;
+                } else {
+                    throw new IOException("Max header retries reached");
+                }
             } catch (InterruptedException e) {
                 throw new IOException(e);
             } catch (UnknownHostException | SSLException | ProtocolException e) {
