@@ -112,8 +112,9 @@ class HttpClientTest {
 
     @Test
     void failingHeaderRetry() {
-        this.client.setRetryHandler(new RetryHandler(0, 1));
+        this.client.setRetryHandler(new RetryHandler(Integer.MAX_VALUE, Integer.MAX_VALUE));
         HttpRequest request = assertDoesNotThrow(() -> this.client.get(baseUrl + "/retryCookie"));
+        request.setRetryHandler(new RetryHandler(0, 1));
         assertThrows(RetryExceededException.class, () -> this.client.execute(request));
     }
 

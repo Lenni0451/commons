@@ -143,17 +143,18 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
      */
     public HttpResponse execute(@Nonnull final HttpRequest request) throws IOException {
         CookieManager cookieManager = request.isCookieManagerSet() ? request.getCookieManager() : this.cookieManager;
+        RetryHandler retryHandler = request.isRetryHandlerSet() ? request.getRetryHandler() : this.retryHandler;
         HttpURLConnection connection;
 
-        for (int connects = 0; connects <= this.retryHandler.getMaxConnectRetries(); connects++) {
+        for (int connects = 0; connects <= retryHandler.getMaxConnectRetries(); connects++) {
             try {
                 HttpResponse response = null;
-                for (int headers = 0; headers <= this.retryHandler.getMaxHeaderRetries(); headers++) {
+                for (int headers = 0; headers <= retryHandler.getMaxHeaderRetries(); headers++) {
                     connection = this.openConnection(request, cookieManager);
                     response = this.executeRequest(connection, cookieManager, request);
                     Optional<String> retryAfter = response.getFirstHeader(Headers.RETRY_AFTER);
                     if (retryAfter.isPresent()) {
-                        if (headers >= this.retryHandler.getMaxHeaderRetries()) break;
+                        if (headers >= retryHandler.getMaxHeaderRetries()) break;
                         Long delay = HttpRequestUtils.parseSecondsOrHttpDate(retryAfter.get());
                         if (delay == null) return response; //An invalid retry after header. Treat as no retry
                         if (delay > 0) Thread.sleep(delay);
@@ -162,7 +163,7 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
                     }
                 }
                 if (response == null) throw new IllegalStateException("Response not received but no exception was thrown");
-                if (this.retryHandler.getMaxHeaderRetries() == 0) return response;
+                if (retryHandler.getMaxHeaderRetries() == 0) return response;
                 else throw new RetryExceededException(response);
             } catch (InterruptedException e) {
                 throw new IOException(e);
@@ -170,7 +171,7 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
                 //No need to retry these as they are not going to change
                 throw e;
             } catch (IOException e) {
-                if (connects >= this.retryHandler.getMaxConnectRetries()) throw e;
+                if (connects >= retryHandler.getMaxConnectRetries()) throw e;
             }
         }
         throw new IllegalStateException("Connect retry failed but no exception was thrown");
