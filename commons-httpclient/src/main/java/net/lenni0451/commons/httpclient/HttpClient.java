@@ -152,18 +152,17 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
                     if (retryAfter.isPresent()) {
                         if (headers >= this.retryHandler.getMaxHeaderRetries()) break;
                         int seconds = Integer.parseInt(retryAfter.get());
-                        try {
-                            Thread.sleep(seconds * 1000L);
-                        } catch (InterruptedException e) {
-                            throw new IOException(e);
-                        }
+                        Thread.sleep(seconds * 1000L);
                     } else {
                         return response;
                     }
                 }
+                //TODO: Throw exception or return last response?
 //                if (response == null) throw new IllegalStateException("Response was not received but no exception was thrown");
 //                return response;
                 throw new IOException("Max header retries reached");
+            } catch (InterruptedException e) {
+                throw new IOException(e);
             } catch (UnknownHostException | SSLException | ProtocolException e) {
                 //No need to retry these as they are not going to change
                 throw e;
