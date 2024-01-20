@@ -11,6 +11,47 @@ import java.util.Optional;
 
 public class URLWrapper {
 
+    /**
+     * Create a new empty URLWrapper.
+     *
+     * @return The URLWrapper
+     */
+    public static URLWrapper empty() {
+        return new URLWrapper();
+    }
+
+    /**
+     * Create a new URLWrapper from a {@link String}.
+     *
+     * @param url The URL to wrap
+     * @return The URLWrapper
+     * @throws MalformedURLException If the URL is invalid
+     */
+    public static URLWrapper of(@Nonnull final String url) throws MalformedURLException {
+        return new URLWrapper(url);
+    }
+
+    /**
+     * Create a new URLWrapper from an {@link URL}.
+     *
+     * @param url The URL to wrap
+     * @return The URLWrapper
+     */
+    public static URLWrapper of(final URL url) {
+        return new URLWrapper(url);
+    }
+
+    /**
+     * Create a new URLWrapper from an {@link URI}.
+     *
+     * @param uri The URI to wrap
+     * @return The URLWrapper
+     */
+    public static URLWrapper of(final URI uri) {
+        return new URLWrapper(uri);
+    }
+
+
     private String protocol;
     private String host;
     private int port = -1;
