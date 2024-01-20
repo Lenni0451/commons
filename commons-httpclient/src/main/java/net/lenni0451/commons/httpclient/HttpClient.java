@@ -2,6 +2,7 @@ package net.lenni0451.commons.httpclient;
 
 import net.lenni0451.commons.httpclient.constants.Headers;
 import net.lenni0451.commons.httpclient.exceptions.RetryExceededException;
+import net.lenni0451.commons.httpclient.executor.ExecutorType;
 import net.lenni0451.commons.httpclient.executor.RequestExecutor;
 import net.lenni0451.commons.httpclient.handler.HttpResponseHandler;
 import net.lenni0451.commons.httpclient.proxy.ProxyHandler;
@@ -31,23 +32,20 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
     private ProxyHandler proxyHandler;
 
     /**
-     * Create a new HTTP client with the default executor.<br>
-     * In Java 8-10 this will be the URLConnectionExecutor using the URLConnection API.<br>
-     * In Java 11+ this will be the HttpClientExecutor using the HttpClient API.
+     * Create a new http client with the default executor.
      */
     public HttpClient() {
-        this(RequestExecutor::create);
+        this(ExecutorType.AUTO);
     }
 
     /**
-     * Create a new HTTP client with the default executor or the URLConnectionExecutor if specified.<br>
-     * If {@code useURLConnection} is true the URLConnectionExecutor will be used, otherwise the default executor will be used.
+     * Create a new http client with the given executor type.<br>
+     * Some executor types may not be supported by your Java version. Make sure to check {@link ExecutorType#isAvailable()} before using them.
      *
-     * @param useURLConnection Whether to use the URLConnectionExecutor
-     * @see #HttpClient() For more information about the default executor
+     * @param executorType The executor type to use
      */
-    public HttpClient(final boolean useURLConnection) {
-        this(useURLConnection ? RequestExecutor::createURLConnectionExecutor : RequestExecutor::create);
+    public HttpClient(final ExecutorType executorType) {
+        this(executorType::makeExecutor);
     }
 
     private HttpClient(final Function<HttpClient, RequestExecutor> executorSupplier) {
