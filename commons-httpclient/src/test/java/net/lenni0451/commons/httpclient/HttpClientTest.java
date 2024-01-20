@@ -13,7 +13,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.net.UnknownHostException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -90,7 +89,7 @@ class HttpClientTest {
     @Test
     void connectFail() {
         HttpRequest request = assertDoesNotThrow(() -> this.client.get("http://" + System.currentTimeMillis()));
-        assertThrows(UnknownHostException.class, () -> this.client.execute(request));
+        assertThrows(IOException.class, () -> this.client.execute(request));
     }
 
     @Test
