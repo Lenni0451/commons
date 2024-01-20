@@ -10,6 +10,7 @@ import java.net.Proxy;
 public class ProxyHandler {
 
     private Proxy proxy;
+    private ProxyType type;
     private String username;
     private String password;
 
@@ -41,6 +42,7 @@ public class ProxyHandler {
             default:
                 throw new IllegalArgumentException("Unknown proxy type: " + type.name());
         }
+        this.type = type;
         this.username = username;
         this.password = password;
     }
@@ -54,12 +56,19 @@ public class ProxyHandler {
     }
 
     /**
-     * Set the proxy to use.
+     * Set the proxy to use.<br>
+     * If the proxy is {@link Proxy.Type#DIRECT} the proxy will be set to {@code null}.
      *
      * @param proxy The proxy to use
      */
     public void setProxy(@Nonnull final Proxy proxy) {
-        this.proxy = proxy;
+        if (Proxy.Type.DIRECT.equals(proxy.type())) {
+            this.proxy = null;
+            this.type = null;
+        } else {
+            this.proxy = proxy;
+            this.type = ProxyType.from(proxy.type());
+        }
     }
 
     /**
@@ -83,6 +92,15 @@ public class ProxyHandler {
             default:
                 throw new IllegalArgumentException("Unknown proxy type: " + type.name());
         }
+        this.type = type;
+    }
+
+    /**
+     * @return The type of the proxy
+     */
+    @Nullable
+    public ProxyType getProxyType() {
+        return this.type;
     }
 
     /**
@@ -130,7 +148,24 @@ public class ProxyHandler {
     public enum ProxyType {
         HTTP,
         SOCKS4,
-        SOCKS5
+        SOCKS5;
+
+        /**
+         * Get the {@link ProxyType} from a {@link Proxy.Type}.
+         *
+         * @param type The type to convert
+         * @return The converted type
+         */
+        public static ProxyType from(final Proxy.Type type) {
+            switch (type) {
+                case HTTP:
+                    return HTTP;
+                case SOCKS:
+                    return SOCKS5;
+                default:
+                    throw new IllegalArgumentException("Unknown proxy type: " + type.name());
+            }
+        }
     }
 
 }
