@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 public class URLConnectionExecutor extends RequestExecutor {
 
-    protected URLConnectionExecutor(final HttpClient client) {
+    URLConnectionExecutor(final HttpClient client) {
         super(client);
     }
 

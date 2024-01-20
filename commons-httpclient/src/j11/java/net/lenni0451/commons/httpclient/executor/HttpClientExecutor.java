@@ -20,7 +20,7 @@ import java.util.Map;
 
 public class HttpClientExecutor extends RequestExecutor {
 
-    protected HttpClientExecutor(final HttpClient client) {
+    HttpClientExecutor(final HttpClient client) {
         super(client);
     }
 

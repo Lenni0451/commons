@@ -30,6 +30,10 @@ public abstract class RequestExecutor {
         }
     }
 
+    public static RequestExecutor createURLConnectionExecutor(final HttpClient client) {
+        return new URLConnectionExecutor(client);
+    }
+
 
     protected final HttpClient client;
 

@@ -30,8 +30,24 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
     @Nullable
     private ProxyHandler proxyHandler;
 
+    /**
+     * Create a new HTTP client with the default executor.<br>
+     * In Java 8-10 this will be the URLConnectionExecutor using the URLConnection API.<br>
+     * In Java 11+ this will be the HttpClientExecutor using the HttpClient API.
+     */
     public HttpClient() {
         this(RequestExecutor::create);
+    }
+
+    /**
+     * Create a new HTTP client with the default executor or the URLConnectionExecutor if specified.<br>
+     * If {@code useURLConnection} is true the URLConnectionExecutor will be used, otherwise the default executor will be used.
+     *
+     * @param useURLConnection Whether to use the URLConnectionExecutor
+     * @see #HttpClient() For more information about the default executor
+     */
+    public HttpClient(final boolean useURLConnection) {
+        this(useURLConnection ? RequestExecutor::createURLConnectionExecutor : RequestExecutor::create);
     }
 
     private HttpClient(final Function<HttpClient, RequestExecutor> executorSupplier) {
