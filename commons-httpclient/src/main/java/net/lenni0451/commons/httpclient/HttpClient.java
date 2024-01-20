@@ -4,6 +4,8 @@ import net.lenni0451.commons.httpclient.constants.Headers;
 import net.lenni0451.commons.httpclient.content.HttpContent;
 import net.lenni0451.commons.httpclient.exceptions.RetryExceededException;
 import net.lenni0451.commons.httpclient.handler.HttpResponseHandler;
+import net.lenni0451.commons.httpclient.proxy.ProxyHandler;
+import net.lenni0451.commons.httpclient.proxy.SingleProxySelector;
 import net.lenni0451.commons.httpclient.requests.HttpContentRequest;
 import net.lenni0451.commons.httpclient.requests.HttpRequest;
 import net.lenni0451.commons.httpclient.utils.HttpRequestUtils;
@@ -25,6 +27,8 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
     private int connectTimeout = 10_000;
     private int readTimeout = 10_000;
     private RetryHandler retryHandler = new RetryHandler();
+    @Nullable
+    private ProxyHandler proxyHandler;
 
     /**
      * @return The cookie manager
@@ -119,6 +123,23 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
     }
 
     /**
+     * @return The proxy handler
+     */
+    @Nullable
+    public ProxyHandler getProxyHandler() {
+        return this.proxyHandler;
+    }
+
+    /**
+     * Set the proxy handler for all requests.
+     *
+     * @param proxyHandler The proxy handler
+     */
+    public void setProxyHandler(@Nullable final ProxyHandler proxyHandler) {
+        this.proxyHandler = proxyHandler;
+    }
+
+    /**
      * Execute a request and pass the response to the response handler.<br>
      * The return value of the response handler will be returned.
      *
@@ -178,11 +199,18 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
     }
 
     private HttpURLConnection openConnection(final HttpRequest request, final CookieManager cookieManager) throws IOException {
-        URL url = request.getURL();
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        this.setupConnection(connection, cookieManager, request);
-        connection.connect();
-        return connection;
+        SingleProxySelector proxySelector = null;
+        if (this.proxyHandler != null && this.proxyHandler.getProxy() != null) proxySelector = this.proxyHandler.getProxySelector();
+        try {
+            if (proxySelector != null) proxySelector.set();
+            URL url = request.getURL();
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            this.setupConnection(connection, cookieManager, request);
+            connection.connect();
+            return connection;
+        } finally {
+            if (proxySelector != null) proxySelector.reset();
+        }
     }
 
     private void setupConnection(@Nonnull final HttpURLConnection connection, @Nullable final CookieManager cookieManager, @Nonnull final HttpRequest request) throws IOException {

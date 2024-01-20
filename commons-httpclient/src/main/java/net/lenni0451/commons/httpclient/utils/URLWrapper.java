@@ -196,6 +196,13 @@ public class URLWrapper {
         return new URL(this.toString());
     }
 
+    /**
+     * @return The wrapped URI
+     */
+    public URI toURI() {
+        return URI.create(this.toString());
+    }
+
     @Override
     public String toString() {
         String url = this.protocol + "://";
