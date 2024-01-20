@@ -17,6 +17,7 @@ public class SingleProxySelector extends ProxySelector {
         this.proxy = proxy;
         this.username = username;
         this.password = password;
+
         this.defaultProxySelector = ProxySelector.getDefault();
         this.defaultAuthenticator = null;
     }

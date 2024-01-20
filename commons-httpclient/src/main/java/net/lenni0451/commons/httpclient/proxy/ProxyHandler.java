@@ -1,11 +1,11 @@
 package net.lenni0451.commons.httpclient.proxy;
 
-import sun.net.SocksProxy;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
+import java.net.SocketAddress;
 
 public class ProxyHandler {
 
@@ -29,19 +29,7 @@ public class ProxyHandler {
     }
 
     public ProxyHandler(@Nonnull final ProxyType type, @Nonnull final String host, final int port, @Nullable final String username, @Nullable final String password) {
-        switch (type) {
-            case HTTP:
-                this.proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(host, port));
-                break;
-            case SOCKS4:
-                this.proxy = SocksProxy.create(new InetSocketAddress(host, port), 4);
-                break;
-            case SOCKS5:
-                this.proxy = new Proxy(Proxy.Type.SOCKS, new InetSocketAddress(host, port));
-                break;
-            default:
-                throw new IllegalArgumentException("Unknown proxy type: " + type.name());
-        }
+        this.proxy = this.make(type, host, port);
         this.type = type;
         this.username = username;
         this.password = password;
@@ -79,19 +67,7 @@ public class ProxyHandler {
      * @param port The port of the proxy
      */
     public void setProxy(@Nonnull final ProxyType type, @Nonnull final String host, final int port) {
-        switch (type) {
-            case HTTP:
-                this.proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(host, port));
-                break;
-            case SOCKS4:
-                this.proxy = SocksProxy.create(new InetSocketAddress(host, port), 4);
-                break;
-            case SOCKS5:
-                this.proxy = SocksProxy.create(new InetSocketAddress(host, port), 5);
-                break;
-            default:
-                throw new IllegalArgumentException("Unknown proxy type: " + type.name());
-        }
+        this.proxy = this.make(type, host, port);
         this.type = type;
     }
 
@@ -142,6 +118,32 @@ public class ProxyHandler {
      */
     public SingleProxySelector getProxySelector() {
         return new SingleProxySelector(this.proxy, this.username, this.password);
+    }
+
+    /**
+     * @return The SingleProxyAuthenticator for this proxy
+     */
+    public SingleProxyAuthenticator getProxyAuthenticator() {
+        return new SingleProxyAuthenticator(this.username, this.password);
+    }
+
+    private Proxy make(final ProxyType type, final String host, final int port) {
+        switch (type) {
+            case HTTP:
+                return new Proxy(Proxy.Type.HTTP, new InetSocketAddress(host, port));
+            case SOCKS4:
+                try {
+                    Class<?> clazz = Class.forName("sun.net.SocksProxy");
+                    Method createMethod = clazz.getDeclaredMethod("create", SocketAddress.class, int.class);
+                    return (Proxy) createMethod.invoke(null, new InetSocketAddress(host, port), 4);
+                } catch (Throwable t) {
+                    throw new UnsupportedOperationException("SOCKS4 proxy type is not supported", t);
+                }
+            case SOCKS5:
+                return new Proxy(Proxy.Type.SOCKS, new InetSocketAddress(host, port));
+            default:
+                throw new IllegalArgumentException("Unknown proxy type: " + type.name());
+        }
     }
 
 
