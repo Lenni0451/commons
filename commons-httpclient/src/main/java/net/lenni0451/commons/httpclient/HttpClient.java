@@ -16,10 +16,11 @@ import java.net.CookieManager;
 import java.net.ProtocolException;
 import java.net.UnknownHostException;
 import java.util.Optional;
+import java.util.function.Function;
 
 public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBuilder {
 
-    private final RequestExecutor executor = RequestExecutor.create(this);
+    private final RequestExecutor executor;
     @Nullable
     private CookieManager cookieManager = new CookieManager();
     private boolean followRedirects = true;
@@ -28,6 +29,14 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
     private RetryHandler retryHandler = new RetryHandler();
     @Nullable
     private ProxyHandler proxyHandler;
+
+    public HttpClient() {
+        this(RequestExecutor::create);
+    }
+
+    private HttpClient(final Function<HttpClient, RequestExecutor> executorSupplier) {
+        this.executor = executorSupplier.apply(this);
+    }
 
     /**
      * @return The cookie manager
