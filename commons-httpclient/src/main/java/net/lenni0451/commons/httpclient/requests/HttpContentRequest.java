@@ -2,7 +2,6 @@ package net.lenni0451.commons.httpclient.requests;
 
 import net.lenni0451.commons.httpclient.content.HttpContent;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -11,11 +10,11 @@ public class HttpContentRequest extends HttpRequest {
 
     private HttpContent content;
 
-    public HttpContentRequest(@Nonnull final String method, @Nonnull final String url) throws MalformedURLException {
+    public HttpContentRequest(final String method, final String url) throws MalformedURLException {
         super(method, url);
     }
 
-    public HttpContentRequest(@Nonnull final String method, @Nonnull final URL url) {
+    public HttpContentRequest(final String method, final URL url) {
         super(method, url);
     }
 

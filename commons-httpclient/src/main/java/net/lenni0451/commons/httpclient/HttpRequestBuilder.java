@@ -4,7 +4,6 @@ import net.lenni0451.commons.httpclient.requests.HttpContentRequest;
 import net.lenni0451.commons.httpclient.requests.HttpRequest;
 import net.lenni0451.commons.httpclient.requests.impl.*;
 
-import javax.annotation.Nonnull;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -17,7 +16,7 @@ public interface HttpRequestBuilder {
      * @return The created request
      * @throws MalformedURLException If the url is invalid
      */
-    default GetRequest get(@Nonnull final String url) throws MalformedURLException {
+    default GetRequest get(final String url) throws MalformedURLException {
         return new GetRequest(url);
     }
 
@@ -27,7 +26,7 @@ public interface HttpRequestBuilder {
      * @param url The url to send the request to
      * @return The created request
      */
-    default GetRequest get(@Nonnull final URL url) {
+    default GetRequest get(final URL url) {
         return new GetRequest(url);
     }
 
@@ -38,7 +37,7 @@ public interface HttpRequestBuilder {
      * @return The created request
      * @throws MalformedURLException If the url is invalid
      */
-    default HeadRequest head(@Nonnull final String url) throws MalformedURLException {
+    default HeadRequest head(final String url) throws MalformedURLException {
         return new HeadRequest(url);
     }
 
@@ -48,7 +47,7 @@ public interface HttpRequestBuilder {
      * @param url The url to send the request to
      * @return The created request
      */
-    default HeadRequest head(@Nonnull final URL url) {
+    default HeadRequest head(final URL url) {
         return new HeadRequest(url);
     }
 
@@ -59,7 +58,7 @@ public interface HttpRequestBuilder {
      * @return The created request
      * @throws MalformedURLException If the url is invalid
      */
-    default DeleteRequest delete(@Nonnull final String url) throws MalformedURLException {
+    default DeleteRequest delete(final String url) throws MalformedURLException {
         return new DeleteRequest(url);
     }
 
@@ -69,7 +68,7 @@ public interface HttpRequestBuilder {
      * @param url The url to send the request to
      * @return The created request
      */
-    default DeleteRequest delete(@Nonnull final URL url) {
+    default DeleteRequest delete(final URL url) {
         return new DeleteRequest(url);
     }
 
@@ -80,7 +79,7 @@ public interface HttpRequestBuilder {
      * @return The created request
      * @throws MalformedURLException If the url is invalid
      */
-    default PostRequest post(@Nonnull final String url) throws MalformedURLException {
+    default PostRequest post(final String url) throws MalformedURLException {
         return new PostRequest(url);
     }
 
@@ -90,7 +89,7 @@ public interface HttpRequestBuilder {
      * @param url The url to send the request to
      * @return The created request
      */
-    default PostRequest post(@Nonnull final URL url) {
+    default PostRequest post(final URL url) {
         return new PostRequest(url);
     }
 
@@ -101,7 +100,7 @@ public interface HttpRequestBuilder {
      * @return The created request
      * @throws MalformedURLException If the url is invalid
      */
-    default PutRequest put(@Nonnull final String url) throws MalformedURLException {
+    default PutRequest put(final String url) throws MalformedURLException {
         return new PutRequest(url);
     }
 
@@ -111,7 +110,7 @@ public interface HttpRequestBuilder {
      * @param url The url to send the request to
      * @return The created request
      */
-    default PutRequest put(@Nonnull final URL url) {
+    default PutRequest put(final URL url) {
         return new PutRequest(url);
     }
 
@@ -123,7 +122,7 @@ public interface HttpRequestBuilder {
      * @return The created request
      * @throws MalformedURLException If the url is invalid
      */
-    default HttpRequest request(@Nonnull final String method, @Nonnull final String url) throws MalformedURLException {
+    default HttpRequest request(final String method, final String url) throws MalformedURLException {
         return new HttpRequest(method, url);
     }
 
@@ -134,7 +133,7 @@ public interface HttpRequestBuilder {
      * @param url    The url to send the request to
      * @return The created request
      */
-    default HttpRequest request(@Nonnull final String method, @Nonnull final URL url) {
+    default HttpRequest request(final String method, final URL url) {
         return new HttpRequest(method, url);
     }
 
@@ -147,7 +146,7 @@ public interface HttpRequestBuilder {
      * @return The created request
      * @throws MalformedURLException If the url is invalid
      */
-    default HttpContentRequest contentRequest(@Nonnull final String method, @Nonnull final String url) throws MalformedURLException {
+    default HttpContentRequest contentRequest(final String method, final String url) throws MalformedURLException {
         return new HttpContentRequest(method, url);
     }
 
@@ -159,7 +158,7 @@ public interface HttpRequestBuilder {
      * @param url    The url to send the request to
      * @return The created request
      */
-    default HttpContentRequest contentRequest(@Nonnull final String method, @Nonnull final URL url) {
+    default HttpContentRequest contentRequest(final String method, final URL url) {
         return new HttpContentRequest(method, url);
     }
 

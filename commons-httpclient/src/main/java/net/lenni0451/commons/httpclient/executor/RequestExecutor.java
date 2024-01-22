@@ -4,7 +4,6 @@ import net.lenni0451.commons.httpclient.HttpClient;
 import net.lenni0451.commons.httpclient.HttpResponse;
 import net.lenni0451.commons.httpclient.requests.HttpRequest;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 
 public abstract class RequestExecutor {
@@ -15,6 +14,6 @@ public abstract class RequestExecutor {
         this.client = client;
     }
 
-    public abstract HttpResponse execute(@Nonnull final HttpRequest request) throws IOException, InterruptedException;
+    public abstract HttpResponse execute(final HttpRequest request) throws IOException, InterruptedException;
 
 }

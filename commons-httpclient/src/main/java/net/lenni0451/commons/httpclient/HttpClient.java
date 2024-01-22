@@ -9,7 +9,6 @@ import net.lenni0451.commons.httpclient.proxy.ProxyHandler;
 import net.lenni0451.commons.httpclient.requests.HttpRequest;
 import net.lenni0451.commons.httpclient.utils.HttpRequestUtils;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.net.ssl.SSLException;
 import java.io.IOException;
@@ -172,7 +171,7 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
      *
      * @param proxyHandler The proxy handler
      */
-    public void setProxyHandler(@Nonnull final ProxyHandler proxyHandler) {
+    public void setProxyHandler(final ProxyHandler proxyHandler) {
         this.proxyHandler = proxyHandler;
     }
 
@@ -186,7 +185,7 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
      * @return The return value of the response handler
      * @throws IOException If an I/O error occurs
      */
-    public <R> R execute(@Nonnull final HttpRequest request, @Nonnull final HttpResponseHandler<R> responseHandler) throws IOException {
+    public <R> R execute(final HttpRequest request, final HttpResponseHandler<R> responseHandler) throws IOException {
         return responseHandler.handle(this.execute(request));
     }
 
@@ -199,7 +198,7 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
      * @throws RetryExceededException If the maximum header retry count was exceeded
      * @throws IllegalStateException  If the maximum retry count was exceeded but no exception was thrown
      */
-    public HttpResponse execute(@Nonnull final HttpRequest request) throws IOException {
+    public HttpResponse execute(final HttpRequest request) throws IOException {
         System.out.println(this.executor.getClass());
         RetryHandler retryHandler = request.isRetryHandlerSet() ? request.getRetryHandler() : this.retryHandler;
 

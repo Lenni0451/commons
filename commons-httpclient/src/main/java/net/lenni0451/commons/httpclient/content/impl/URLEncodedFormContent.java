@@ -5,7 +5,6 @@ import net.lenni0451.commons.httpclient.constants.ContentTypes;
 import net.lenni0451.commons.httpclient.content.HttpContent;
 import net.lenni0451.commons.httpclient.utils.URLCoder;
 
-import javax.annotation.Nonnull;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -22,17 +21,17 @@ public class URLEncodedFormContent extends HttpContent {
         this(StandardCharsets.UTF_8);
     }
 
-    public URLEncodedFormContent(@Nonnull final Map<String, String> entries) {
+    public URLEncodedFormContent(final Map<String, String> entries) {
         this(entries, StandardCharsets.UTF_8);
     }
 
-    public URLEncodedFormContent(@Nonnull final Charset charset) {
+    public URLEncodedFormContent(final Charset charset) {
         super(ContentTypes.APPLICATION_FORM_URLENCODED);
         this.entries = new ArrayList<>();
         this.charset = charset;
     }
 
-    public URLEncodedFormContent(@Nonnull final Map<String, String> entries, @Nonnull final Charset charset) {
+    public URLEncodedFormContent(final Map<String, String> entries, final Charset charset) {
         super(ContentTypes.APPLICATION_FORM_URLENCODED);
         this.entries = entries.entrySet().stream().map(e -> new FormEntry(e.getKey(), e.getValue())).collect(Collectors.toList());
         this.charset = charset;
@@ -45,7 +44,7 @@ public class URLEncodedFormContent extends HttpContent {
      * @param value The value
      * @return This instance for chaining
      */
-    public URLEncodedFormContent put(@Nonnull final String key, @Nonnull final String value) {
+    public URLEncodedFormContent put(final String key, final String value) {
         this.entries.add(new FormEntry(key, value));
         this.content = null;
         return this;
@@ -74,7 +73,7 @@ public class URLEncodedFormContent extends HttpContent {
         private final String key;
         private final String value;
 
-        private FormEntry(@Nonnull final String key, @Nonnull final String value) {
+        private FormEntry(final String key, final String value) {
             this.key = key;
             this.value = value;
         }

@@ -2,7 +2,6 @@ package net.lenni0451.commons.httpclient.utils;
 
 import lombok.SneakyThrows;
 
-import javax.annotation.Nonnull;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
@@ -18,7 +17,7 @@ public class URLCoder {
      * @return The encoded string
      */
     @SneakyThrows
-    public static String encode(@Nonnull final String s) {
+    public static String encode(final String s) {
         return encode(s, StandardCharsets.UTF_8);
     }
 
@@ -30,7 +29,7 @@ public class URLCoder {
      * @return The encoded string
      */
     @SneakyThrows
-    public static String encode(@Nonnull final String s, @Nonnull final Charset charset) {
+    public static String encode(final String s, final Charset charset) {
         return URLEncoder.encode(s, charset.name());
     }
 
@@ -42,7 +41,7 @@ public class URLCoder {
      * @return The decoded string
      */
     @SneakyThrows
-    public static String decode(@Nonnull final String s) {
+    public static String decode(final String s) {
         return decode(s, StandardCharsets.UTF_8);
     }
 
@@ -54,7 +53,7 @@ public class URLCoder {
      * @return The decoded string
      */
     @SneakyThrows
-    public static String decode(@Nonnull final String s, @Nonnull final Charset charset) {
+    public static String decode(final String s, final Charset charset) {
         return URLDecoder.decode(s, charset.name());
     }
 

@@ -1,6 +1,5 @@
 package net.lenni0451.commons.httpclient.utils;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.WillNotClose;
 import java.io.ByteArrayOutputStream;
@@ -24,7 +23,7 @@ public class HttpRequestUtils {
      * @return The merged headers
      */
     @SafeVarargs
-    public static Map<String, List<String>> mergeHeaders(@Nonnull final Map<String, List<String>>... maps) {
+    public static Map<String, List<String>> mergeHeaders(final Map<String, List<String>>... maps) {
         Map<String, List<String>> headers = new HashMap<>();
         for (Map<String, List<String>> map : maps) {
             for (Map.Entry<String, List<String>> entry : map.entrySet()) {
@@ -42,7 +41,7 @@ public class HttpRequestUtils {
      * @return The cookie headers
      * @throws IOException If an I/O error occurs
      */
-    public static Map<String, List<String>> getCookieHeaders(@Nullable final CookieManager cookieManager, @Nonnull final URL url) throws IOException {
+    public static Map<String, List<String>> getCookieHeaders(@Nullable final CookieManager cookieManager, final URL url) throws IOException {
         try {
             if (cookieManager == null) return Collections.emptyMap();
             return cookieManager.get(url.toURI(), Collections.emptyMap());
@@ -59,7 +58,7 @@ public class HttpRequestUtils {
      * @param headers       The headers to update the cookies from
      * @throws IOException If an I/O error occurs
      */
-    public static void updateCookies(@Nullable final CookieManager cookieManager, @Nonnull final URL url, @Nonnull final Map<String, List<String>> headers) throws IOException {
+    public static void updateCookies(@Nullable final CookieManager cookieManager, final URL url, final Map<String, List<String>> headers) throws IOException {
         if (cookieManager == null) return;
         try {
             cookieManager.put(url.toURI(), headers);
@@ -74,7 +73,7 @@ public class HttpRequestUtils {
      * @param connection The connection to set the headers for
      * @param headers    The headers to set
      */
-    public static void setHeaders(@Nonnull final HttpURLConnection connection, @Nonnull final Map<String, List<String>> headers) {
+    public static void setHeaders(final HttpURLConnection connection, final Map<String, List<String>> headers) {
         for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
             connection.setRequestProperty(entry.getKey(), String.join("; ", entry.getValue()));
         }
@@ -87,7 +86,7 @@ public class HttpRequestUtils {
      * @return The body of the connection
      * @throws IOException If an I/O error occurs
      */
-    public static byte[] readBody(@Nonnull final HttpURLConnection connection) throws IOException {
+    public static byte[] readBody(final HttpURLConnection connection) throws IOException {
         InputStream is;
         if (connection.getResponseCode() >= 400) is = connection.getErrorStream();
         else is = connection.getInputStream();
@@ -102,7 +101,7 @@ public class HttpRequestUtils {
      * @return The body of the connection
      * @throws IOException If an I/O error occurs
      */
-    public static byte[] readFromStream(@Nonnull @WillNotClose final InputStream is) throws IOException {
+    public static byte[] readFromStream(@WillNotClose final InputStream is) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         byte[] buf = new byte[1024];
         int len;

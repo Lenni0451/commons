@@ -1,6 +1,5 @@
 package net.lenni0451.commons.httpclient.proxy;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
@@ -18,11 +17,11 @@ public class ProxyHandler {
     public ProxyHandler() {
     }
 
-    public ProxyHandler(@Nonnull final ProxyType proxyType, @Nonnull final String host, final int port) {
+    public ProxyHandler(final ProxyType proxyType, final String host, final int port) {
         this(proxyType, host, port, null, null);
     }
 
-    public ProxyHandler(@Nonnull final ProxyType proxyType, @Nonnull final String host, final int port, @Nullable final String username, @Nullable final String password) {
+    public ProxyHandler(final ProxyType proxyType, final String host, final int port, @Nullable final String username, @Nullable final String password) {
         this.proxyType = proxyType;
         this.host = host;
         this.port = port;
@@ -37,7 +36,7 @@ public class ProxyHandler {
      * @param host The host of the proxy
      * @param port The port of the proxy
      */
-    public void setProxy(@Nonnull final ProxyType type, @Nonnull final String host, final int port) {
+    public void setProxy(final ProxyType type, final String host, final int port) {
         this.proxyType = type;
         this.host = host;
         this.port = port;
@@ -72,7 +71,7 @@ public class ProxyHandler {
      *
      * @param type The type of the proxy
      */
-    public void setProxyType(@Nonnull final ProxyType type) {
+    public void setProxyType(final ProxyType type) {
         this.proxyType = type;
     }
 
@@ -88,7 +87,7 @@ public class ProxyHandler {
      *
      * @param host The proxy host
      */
-    public void setHost(@Nonnull final String host) {
+    public void setHost(final String host) {
         this.host = host;
     }
 

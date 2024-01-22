@@ -9,7 +9,6 @@ import net.lenni0451.commons.httpclient.requests.HttpContentRequest;
 import net.lenni0451.commons.httpclient.requests.HttpRequest;
 import net.lenni0451.commons.httpclient.utils.HttpRequestUtils;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -29,7 +28,7 @@ public class URLConnectionExecutor extends RequestExecutor {
     }
 
     @Override
-    public HttpResponse execute(@Nonnull final HttpRequest request) throws IOException {
+    public HttpResponse execute(final HttpRequest request) throws IOException {
         CookieManager cookieManager = request.isCookieManagerSet() ? request.getCookieManager() : this.client.getCookieManager();
         HttpURLConnection connection = this.openConnection(request, cookieManager);
         return this.executeRequest(connection, cookieManager, request);
@@ -50,7 +49,7 @@ public class URLConnectionExecutor extends RequestExecutor {
         }
     }
 
-    private void setupConnection(@Nonnull final HttpURLConnection connection, @Nullable final CookieManager cookieManager, @Nonnull final HttpRequest request) throws IOException {
+    private void setupConnection(final HttpURLConnection connection, @Nullable final CookieManager cookieManager, final HttpRequest request) throws IOException {
         Map<String, List<String>> headers = new HashMap<>();
         if (request instanceof HttpContentRequest) {
             HttpContent content = ((HttpContentRequest) request).getContent();
@@ -84,7 +83,7 @@ public class URLConnectionExecutor extends RequestExecutor {
         }
     }
 
-    private HttpResponse executeRequest(@Nonnull final HttpURLConnection connection, @Nullable final CookieManager cookieManager, @Nonnull final HttpRequest request) throws IOException {
+    private HttpResponse executeRequest(final HttpURLConnection connection, @Nullable final CookieManager cookieManager, final HttpRequest request) throws IOException {
         try {
             if (connection.getDoOutput()) {
                 OutputStream os = connection.getOutputStream();

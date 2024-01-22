@@ -1,6 +1,5 @@
 package net.lenni0451.commons.httpclient.utils;
 
-import javax.annotation.Nonnull;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -27,7 +26,7 @@ public class URLWrapper {
      * @return The URLWrapper
      * @throws MalformedURLException If the URL is invalid
      */
-    public static URLWrapper of(@Nonnull final String url) throws MalformedURLException {
+    public static URLWrapper of(final String url) throws MalformedURLException {
         return new URLWrapper(url);
     }
 
@@ -63,11 +62,11 @@ public class URLWrapper {
     public URLWrapper() {
     }
 
-    public URLWrapper(@Nonnull final String url) throws MalformedURLException {
+    public URLWrapper(final String url) throws MalformedURLException {
         this(new URL(url));
     }
 
-    public URLWrapper(@Nonnull final URL url) {
+    public URLWrapper(final URL url) {
         this.protocol = url.getProtocol();
         this.host = url.getHost();
         this.port = url.getPort();
@@ -77,7 +76,7 @@ public class URLWrapper {
         this.reference = url.getRef();
     }
 
-    public URLWrapper(@Nonnull final URI uri) {
+    public URLWrapper(final URI uri) {
         this.protocol = uri.getScheme();
         this.host = uri.getHost();
         this.port = uri.getPort();
@@ -101,7 +100,7 @@ public class URLWrapper {
      * @param protocol The new protocol
      * @return The URLWrapper
      */
-    public URLWrapper setProtocol(@Nonnull final String protocol) {
+    public URLWrapper setProtocol(final String protocol) {
         this.protocol = protocol;
         return this;
     }
@@ -120,7 +119,7 @@ public class URLWrapper {
      * @param host The new host
      * @return The URLWrapper
      */
-    public URLWrapper setHost(@Nonnull final String host) {
+    public URLWrapper setHost(final String host) {
         this.host = host;
         return this;
     }
@@ -158,7 +157,7 @@ public class URLWrapper {
      * @param path The new file
      * @return The URLWrapper
      */
-    public URLWrapper setPath(@Nonnull final String path) {
+    public URLWrapper setPath(final String path) {
         this.path = path;
         return this;
     }
@@ -177,7 +176,7 @@ public class URLWrapper {
      * @param query The new query
      * @return The URLWrapper
      */
-    public URLWrapper setQuery(@Nonnull final String query) {
+    public URLWrapper setQuery(final String query) {
         this.query = query;
         return this;
     }
@@ -205,7 +204,7 @@ public class URLWrapper {
      * @param userInfo The new user info
      * @return The URLWrapper
      */
-    public URLWrapper setUserInfo(@Nonnull final String userInfo) {
+    public URLWrapper setUserInfo(final String userInfo) {
         this.userInfo = userInfo;
         return this;
     }
@@ -224,7 +223,7 @@ public class URLWrapper {
      * @param reference The new reference
      * @return The URLWrapper
      */
-    public URLWrapper setReference(@Nonnull final String reference) {
+    public URLWrapper setReference(final String reference) {
         this.reference = reference;
         return this;
     }
@@ -286,7 +285,7 @@ public class URLWrapper {
          * @param key The key of the query parameter
          * @return The value of the query parameter or null if it does not exist
          */
-        public Optional<String> getQuery(@Nonnull final String key) {
+        public Optional<String> getQuery(final String key) {
             return Optional.ofNullable(this.queries.get(key));
         }
 
@@ -297,7 +296,7 @@ public class URLWrapper {
          * @param value The value of the query parameter
          * @return The URLWrapper
          */
-        public QueryWrapper setQuery(@Nonnull final String key, @Nonnull final String value) {
+        public QueryWrapper setQuery(final String key, final String value) {
             this.queries.put(key, value);
             return this;
         }
@@ -308,7 +307,7 @@ public class URLWrapper {
          * @param queries The query parameters to add
          * @return The URLWrapper
          */
-        public QueryWrapper addQueries(@Nonnull final Map<String, String> queries) {
+        public QueryWrapper addQueries(final Map<String, String> queries) {
             this.queries.putAll(queries);
             return this;
         }
