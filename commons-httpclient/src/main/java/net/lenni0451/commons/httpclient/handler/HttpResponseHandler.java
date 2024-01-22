@@ -2,6 +2,7 @@ package net.lenni0451.commons.httpclient.handler;
 
 import net.lenni0451.commons.httpclient.HttpResponse;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 
 @FunctionalInterface
@@ -22,6 +23,6 @@ public interface HttpResponseHandler<R> {
      * @return The result
      * @throws IOException If an I/O error occurs
      */
-    R handle(final HttpResponse response) throws IOException;
+    R handle(@Nonnull final HttpResponse response) throws IOException;
 
 }

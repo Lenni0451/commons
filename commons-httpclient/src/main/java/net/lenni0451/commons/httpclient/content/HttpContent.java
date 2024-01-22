@@ -6,6 +6,7 @@ import net.lenni0451.commons.httpclient.content.impl.StringContent;
 import net.lenni0451.commons.httpclient.content.impl.URLEncodedFormContent;
 import net.lenni0451.commons.httpclient.model.ContentType;
 
+import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -107,6 +108,7 @@ public abstract class HttpContent {
      * @return The content as bytes
      * @throws IOException If an I/O error occurs
      */
+    @Nonnull
     public byte[] getAsBytes() throws IOException {
         if (this.content == null) this.content = this.compute();
         return this.content;
@@ -116,6 +118,7 @@ public abstract class HttpContent {
      * @return The content as a UTF-8 string
      * @throws IOException If an I/O error occurs
      */
+    @Nonnull
     public String getAsString() throws IOException {
         return this.getAsString(StandardCharsets.UTF_8);
     }
@@ -127,6 +130,7 @@ public abstract class HttpContent {
      * @return The content as a string
      * @throws IOException If an I/O error occurs
      */
+    @Nonnull
     public String getAsString(final Charset charset) throws IOException {
         return new String(this.getAsBytes(), charset);
     }
@@ -140,6 +144,7 @@ public abstract class HttpContent {
      * @return The content
      * @throws IOException If an I/O error occurs
      */
+    @Nonnull
     protected abstract byte[] compute() throws IOException;
 
 }

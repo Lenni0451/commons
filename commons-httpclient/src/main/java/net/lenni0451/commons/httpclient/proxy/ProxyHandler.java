@@ -1,5 +1,6 @@
 package net.lenni0451.commons.httpclient.proxy;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
@@ -71,13 +72,14 @@ public class ProxyHandler {
      *
      * @param type The type of the proxy
      */
-    public void setProxyType(final ProxyType type) {
+    public void setProxyType(@Nonnull final ProxyType type) {
         this.proxyType = type;
     }
 
     /**
      * @return The proxy host
      */
+    @Nullable
     public String getHost() {
         return this.host;
     }
@@ -87,7 +89,7 @@ public class ProxyHandler {
      *
      * @param host The proxy host
      */
-    public void setHost(final String host) {
+    public void setHost(@Nonnull final String host) {
         this.host = host;
     }
 
@@ -105,6 +107,13 @@ public class ProxyHandler {
      */
     public void setPort(final int port) {
         this.port = port;
+    }
+
+    /**
+     * @return If the authentication is set
+     */
+    public boolean isAuthenticationSet() {
+        return this.username != null && this.password != null;
     }
 
     /**
@@ -143,15 +152,20 @@ public class ProxyHandler {
 
     /**
      * @return The SingleProxySelector for this proxy
+     * @throws IllegalStateException If the proxy is not set
      */
     public SingleProxySelector getProxySelector() {
+        if (!this.isProxySet()) throw new IllegalStateException("Proxy is not set");
         return new SingleProxySelector(this.toJavaProxy(), this.username, this.password);
     }
 
     /**
      * @return The SingleProxyAuthenticator for this proxy
+     * @throws IllegalStateException If the proxy or the username/password is not set
      */
     public SingleProxyAuthenticator getProxyAuthenticator() {
+        if (!this.isProxySet()) throw new IllegalStateException("Proxy is not set");
+        if (!this.isAuthenticationSet()) throw new IllegalStateException("Username or password is not set");
         return new SingleProxyAuthenticator(this.username, this.password);
     }
 
@@ -176,7 +190,7 @@ public class ProxyHandler {
             case SOCKS5:
                 return new Proxy(Proxy.Type.SOCKS, new InetSocketAddress(this.host, this.port));
             default:
-                throw new IllegalArgumentException("Unknown proxy type: " + this.proxyType.name());
+                throw new IllegalStateException("Unknown proxy type: " + this.proxyType.name());
         }
     }
 

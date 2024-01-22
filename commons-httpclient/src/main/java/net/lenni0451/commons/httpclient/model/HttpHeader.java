@@ -1,21 +1,26 @@
 package net.lenni0451.commons.httpclient.model;
 
+import javax.annotation.Nonnull;
 import java.util.Objects;
 
 public class HttpHeader {
 
+    @Nonnull
     private final String name;
+    @Nonnull
     private final String value;
 
-    public HttpHeader(final String name, final String value) {
+    public HttpHeader(@Nonnull final String name, @Nonnull final String value) {
         this.name = name;
         this.value = value;
     }
 
+    @Nonnull
     public String getName() {
         return this.name;
     }
 
+    @Nonnull
     public String getValue() {
         return this.value;
     }

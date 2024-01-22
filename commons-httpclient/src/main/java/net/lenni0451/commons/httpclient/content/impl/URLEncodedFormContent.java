@@ -5,6 +5,7 @@ import net.lenni0451.commons.httpclient.constants.ContentTypes;
 import net.lenni0451.commons.httpclient.content.HttpContent;
 import net.lenni0451.commons.httpclient.utils.URLCoder;
 
+import javax.annotation.Nonnull;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -56,6 +57,7 @@ public class URLEncodedFormContent extends HttpContent {
         return this.getAsBytes().length;
     }
 
+    @Nonnull
     @Override
     protected byte[] compute() {
         StringBuilder builder = new StringBuilder();

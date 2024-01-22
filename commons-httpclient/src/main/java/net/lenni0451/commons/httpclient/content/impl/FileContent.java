@@ -5,6 +5,7 @@ import net.lenni0451.commons.httpclient.content.HttpContent;
 import net.lenni0451.commons.httpclient.model.ContentType;
 import net.lenni0451.commons.httpclient.utils.HttpRequestUtils;
 
+import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -27,6 +28,7 @@ public class FileContent extends HttpContent {
         return (int) this.file.length();
     }
 
+    @Nonnull
     @Override
     protected byte[] compute() throws IOException {
         try (FileInputStream fis = new FileInputStream(this.file)) {

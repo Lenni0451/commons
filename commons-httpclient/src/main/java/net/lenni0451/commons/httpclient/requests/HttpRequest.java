@@ -3,6 +3,7 @@ package net.lenni0451.commons.httpclient.requests;
 import net.lenni0451.commons.httpclient.HeaderStore;
 import net.lenni0451.commons.httpclient.RetryHandler;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.net.CookieManager;
 import java.net.MalformedURLException;
@@ -13,8 +14,10 @@ public class HttpRequest extends HeaderStore<HttpRequest> {
     private final String method;
     private final URL url;
     private FollowRedirects followRedirects = FollowRedirects.NOT_SET;
+    @Nullable
     private CookieManager cookieManager;
     private boolean cookieManagerSet = false;
+    @Nonnull
     private RetryHandler retryHandler = new RetryHandler();
     private boolean retryHandlerSet = false;
 
@@ -64,7 +67,7 @@ public class HttpRequest extends HeaderStore<HttpRequest> {
      * @param followRedirects If redirects should be followed
      * @return This instance for chaining
      */
-    public HttpRequest setFollowRedirects(final FollowRedirects followRedirects) {
+    public HttpRequest setFollowRedirects(@Nonnull final FollowRedirects followRedirects) {
         this.followRedirects = followRedirects;
         return this;
     }
@@ -128,6 +131,7 @@ public class HttpRequest extends HeaderStore<HttpRequest> {
     /**
      * @return The set retry handler
      */
+    @Nonnull
     public RetryHandler getRetryHandler() {
         return this.retryHandler;
     }
@@ -138,7 +142,7 @@ public class HttpRequest extends HeaderStore<HttpRequest> {
      * @param retryHandler The retry handler to use
      * @return This instance for chaining
      */
-    public HttpRequest setRetryHandler(final RetryHandler retryHandler) {
+    public HttpRequest setRetryHandler(@Nonnull final RetryHandler retryHandler) {
         this.retryHandler = retryHandler;
         this.retryHandlerSet = true;
         return this;

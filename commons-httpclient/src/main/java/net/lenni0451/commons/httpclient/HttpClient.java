@@ -9,6 +9,7 @@ import net.lenni0451.commons.httpclient.proxy.ProxyHandler;
 import net.lenni0451.commons.httpclient.requests.HttpRequest;
 import net.lenni0451.commons.httpclient.utils.HttpRequestUtils;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.net.ssl.SSLException;
 import java.io.IOException;
@@ -42,7 +43,7 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
      *
      * @param executorType The executor type to use
      */
-    public HttpClient(final ExecutorType executorType) {
+    public HttpClient(@Nonnull final ExecutorType executorType) {
         this(executorType::makeExecutor);
     }
 
@@ -53,7 +54,7 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
      *
      * @param executorSupplier The supplier for the executor to use
      */
-    public HttpClient(final Function<HttpClient, RequestExecutor> executorSupplier) {
+    public HttpClient(@Nonnull final Function<HttpClient, RequestExecutor> executorSupplier) {
         this.setExecutor(executorSupplier);
     }
 
@@ -62,7 +63,7 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
      *
      * @param executorSupplier The supplier for the executor to use
      */
-    public HttpClient setExecutor(final Function<HttpClient, RequestExecutor> executorSupplier) {
+    public HttpClient setExecutor(@Nonnull final Function<HttpClient, RequestExecutor> executorSupplier) {
         this.executor = executorSupplier.apply(this);
         return this;
     }
@@ -144,6 +145,7 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
     /**
      * @return The retry handler
      */
+    @Nonnull
     public RetryHandler getRetryHandler() {
         return this.retryHandler;
     }
@@ -154,7 +156,7 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
      * @param retryHandler The retry handler
      * @return This instance for chaining
      */
-    public HttpClient setRetryHandler(final RetryHandler retryHandler) {
+    public HttpClient setRetryHandler(@Nonnull final RetryHandler retryHandler) {
         this.retryHandler = retryHandler;
         return this;
     }
@@ -162,6 +164,7 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
     /**
      * @return The proxy handler
      */
+    @Nonnull
     public ProxyHandler getProxyHandler() {
         return this.proxyHandler;
     }
@@ -171,7 +174,7 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
      *
      * @param proxyHandler The proxy handler
      */
-    public void setProxyHandler(final ProxyHandler proxyHandler) {
+    public void setProxyHandler(@Nonnull final ProxyHandler proxyHandler) {
         this.proxyHandler = proxyHandler;
     }
 
@@ -199,7 +202,6 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
      * @throws IllegalStateException  If the maximum retry count was exceeded but no exception was thrown
      */
     public HttpResponse execute(final HttpRequest request) throws IOException {
-        System.out.println(this.executor.getClass());
         RetryHandler retryHandler = request.isRetryHandlerSet() ? request.getRetryHandler() : this.retryHandler;
 
         for (int connects = 0; connects <= retryHandler.getMaxConnectRetries(); connects++) {

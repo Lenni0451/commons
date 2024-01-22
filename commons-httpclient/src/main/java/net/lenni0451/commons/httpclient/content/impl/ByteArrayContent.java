@@ -4,6 +4,7 @@ import net.lenni0451.commons.httpclient.constants.ContentTypes;
 import net.lenni0451.commons.httpclient.content.HttpContent;
 import net.lenni0451.commons.httpclient.model.ContentType;
 
+import javax.annotation.Nonnull;
 import java.util.Arrays;
 
 public class ByteArrayContent extends HttpContent {
@@ -39,6 +40,7 @@ public class ByteArrayContent extends HttpContent {
         return this.content.length;
     }
 
+    @Nonnull
     @Override
     protected byte[] compute() {
         return Arrays.copyOfRange(this.content, this.start, this.start + this.length);

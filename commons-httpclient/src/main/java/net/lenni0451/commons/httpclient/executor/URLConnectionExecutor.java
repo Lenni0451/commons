@@ -9,6 +9,7 @@ import net.lenni0451.commons.httpclient.requests.HttpContentRequest;
 import net.lenni0451.commons.httpclient.requests.HttpRequest;
 import net.lenni0451.commons.httpclient.utils.HttpRequestUtils;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -27,8 +28,9 @@ public class URLConnectionExecutor extends RequestExecutor {
         super(client);
     }
 
+    @Nonnull
     @Override
-    public HttpResponse execute(final HttpRequest request) throws IOException {
+    public HttpResponse execute(@Nonnull final HttpRequest request) throws IOException {
         CookieManager cookieManager = request.isCookieManagerSet() ? request.getCookieManager() : this.client.getCookieManager();
         HttpURLConnection connection = this.openConnection(request, cookieManager);
         return this.executeRequest(connection, cookieManager, request);

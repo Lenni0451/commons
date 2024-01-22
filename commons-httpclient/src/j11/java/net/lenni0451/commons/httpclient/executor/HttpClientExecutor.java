@@ -8,6 +8,7 @@ import net.lenni0451.commons.httpclient.requests.HttpRequest;
 import net.lenni0451.commons.httpclient.utils.HttpRequestUtils;
 import net.lenni0451.commons.httpclient.utils.URLWrapper;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.net.CookieManager;
 import java.net.http.HttpClient.Redirect;
@@ -28,8 +29,9 @@ public class HttpClientExecutor extends RequestExecutor {
         super(client);
     }
 
+    @Nonnull
     @Override
-    public HttpResponse execute(final HttpRequest request) throws IOException {
+    public HttpResponse execute(@Nonnull final HttpRequest request) throws IOException {
         java.net.http.HttpClient httpClient = this.buildClient(request);
         java.net.http.HttpRequest httpRequest = this.buildRequest(request);
         java.net.http.HttpResponse<byte[]> response;

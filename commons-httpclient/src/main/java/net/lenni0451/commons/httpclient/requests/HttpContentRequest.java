@@ -8,6 +8,7 @@ import java.net.URL;
 
 public class HttpContentRequest extends HttpRequest {
 
+    @Nullable
     private HttpContent content;
 
     public HttpContentRequest(final String method, final String url) throws MalformedURLException {
