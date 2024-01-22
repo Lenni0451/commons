@@ -21,7 +21,7 @@ import java.util.function.Function;
 
 public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBuilder {
 
-    private final RequestExecutor executor;
+    private RequestExecutor executor;
     @Nullable
     private CookieManager cookieManager = new CookieManager();
     private boolean followRedirects = true;
@@ -48,8 +48,25 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
         this(executorType::makeExecutor);
     }
 
-    private HttpClient(final Function<HttpClient, RequestExecutor> executorSupplier) {
+    /**
+     * Create a new http client with the given executor.<br>
+     * You'll only need this if you want to use a custom executor.
+     * For using an official executor use {@link ExecutorType} with {@link #HttpClient(ExecutorType)}.
+     *
+     * @param executorSupplier The supplier for the executor to use
+     */
+    public HttpClient(final Function<HttpClient, RequestExecutor> executorSupplier) {
+        this.setExecutor(executorSupplier);
+    }
+
+    /**
+     * Set the executor to use for all requests.
+     *
+     * @param executorSupplier The supplier for the executor to use
+     */
+    public HttpClient setExecutor(final Function<HttpClient, RequestExecutor> executorSupplier) {
         this.executor = executorSupplier.apply(this);
+        return this;
     }
 
     /**
@@ -185,6 +202,7 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
      * @throws IllegalStateException  If the maximum retry count was exceeded but no exception was thrown
      */
     public HttpResponse execute(@Nonnull final HttpRequest request) throws IOException {
+        System.out.println(this.executor.getClass());
         RetryHandler retryHandler = request.isRetryHandlerSet() ? request.getRetryHandler() : this.retryHandler;
 
         for (int connects = 0; connects <= retryHandler.getMaxConnectRetries(); connects++) {

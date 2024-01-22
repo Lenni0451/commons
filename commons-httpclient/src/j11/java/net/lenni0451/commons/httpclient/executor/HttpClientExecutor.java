@@ -18,9 +18,14 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This executor uses the Java 11 HttpClient to execute requests.<br>
+ * <b>Make sure you are running Java 11 or higher before loading this class!</b><br>
+ * The safest way to access this class is by using Reflection.
+ */
 public class HttpClientExecutor extends RequestExecutor {
 
-    HttpClientExecutor(final HttpClient client) {
+    public HttpClientExecutor(final HttpClient client) {
         super(client);
     }
 

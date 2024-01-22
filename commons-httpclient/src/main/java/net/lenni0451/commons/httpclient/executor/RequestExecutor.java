@@ -11,7 +11,7 @@ public abstract class RequestExecutor {
 
     protected final HttpClient client;
 
-    protected RequestExecutor(final HttpClient client) {
+    public RequestExecutor(final HttpClient client) {
         this.client = client;
     }
 
