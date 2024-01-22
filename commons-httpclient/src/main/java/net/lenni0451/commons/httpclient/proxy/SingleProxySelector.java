@@ -23,7 +23,8 @@ public class SingleProxySelector extends ProxySelector {
     }
 
     /**
-     * Set this proxy selector as default.
+     * Set this proxy selector as default.<br>
+     * This also sets the authenticator if username and password are set.
      */
     public void set() {
         ProxySelector.setDefault(this);
@@ -33,7 +34,7 @@ public class SingleProxySelector extends ProxySelector {
     }
 
     /**
-     * Reset the default proxy selector.
+     * Reset the default proxy selector and authenticator.
      */
     public void reset() {
         ProxySelector.setDefault(this.defaultProxySelector);

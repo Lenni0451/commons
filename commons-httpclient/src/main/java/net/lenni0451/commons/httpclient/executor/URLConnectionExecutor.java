@@ -37,7 +37,7 @@ public class URLConnectionExecutor extends RequestExecutor {
 
     private HttpURLConnection openConnection(final HttpRequest request, final CookieManager cookieManager) throws IOException {
         SingleProxySelector proxySelector = null;
-        if (this.client.getProxyHandler() != null && this.client.getProxyHandler().getProxy() != null) proxySelector = this.client.getProxyHandler().getProxySelector();
+        if (this.client.getProxyHandler().isProxySet()) proxySelector = this.client.getProxyHandler().getProxySelector();
         try {
             if (proxySelector != null) proxySelector.set();
             URL url = request.getURL();

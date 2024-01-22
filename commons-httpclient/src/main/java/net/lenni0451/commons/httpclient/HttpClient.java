@@ -28,8 +28,7 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
     private int connectTimeout = 10_000;
     private int readTimeout = 10_000;
     private RetryHandler retryHandler = new RetryHandler();
-    @Nullable
-    private ProxyHandler proxyHandler;
+    private ProxyHandler proxyHandler = new ProxyHandler();
 
     /**
      * Create a new http client with the default executor.
@@ -164,7 +163,6 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
     /**
      * @return The proxy handler
      */
-    @Nullable
     public ProxyHandler getProxyHandler() {
         return this.proxyHandler;
     }
@@ -174,7 +172,7 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
      *
      * @param proxyHandler The proxy handler
      */
-    public void setProxyHandler(@Nullable final ProxyHandler proxyHandler) {
+    public void setProxyHandler(@Nonnull final ProxyHandler proxyHandler) {
         this.proxyHandler = proxyHandler;
     }
 

@@ -2,7 +2,7 @@ package net.lenni0451.commons.httpclient.executor;
 
 import net.lenni0451.commons.httpclient.HttpClient;
 import net.lenni0451.commons.httpclient.HttpResponse;
-import net.lenni0451.commons.httpclient.proxy.ProxyHandler;
+import net.lenni0451.commons.httpclient.proxy.ProxyType;
 import net.lenni0451.commons.httpclient.requests.HttpContentRequest;
 import net.lenni0451.commons.httpclient.requests.HttpRequest;
 import net.lenni0451.commons.httpclient.utils.HttpRequestUtils;
@@ -58,8 +58,8 @@ public class HttpClientExecutor extends RequestExecutor {
                 builder.followRedirects(Redirect.NEVER);
                 break;
         }
-        if (this.client.getProxyHandler() != null && this.client.getProxyHandler().getProxy() != null) {
-            if (!ProxyHandler.ProxyType.HTTP.equals(this.client.getProxyHandler().getProxyType())) {
+        if (this.client.getProxyHandler().isProxySet()) {
+            if (!ProxyType.HTTP.equals(this.client.getProxyHandler().getProxyType())) {
                 throw new UnsupportedOperationException("Only HTTP proxies are supported with the Java 11 HttpClient");
             }
             builder.proxy(this.client.getProxyHandler().getProxySelector());
