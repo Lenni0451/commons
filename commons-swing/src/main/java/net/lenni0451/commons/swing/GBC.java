@@ -338,7 +338,22 @@ public class GBC {
 
     /**
      * Add the specified component to the parent container with the constraints.<br>
-     * The consumer will receive the component to allow for further configuration.
+     * The runnable will be called before the component is added to the parent container.
+     *
+     * @param component The component to add
+     * @param runnable  The runnable to configure the component
+     * @return This GBC
+     */
+    public GBC add(final Component component, final Runnable runnable) {
+        if (this.parent == null) throw new IllegalStateException("Cannot add component without parent");
+        runnable.run();
+        this.parent.add(component, this.constraints);
+        return this;
+    }
+
+    /**
+     * Add the specified component to the parent container with the constraints.<br>
+     * The consumer will be called before the component is added to the parent container.
      *
      * @param component The component to add
      * @param consumer  The consumer to configure the component
