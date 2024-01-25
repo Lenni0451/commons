@@ -40,7 +40,8 @@ public class FileUtils {
 
     /**
      * List all files in a directory recursively.<br>
-     * If the file is not a directory an empty list will be returned.
+     * If the file is not a directory an empty list will be returned.<br>
+     * Directories will be excluded from the list.
      *
      * @param file The directory to list
      * @return A list of all files in the directory
@@ -50,13 +51,14 @@ public class FileUtils {
     public static List<File> listFiles(final File file) {
         if (!file.isDirectory()) return Collections.emptyList();
         try (Stream<Path> s = Files.walk(file.toPath(), FileVisitOption.FOLLOW_LINKS)) {
-            return s.map(Path::toFile).collect(Collectors.toList());
+            return s.filter(Files::isRegularFile).map(Path::toFile).collect(Collectors.toList());
         }
     }
 
     /**
      * List all files in a directory recursively.<br>
-     * If the file is not a directory an empty list will be returned.
+     * If the file is not a directory an empty list will be returned.<br>
+     * Directories will be excluded from the list.
      *
      * @param file   The directory to list
      * @param filter The filter to use
@@ -67,7 +69,7 @@ public class FileUtils {
     public static List<File> listFiles(final File file, final Predicate<File> filter) {
         if (!file.isDirectory()) return Collections.emptyList();
         try (Stream<Path> s = Files.walk(file.toPath(), FileVisitOption.FOLLOW_LINKS)) {
-            return s.map(Path::toFile).filter(filter).collect(Collectors.toList());
+            return s.filter(Files::isRegularFile).map(Path::toFile).filter(filter).collect(Collectors.toList());
         }
     }
 
