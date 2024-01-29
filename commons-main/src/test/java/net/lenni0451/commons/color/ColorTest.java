@@ -59,6 +59,8 @@ class ColorTest {
         assertArrayEquals(F_ARGB, Color.fromARGB(F_ARGB).toARGBF());
         assertArrayEquals(F_BGRA, Color.fromBGRA(F_BGRA).toBGRAF());
         assertArrayEquals(F_ABGR, Color.fromABGR(F_ABGR).toABGRF());
+
+        assertEquals(Color.fromRGB(I_RGB), Color.fromHSB(Color.fromRGB(I_RGB).toHSB()));
     }
 
     @Test
@@ -101,6 +103,50 @@ class ColorTest {
         assertEquals(255, Color.fromRGB(255, 255, 0).distance(Color.fromRGB(255, 0, 0)));
         assertEquals(255 * 2, Color.fromRGB(255, 255, 255).distance(Color.fromRGB(255, 0, 0)));
         assertEquals(255 * 3, Color.fromRGB(255, 255, 255).distance(Color.fromRGB(0, 0, 0)));
+    }
+
+    @Test
+    void interpolate() {
+        Color color1 = Color.fromRGBA(255, 255, 255, 255);
+        Color color2 = Color.fromRGBA(0, 0, 0, 0);
+
+        Color interpolate0 = Color.interpolate(0, color1, color2);
+        this.checkColor(interpolate0, 255, 255, 255, 255);
+
+        Color interpolate1 = Color.interpolate(1, color1, color2);
+        this.checkColor(interpolate1, 0, 0, 0, 0);
+    }
+
+    @Test
+    void interpolateMultiple() {
+        Color[] colors = new Color[]{Color.fromRGBA(255, 0, 0, 0), Color.fromRGBA(0, 255, 0, 0), Color.fromRGBA(0, 0, 255, 0)};
+
+        Color interpolate0 = Color.interpolate(0, colors);
+        this.checkColor(interpolate0, 255, 0, 0, 0);
+
+        Color interpolate1 = Color.interpolate(0.5F, colors);
+        this.checkColor(interpolate1, 0, 255, 0, 0);
+
+        Color interpolate2 = Color.interpolate(1, colors);
+        this.checkColor(interpolate2, 0, 0, 255, 0);
+    }
+
+    @Test
+    void interpolateMultipleSteps() {
+        Color[] colors = new Color[]{Color.fromRGBA(255, 0, 0, 0), Color.fromRGBA(0, 255, 0, 0), Color.fromRGBA(0, 0, 255, 0)};
+        float[] steps = new float[]{0, 0.2F, 0.8F};
+
+        Color interpolate0 = Color.interpolate(0, colors, steps);
+        this.checkColor(interpolate0, 255, 0, 0, 0);
+
+        Color interpolate1 = Color.interpolate(0.2F, colors, steps);
+        this.checkColor(interpolate1, 0, 255, 0, 0);
+
+        Color interpolate2 = Color.interpolate(0.8F, colors, steps);
+        this.checkColor(interpolate2, 0, 0, 255, 0);
+
+        Color interpolate3 = Color.interpolate(1, colors, steps);
+        this.checkColor(interpolate3, 0, 0, 255, 0);
     }
 
     private void checkColor(final Color color, final int r, final int g, final int b, final int a) {
