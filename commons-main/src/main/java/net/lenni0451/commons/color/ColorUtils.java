@@ -3,7 +3,7 @@ package net.lenni0451.commons.color;
 import lombok.experimental.UtilityClass;
 import net.lenni0451.commons.math.MathUtils;
 
-import java.awt.*;
+import java.awt.Color;
 
 @UtilityClass
 public class ColorUtils {

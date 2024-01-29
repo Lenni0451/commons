@@ -1,6 +1,6 @@
 package net.lenni0451.commons.color;
 
-import java.awt.*;
+import java.awt.Color;
 
 /**
  * Convert colors between different formats.
