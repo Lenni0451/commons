@@ -1,5 +1,7 @@
 package net.lenni0451.commons.color;
 
+import net.lenni0451.commons.math.MathUtils;
+
 public class Color {
 
     public static final Color BLACK = Color.fromRGB(0, 0, 0);
@@ -483,9 +485,9 @@ public class Color {
         if (b > 0 && b < gray) b = gray;
 
         return new Color(
-                Math.min((int) (r / factor), 255),
-                Math.min((int) (g / factor), 255),
-                Math.min((int) (b / factor), 255),
+                MathUtils.clamp((int) (r / factor), 0, 255),
+                MathUtils.clamp((int) (g / factor), 0, 255),
+                MathUtils.clamp((int) (b / factor), 0, 255),
                 a
         );
     }
@@ -505,11 +507,96 @@ public class Color {
      */
     public Color darker(final float factor) {
         return new Color(
-                Math.max((int) (this.getRed() * factor), 0),
-                Math.max((int) (this.getGreen() * factor), 0),
-                Math.max((int) (this.getBlue() * factor), 0),
+                MathUtils.clamp((int) (this.getRed() * factor), 0, 255),
+                MathUtils.clamp((int) (this.getGreen() * factor), 0, 255),
+                MathUtils.clamp((int) (this.getBlue() * factor), 0, 255),
                 this.getAlpha()
         );
+    }
+
+    /**
+     * Invert this color.<br>
+     * The alpha value will not be changed.
+     *
+     * @return The inverted color
+     */
+    public Color invert() {
+        return new Color(255 - this.getRed(), 255 - this.getGreen(), 255 - this.getBlue(), this.getAlpha());
+    }
+
+    /**
+     * Multiply this color with a factor.<br>
+     * The alpha value will not be changed.
+     *
+     * @param multiplier The factor to multiply with
+     * @return The multiplied color
+     */
+    public Color multiply(final float multiplier) {
+        return new Color(
+                MathUtils.clamp((int) (this.getRed() * multiplier), 0, 255),
+                MathUtils.clamp((int) (this.getGreen() * multiplier), 0, 255),
+                MathUtils.clamp((int) (this.getBlue() * multiplier), 0, 255),
+                this.getAlpha()
+        );
+    }
+
+    /**
+     * Multiply this colors alpha value with a factor.<br>
+     * The other values will not be changed.
+     *
+     * @param multiplier The factor to multiply with
+     * @return The multiplied color
+     */
+    public Color multiplyAlpha(final float multiplier) {
+        return new Color(
+                this.getRed(),
+                this.getGreen(),
+                this.getBlue(),
+                MathUtils.clamp((int) (this.getAlpha() * multiplier), 0, 255)
+        );
+    }
+
+    /**
+     * Multiply this color with a factor.
+     *
+     * @param multiplier The factor to multiply with
+     * @return The multiplied color
+     */
+    public Color multiplyAll(final float multiplier) {
+        return new Color(
+                MathUtils.clamp((int) (this.getRed() * multiplier), 0, 255),
+                MathUtils.clamp((int) (this.getGreen() * multiplier), 0, 255),
+                MathUtils.clamp((int) (this.getBlue() * multiplier), 0, 255),
+                MathUtils.clamp((int) (this.getAlpha() * multiplier), 0, 255)
+        );
+    }
+
+    /**
+     * Multiply this color with another color.<br>
+     * The values of this color will be multiplied with the float values of the other color.
+     *
+     * @param color The color to multiply with
+     * @return The multiplied color
+     */
+    public Color multiply(final Color color) {
+        return new Color(
+                MathUtils.clamp((int) (this.getRed() * color.getRedF()), 0, 255),
+                MathUtils.clamp((int) (this.getGreen() * color.getGreenF()), 0, 255),
+                MathUtils.clamp((int) (this.getBlue() * color.getBlueF()), 0, 255),
+                MathUtils.clamp((int) (this.getAlpha() * color.getAlphaF()), 0, 255)
+        );
+    }
+
+    /**
+     * Calculate the distance between this color and another color.
+     *
+     * @param color The other color
+     * @return The distance between the colors
+     */
+    public double distance(final Color color) {
+        return Math.abs(this.getRed() - color.getRed())
+                + Math.abs(this.getGreen() - color.getGreen())
+                + Math.abs(this.getBlue() - color.getBlue());
     }
 
 }

@@ -3,7 +3,7 @@ package net.lenni0451.commons.color;
 import net.lenni0451.commons.math.MathUtils;
 import org.junit.jupiter.api.Test;
 
-import java.awt.*;
+import java.awt.Color;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;

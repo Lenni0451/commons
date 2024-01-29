@@ -2,7 +2,7 @@ package net.lenni0451.commons.color;
 
 import org.junit.jupiter.api.Test;
 
-import java.awt.*;
+import java.awt.Color;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;

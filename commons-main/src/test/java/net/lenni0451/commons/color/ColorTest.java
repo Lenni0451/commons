@@ -83,6 +83,26 @@ class ColorTest {
         assertEquals(awtBlue.darker().getRGB(), Color.BLUE.darker().toARGB());
     }
 
+    @Test
+    void invert() {
+        this.checkColor(Color.fromRGB(0, 255, 255).invert(), 255, 0, 0, 255);
+    }
+
+    @Test
+    void multiply() {
+        this.checkColor(Color.fromRGB(255, 255, 255).multiply(0.5F), 127, 127, 127, 255);
+        this.checkColor(Color.fromRGB(255, 255, 255).multiplyAlpha(0.5F), 255, 255, 255, 127);
+        this.checkColor(Color.fromRGB(255, 255, 255).multiplyAll(0.5F), 127, 127, 127, 127);
+        this.checkColor(Color.fromRGB(255, 255, 255).multiply(Color.fromRGBA(0.5F, 0.5F, 0.5F, 0.5F)), 127, 127, 127, 127);
+    }
+
+    @Test
+    void distance() {
+        assertEquals(255, Color.fromRGB(255, 255, 0).distance(Color.fromRGB(255, 0, 0)));
+        assertEquals(255 * 2, Color.fromRGB(255, 255, 255).distance(Color.fromRGB(255, 0, 0)));
+        assertEquals(255 * 3, Color.fromRGB(255, 255, 255).distance(Color.fromRGB(0, 0, 0)));
+    }
+
     private void checkColor(final Color color, final int r, final int g, final int b, final int a) {
         assertEquals(r, color.getRed());
         assertEquals(g, color.getGreen());
