@@ -776,7 +776,7 @@ public class Color {
      * @param color The other color
      * @return The distance between the colors
      */
-    public double distance(final Color color) {
+    public int distance(final Color color) {
         return Math.abs(this.getRed() - color.getRed())
                 + Math.abs(this.getGreen() - color.getGreen())
                 + Math.abs(this.getBlue() - color.getBlue());
