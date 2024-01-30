@@ -30,12 +30,12 @@ class ColorTest {
         this.checkColor(Color.fromBGRA(I_BGRA), 0xAA, 0xBB, 0xCC, 0xFF);
         this.checkColor(Color.fromABGR(I_ABGR), 0xAA, 0xBB, 0xCC, 0xFF);
 
-        this.checkColor(Color.fromRGB(F_RGB), 0, 255, 255, 255);
-        this.checkColor(Color.fromBGR(F_BGR), 0, 255, 255, 255);
-        this.checkColor(Color.fromRGBA(F_RGBA), 0, 255, 0, 255);
-        this.checkColor(Color.fromARGB(F_ARGB), 0, 255, 0, 255);
-        this.checkColor(Color.fromBGRA(F_BGRA), 255, 0, 0, 255);
-        this.checkColor(Color.fromABGR(F_ABGR), 0, 0, 255, 255);
+        this.checkColor(Color.fromRGBF(F_RGB), 0, 255, 255, 255);
+        this.checkColor(Color.fromBGRF(F_BGR), 0, 255, 255, 255);
+        this.checkColor(Color.fromRGBAF(F_RGBA), 0, 255, 0, 255);
+        this.checkColor(Color.fromARGBF(F_ARGB), 0, 255, 0, 255);
+        this.checkColor(Color.fromBGRAF(F_BGRA), 255, 0, 0, 255);
+        this.checkColor(Color.fromABGRF(F_ABGR), 0, 0, 255, 255);
     }
 
     @Test
@@ -53,12 +53,12 @@ class ColorTest {
         assertEquals(I_BGRA, Color.fromBGRA(I_BGRA).toBGRA());
         assertEquals(I_ABGR, Color.fromABGR(I_ABGR).toABGR());
 
-        assertArrayEquals(F_RGB, Color.fromRGB(F_RGB).toRGBF());
-        assertArrayEquals(F_BGR, Color.fromBGR(F_BGR).toBGRF());
-        assertArrayEquals(F_RGBA, Color.fromRGBA(F_RGBA).toRGBAF());
-        assertArrayEquals(F_ARGB, Color.fromARGB(F_ARGB).toARGBF());
-        assertArrayEquals(F_BGRA, Color.fromBGRA(F_BGRA).toBGRAF());
-        assertArrayEquals(F_ABGR, Color.fromABGR(F_ABGR).toABGRF());
+        assertArrayEquals(F_RGB, Color.fromRGBF(F_RGB).toRGBF());
+        assertArrayEquals(F_BGR, Color.fromBGRF(F_BGR).toBGRF());
+        assertArrayEquals(F_RGBA, Color.fromRGBAF(F_RGBA).toRGBAF());
+        assertArrayEquals(F_ARGB, Color.fromARGBF(F_ARGB).toARGBF());
+        assertArrayEquals(F_BGRA, Color.fromBGRAF(F_BGRA).toBGRAF());
+        assertArrayEquals(F_ABGR, Color.fromABGRF(F_ABGR).toABGRF());
 
         assertEquals(Color.fromRGB(I_RGB), Color.fromHSB(Color.fromRGB(I_RGB).toHSB()));
     }
@@ -95,7 +95,7 @@ class ColorTest {
         this.checkColor(Color.fromRGB(255, 255, 255).multiply(0.5F), 127, 127, 127, 255);
         this.checkColor(Color.fromRGB(255, 255, 255).multiplyAlpha(0.5F), 255, 255, 255, 127);
         this.checkColor(Color.fromRGB(255, 255, 255).multiplyAll(0.5F), 127, 127, 127, 127);
-        this.checkColor(Color.fromRGB(255, 255, 255).multiply(Color.fromRGBA(0.5F, 0.5F, 0.5F, 0.5F)), 127, 127, 127, 127);
+        this.checkColor(Color.fromRGB(255, 255, 255).multiply(Color.fromRGBAF(0.5F, 0.5F, 0.5F, 0.5F)), 127, 127, 127, 127);
     }
 
     @Test

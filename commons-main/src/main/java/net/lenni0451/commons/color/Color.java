@@ -123,8 +123,8 @@ public class Color {
      * @param rgb The float array
      * @return The created color
      */
-    public static Color fromRGB(final float[] rgb) {
-        return fromRGB(rgb[0], rgb[1], rgb[2]);
+    public static Color fromRGBF(final float[] rgb) {
+        return fromRGBF(rgb[0], rgb[1], rgb[2]);
     }
 
     /**
@@ -136,8 +136,8 @@ public class Color {
      * @param bgr The float array
      * @return The created color
      */
-    public static Color fromBGR(final float[] bgr) {
-        return fromRGB(bgr[2], bgr[1], bgr[0]);
+    public static Color fromBGRF(final float[] bgr) {
+        return fromRGBF(bgr[2], bgr[1], bgr[0]);
     }
 
     /**
@@ -149,8 +149,8 @@ public class Color {
      * @param b The blue value
      * @return The created color
      */
-    public static Color fromRGB(final float r, final float g, final float b) {
-        return fromRGBA(r, g, b, 1);
+    public static Color fromRGBF(final float r, final float g, final float b) {
+        return fromRGBAF(r, g, b, 1);
     }
 
     /**
@@ -162,8 +162,8 @@ public class Color {
      * @param rgba The float array
      * @return The created color
      */
-    public static Color fromRGBA(final float[] rgba) {
-        return fromRGBA(rgba[0], rgba[1], rgba[2], rgba[3]);
+    public static Color fromRGBAF(final float[] rgba) {
+        return fromRGBAF(rgba[0], rgba[1], rgba[2], rgba[3]);
     }
 
     /**
@@ -175,8 +175,8 @@ public class Color {
      * @param argb The float array
      * @return The created color
      */
-    public static Color fromARGB(final float[] argb) {
-        return fromRGBA(argb[1], argb[2], argb[3], argb[0]);
+    public static Color fromARGBF(final float[] argb) {
+        return fromRGBAF(argb[1], argb[2], argb[3], argb[0]);
     }
 
     /**
@@ -188,8 +188,8 @@ public class Color {
      * @param bgra The float array
      * @return The created color
      */
-    public static Color fromBGRA(final float[] bgra) {
-        return fromRGBA(bgra[2], bgra[1], bgra[0], bgra[3]);
+    public static Color fromBGRAF(final float[] bgra) {
+        return fromRGBAF(bgra[2], bgra[1], bgra[0], bgra[3]);
     }
 
     /**
@@ -201,8 +201,8 @@ public class Color {
      * @param abgr The float array
      * @return The created color
      */
-    public static Color fromABGR(final float[] abgr) {
-        return fromRGBA(abgr[3], abgr[2], abgr[1], abgr[0]);
+    public static Color fromABGRF(final float[] abgr) {
+        return fromRGBAF(abgr[3], abgr[2], abgr[1], abgr[0]);
     }
 
     /**
@@ -215,7 +215,7 @@ public class Color {
      * @param a The alpha value
      * @return The created color
      */
-    public static Color fromRGBA(final float r, final float g, final float b, final float a) {
+    public static Color fromRGBAF(final float r, final float g, final float b, final float a) {
         return new Color(
                 (int) (r * 255),
                 (int) (g * 255),
@@ -247,7 +247,7 @@ public class Color {
      * @return The created color
      */
     public static Color fromHSB(final float hue, final float saturation, final float brightness) {
-        if (saturation == 0) return fromRGB(brightness, brightness, brightness);
+        if (saturation == 0) return fromRGBF(brightness, brightness, brightness);
         float r;
         float g;
         float b;
@@ -290,7 +290,7 @@ public class Color {
             default:
                 throw new IllegalStateException("Unable to convert HSB to RGB. Input:" + hue + ", " + saturation + ", " + brightness);
         }
-        return fromRGB(r, g, b);
+        return fromRGBF(r, g, b);
     }
 
 
