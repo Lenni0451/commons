@@ -29,7 +29,7 @@ public class Color {
      * @return The created color
      */
     public static Color fromRGB(final int rgb) {
-        return fromRGB(rgb >> 16, rgb >> 8, rgb);
+        return fromRGB((rgb >> 16) & 255, (rgb >> 8) & 255, rgb & 255);
     }
 
     /**
@@ -40,7 +40,7 @@ public class Color {
      * @return The created color
      */
     public static Color fromBGR(final int bgr) {
-        return fromRGB(bgr, bgr >> 8, bgr >> 16);
+        return fromRGB(bgr & 255, (bgr >> 8) & 255, (bgr >> 16) & 255);
     }
 
     /**
@@ -64,7 +64,7 @@ public class Color {
      * @return The created color
      */
     public static Color fromRGBA(final int rgba) {
-        return fromRGBA(rgba >> 24, rgba >> 16, rgba >> 8, rgba);
+        return fromRGBA((rgba >> 24) & 255, (rgba >> 16) & 255, (rgba >> 8) & 255, rgba & 255);
     }
 
     /**
@@ -75,7 +75,7 @@ public class Color {
      * @return The created color
      */
     public static Color fromARGB(final int argb) {
-        return fromRGBA(argb >> 16, argb >> 8, argb, argb >> 24);
+        return fromRGBA((argb >> 16) & 255, (argb >> 8) & 255, argb & 255, (argb >> 24) & 255);
     }
 
     /**
@@ -86,7 +86,7 @@ public class Color {
      * @return The created color
      */
     public static Color fromBGRA(final int bgra) {
-        return fromRGBA(bgra >> 8, bgra >> 16, bgra >> 24, bgra);
+        return fromRGBA((bgra >> 8) & 255, (bgra >> 16) & 255, (bgra >> 24) & 255, bgra & 255);
     }
 
     /**
@@ -97,7 +97,7 @@ public class Color {
      * @return The created color
      */
     public static Color fromABGR(final int abgr) {
-        return fromRGBA(abgr, abgr >> 8, abgr >> 16, abgr >> 24);
+        return fromRGBA(abgr & 255, (abgr >> 8) & 255, (abgr >> 16) & 255, (abgr >> 24) & 255);
     }
 
     /**
@@ -111,7 +111,27 @@ public class Color {
      * @return The created color
      */
     public static Color fromRGBA(final int r, final int g, final int b, final int a) {
-        return new Color(r, g, b, a);
+        verify(r, g, b, a);
+        return directRGBA(r, g, b, a);
+    }
+
+    /**
+     * Directly create a color from red, green, blue and alpha values.<br>
+     * This method does not perform bounds checking.
+     *
+     * @param r The red value
+     * @param g The green value
+     * @param b The blue value
+     * @param a The alpha value
+     * @return The created color
+     */
+    public static Color directRGBA(final int r, final int g, final int b, final int a) {
+        return new Color(
+                (byte) (r & 255),
+                (byte) (g & 255),
+                (byte) (b & 255),
+                (byte) (a & 255)
+        );
     }
 
     /**
@@ -216,11 +236,12 @@ public class Color {
      * @return The created color
      */
     public static Color fromRGBAF(final float r, final float g, final float b, final float a) {
-        return new Color(
-                (int) (r * 255),
-                (int) (g * 255),
-                (int) (b * 255),
-                (int) (a * 255)
+        verify(r, g, b, a);
+        return directRGBA(
+                (int) (r * 255) & 255,
+                (int) (g * 255) & 255,
+                (int) (b * 255) & 255,
+                (int) (a * 255) & 255
         );
     }
 
@@ -322,7 +343,7 @@ public class Color {
      * @see ColorUtils#interpolate(float, java.awt.Color, java.awt.Color)
      */
     public static Color interpolate(final float progress, final Color color1, final Color color2) {
-        return new Color(
+        return directRGBA(
                 MathUtils.clamp((int) (color1.getRed() + (color2.getRed() - color1.getRed()) * progress), 0, 255),
                 MathUtils.clamp((int) (color1.getGreen() + (color2.getGreen() - color1.getGreen()) * progress), 0, 255),
                 MathUtils.clamp((int) (color1.getBlue() + (color2.getBlue() - color1.getBlue()) * progress), 0, 255),
@@ -384,11 +405,11 @@ public class Color {
     private final byte b;
     private final byte a;
 
-    private Color(final int r, final int g, final int b, final int a) {
-        this.r = (byte) (r & 255);
-        this.g = (byte) (g & 255);
-        this.b = (byte) (b & 255);
-        this.a = (byte) (a & 255);
+    private Color(final byte r, final byte g, final byte b, final byte a) {
+        this.r = r;
+        this.g = g;
+        this.b = b;
+        this.a = a;
     }
 
     /**
@@ -413,7 +434,8 @@ public class Color {
      */
     public Color withRed(final int r) {
         if (r == this.r) return this;
-        return new Color(r, this.g, this.b, this.a);
+        verify(r, "Red");
+        return new Color((byte) (r & 255), this.g, this.b, this.a);
     }
 
     /**
@@ -423,6 +445,7 @@ public class Color {
      * @return The new color
      */
     public Color withRedF(final float r) {
+        verify(r, "Red");
         return this.withRed((int) (r * 255));
     }
 
@@ -448,7 +471,8 @@ public class Color {
      */
     public Color withGreen(final int g) {
         if (g == this.g) return this;
-        return new Color(this.r, g, this.b, this.a);
+        verify(g, "Green");
+        return new Color(this.r, (byte) (g & 255), this.b, this.a);
     }
 
     /**
@@ -458,6 +482,7 @@ public class Color {
      * @return The new color
      */
     public Color withGreenF(final float g) {
+        verify(g, "Green");
         return this.withGreen((int) (g * 255));
     }
 
@@ -483,7 +508,8 @@ public class Color {
      */
     public Color withBlue(final int b) {
         if (b == this.b) return this;
-        return new Color(this.r, this.g, b, this.a);
+        verify(b, "Blue");
+        return new Color(this.r, this.g, (byte) (b & 255), this.a);
     }
 
     /**
@@ -493,6 +519,7 @@ public class Color {
      * @return The new color
      */
     public Color withBlueF(final float b) {
+        verify(b, "Blue");
         return this.withBlue((int) (b * 255));
     }
 
@@ -518,7 +545,8 @@ public class Color {
      */
     public Color withAlpha(final int a) {
         if (a == this.a) return this;
-        return new Color(this.r, this.g, this.b, a);
+        verify(a, "Alpha");
+        return new Color(this.r, this.g, this.b, (byte) (a & 255));
     }
 
     /**
@@ -528,6 +556,7 @@ public class Color {
      * @return The new color
      */
     public Color withAlphaF(final float a) {
+        verify(a, "Alpha");
         return this.withAlpha((int) (a * 255));
     }
 
@@ -662,12 +691,12 @@ public class Color {
         int a = this.getAlpha();
 
         int gray = (int) (1.0 / (1.0 - factor));
-        if (r == 0 && g == 0 && b == 0) return new Color(gray, gray, gray, a);
+        if (r == 0 && g == 0 && b == 0) return directRGBA(gray, gray, gray, a);
         if (r > 0 && r < gray) r = gray;
         if (g > 0 && g < gray) g = gray;
         if (b > 0 && b < gray) b = gray;
 
-        return new Color(
+        return directRGBA(
                 MathUtils.clamp((int) (r / factor), 0, 255),
                 MathUtils.clamp((int) (g / factor), 0, 255),
                 MathUtils.clamp((int) (b / factor), 0, 255),
@@ -689,7 +718,7 @@ public class Color {
      * @return The new color
      */
     public Color darker(final float factor) {
-        return new Color(
+        return directRGBA(
                 MathUtils.clamp((int) (this.getRed() * factor), 0, 255),
                 MathUtils.clamp((int) (this.getGreen() * factor), 0, 255),
                 MathUtils.clamp((int) (this.getBlue() * factor), 0, 255),
@@ -704,7 +733,7 @@ public class Color {
      * @return The inverted color
      */
     public Color invert() {
-        return new Color(255 - this.getRed(), 255 - this.getGreen(), 255 - this.getBlue(), this.getAlpha());
+        return directRGBA(255 - this.getRed(), 255 - this.getGreen(), 255 - this.getBlue(), this.getAlpha());
     }
 
     /**
@@ -715,7 +744,7 @@ public class Color {
      * @return The multiplied color
      */
     public Color multiply(final float multiplier) {
-        return new Color(
+        return directRGBA(
                 MathUtils.clamp((int) (this.getRed() * multiplier), 0, 255),
                 MathUtils.clamp((int) (this.getGreen() * multiplier), 0, 255),
                 MathUtils.clamp((int) (this.getBlue() * multiplier), 0, 255),
@@ -731,7 +760,7 @@ public class Color {
      * @return The multiplied color
      */
     public Color multiplyAlpha(final float multiplier) {
-        return new Color(
+        return directRGBA(
                 this.getRed(),
                 this.getGreen(),
                 this.getBlue(),
@@ -746,7 +775,7 @@ public class Color {
      * @return The multiplied color
      */
     public Color multiplyAll(final float multiplier) {
-        return new Color(
+        return directRGBA(
                 MathUtils.clamp((int) (this.getRed() * multiplier), 0, 255),
                 MathUtils.clamp((int) (this.getGreen() * multiplier), 0, 255),
                 MathUtils.clamp((int) (this.getBlue() * multiplier), 0, 255),
@@ -762,7 +791,7 @@ public class Color {
      * @return The multiplied color
      */
     public Color multiply(final Color color) {
-        return new Color(
+        return directRGBA(
                 MathUtils.clamp((int) (this.getRed() * color.getRedF()), 0, 255),
                 MathUtils.clamp((int) (this.getGreen() * color.getGreenF()), 0, 255),
                 MathUtils.clamp((int) (this.getBlue() * color.getBlueF()), 0, 255),
@@ -782,6 +811,28 @@ public class Color {
                 + Math.abs(this.getBlue() - color.getBlue());
     }
 
+
+    private static void verify(final int i, final String channel) {
+        if (i < 0 || i > 255) throw new IllegalArgumentException(channel + " value must be between 0 and 255");
+    }
+
+    private static void verify(final int r, final int g, final int b, final int a) {
+        if (r < 0 || r > 255) throw new IllegalArgumentException("Red value must be between 0 and 255");
+        if (g < 0 || g > 255) throw new IllegalArgumentException("Green value must be between 0 and 255");
+        if (b < 0 || b > 255) throw new IllegalArgumentException("Blue value must be between 0 and 255");
+        if (a < 0 || a > 255) throw new IllegalArgumentException("Alpha value must be between 0 and 255");
+    }
+
+    private static void verify(final float f, final String channel) {
+        if (f < 0 || f > 1) throw new IllegalArgumentException(channel + " value must be between 0 and 1");
+    }
+
+    private static void verify(final float r, final float g, final float b, final float a) {
+        if (r < 0 || r > 1) throw new IllegalArgumentException("Red value must be between 0 and 1");
+        if (g < 0 || g > 1) throw new IllegalArgumentException("Green value must be between 0 and 1");
+        if (b < 0 || b > 1) throw new IllegalArgumentException("Blue value must be between 0 and 1");
+        if (a < 0 || a > 1) throw new IllegalArgumentException("Alpha value must be between 0 and 1");
+    }
 
     @Override
     public String toString() {
