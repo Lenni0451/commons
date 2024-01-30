@@ -2,6 +2,8 @@ package net.lenni0451.commons.httpclient.executor;
 
 import net.lenni0451.commons.httpclient.HttpClient;
 import net.lenni0451.commons.httpclient.HttpResponse;
+import net.lenni0451.commons.httpclient.constants.Headers;
+import net.lenni0451.commons.httpclient.content.HttpContent;
 import net.lenni0451.commons.httpclient.proxy.ProxyType;
 import net.lenni0451.commons.httpclient.requests.HttpContentRequest;
 import net.lenni0451.commons.httpclient.requests.HttpRequest;
@@ -75,8 +77,9 @@ public class HttpClientExecutor extends RequestExecutor {
         java.net.http.HttpRequest.Builder builder = java.net.http.HttpRequest.newBuilder();
         builder.uri(new URLWrapper(request.getURL()).toURI());
         if (request instanceof HttpContentRequest && ((HttpContentRequest) request).hasContent()) {
-            HttpContentRequest contentRequest = (HttpContentRequest) request;
-            builder.method(request.getMethod(), BodyPublishers.ofByteArray(contentRequest.getContent().getAsBytes()));
+            HttpContent content = ((HttpContentRequest) request).getContent();
+            builder.header(Headers.CONTENT_TYPE, content.getContentType().toString());
+            builder.method(request.getMethod(), BodyPublishers.ofByteArray(content.getAsBytes()));
         } else {
             builder.method(request.getMethod(), BodyPublishers.noBody());
         }

@@ -2,6 +2,7 @@ package net.lenni0451.commons.httpclient;
 
 import net.lenni0451.commons.httpclient.constants.Headers;
 import net.lenni0451.commons.httpclient.constants.StatusCodes;
+import net.lenni0451.commons.httpclient.content.impl.ByteArrayContent;
 import net.lenni0451.commons.httpclient.content.impl.StringContent;
 import net.lenni0451.commons.httpclient.content.impl.URLEncodedFormContent;
 import net.lenni0451.commons.httpclient.exceptions.RetryExceededException;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -115,6 +117,14 @@ class HttpClientTest {
         HttpRequest request = assertDoesNotThrow(() -> this.client.get(baseUrl + "/retryCookie"));
         request.setRetryHandler(new RetryHandler(0, 1));
         assertThrows(RetryExceededException.class, () -> this.client.execute(request));
+    }
+
+    @Test
+    void contentType() throws IOException {
+        HttpRequest request = this.client.post(baseUrl + "/contentType").setContent(new ByteArrayContent("Hello World".getBytes(StandardCharsets.UTF_8)));
+        HttpResponse response = this.client.execute(request);
+        assertEquals(200, response.getStatusCode());
+        assertEquals("application/octet-stream", response.getContentAsString());
     }
 
 }
