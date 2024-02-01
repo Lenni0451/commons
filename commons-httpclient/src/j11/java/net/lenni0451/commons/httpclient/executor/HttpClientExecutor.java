@@ -7,7 +7,6 @@ import net.lenni0451.commons.httpclient.content.HttpContent;
 import net.lenni0451.commons.httpclient.proxy.ProxyType;
 import net.lenni0451.commons.httpclient.requests.HttpContentRequest;
 import net.lenni0451.commons.httpclient.requests.HttpRequest;
-import net.lenni0451.commons.httpclient.utils.HttpRequestUtils;
 import net.lenni0451.commons.httpclient.utils.URLWrapper;
 
 import javax.annotation.Nonnull;
@@ -47,7 +46,7 @@ public class HttpClientExecutor extends RequestExecutor {
 
     private java.net.http.HttpClient buildClient(final HttpRequest request) {
         java.net.http.HttpClient.Builder builder = java.net.http.HttpClient.newBuilder();
-        CookieManager cookieManager = request.isCookieManagerSet() ? request.getCookieManager() : this.client.getCookieManager();
+        CookieManager cookieManager = this.getCookieManager(request);
         if (cookieManager != null) builder.cookieHandler(cookieManager);
         builder.connectTimeout(Duration.ofMillis(this.client.getConnectTimeout()));
         switch (request.getFollowRedirects()) {
@@ -63,7 +62,7 @@ public class HttpClientExecutor extends RequestExecutor {
         }
         if (this.client.getProxyHandler().isProxySet()) {
             if (!ProxyType.HTTP.equals(this.client.getProxyHandler().getProxyType())) {
-                throw new UnsupportedOperationException("Only HTTP proxies are supported with the Java 11 HttpClient");
+                throw new UnsupportedOperationException("The Java 11 HttpClient only supports HTTP proxies");
             }
             builder.proxy(this.client.getProxyHandler().getProxySelector());
             if (this.client.getProxyHandler().getUsername() != null && this.client.getProxyHandler().getPassword() != null) {
@@ -78,13 +77,12 @@ public class HttpClientExecutor extends RequestExecutor {
         builder.uri(new URLWrapper(request.getURL()).toURI());
         if (request instanceof HttpContentRequest && ((HttpContentRequest) request).hasContent()) {
             HttpContent content = ((HttpContentRequest) request).getContent();
-            builder.header(Headers.CONTENT_TYPE, content.getContentType().toString());
             builder.method(request.getMethod(), BodyPublishers.ofByteArray(content.getAsBytes()));
         } else {
             builder.method(request.getMethod(), BodyPublishers.noBody());
         }
-        Map<String, List<String>> headers = HttpRequestUtils.mergeHeaders(this.client.getHeaders(), request.getHeaders());
-        for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
+        for (Map.Entry<String, List<String>> entry : this.getHeaders(request, null).entrySet()) {
+            if (entry.getKey().equalsIgnoreCase(Headers.CONTENT_LENGTH)) continue; //Java 11 HttpClient does not allow manually setting the content length
             for (String value : entry.getValue()) builder.header(entry.getKey(), value);
         }
         return builder.build();

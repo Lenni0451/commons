@@ -2,8 +2,6 @@ package net.lenni0451.commons.httpclient.executor;
 
 import net.lenni0451.commons.httpclient.HttpClient;
 import net.lenni0451.commons.httpclient.HttpResponse;
-import net.lenni0451.commons.httpclient.constants.Headers;
-import net.lenni0451.commons.httpclient.content.HttpContent;
 import net.lenni0451.commons.httpclient.proxy.SingleProxySelector;
 import net.lenni0451.commons.httpclient.requests.HttpContentRequest;
 import net.lenni0451.commons.httpclient.requests.HttpRequest;
@@ -16,9 +14,6 @@ import java.io.OutputStream;
 import java.net.CookieManager;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -31,7 +26,7 @@ public class URLConnectionExecutor extends RequestExecutor {
     @Nonnull
     @Override
     public HttpResponse execute(@Nonnull final HttpRequest request) throws IOException {
-        CookieManager cookieManager = request.isCookieManagerSet() ? request.getCookieManager() : this.client.getCookieManager();
+        CookieManager cookieManager = this.getCookieManager(request);
         HttpURLConnection connection = this.openConnection(request, cookieManager);
         return this.executeRequest(connection, cookieManager, request);
     }
@@ -52,20 +47,7 @@ public class URLConnectionExecutor extends RequestExecutor {
     }
 
     private void setupConnection(final HttpURLConnection connection, @Nullable final CookieManager cookieManager, final HttpRequest request) throws IOException {
-        Map<String, List<String>> headers = new HashMap<>();
-        if (request instanceof HttpContentRequest) {
-            HttpContent content = ((HttpContentRequest) request).getContent();
-            if (content != null) {
-                headers.put(Headers.CONTENT_TYPE, Collections.singletonList(content.getContentType().toString()));
-                headers.put(Headers.CONTENT_LENGTH, Collections.singletonList(String.valueOf(content.getContentLength())));
-            }
-        }
-        HttpRequestUtils.setHeaders(connection, HttpRequestUtils.mergeHeaders(
-                HttpRequestUtils.getCookieHeaders(cookieManager, request.getURL()),
-                headers,
-                this.client.getHeaders(),
-                request.getHeaders()
-        ));
+        HttpRequestUtils.setHeaders(connection, this.getHeaders(request, cookieManager));
 
         connection.setConnectTimeout(this.client.getConnectTimeout());
         connection.setReadTimeout(this.client.getReadTimeout());
