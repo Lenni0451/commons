@@ -75,6 +75,7 @@ public class HttpClientExecutor extends RequestExecutor {
     private java.net.http.HttpRequest buildRequest(final HttpRequest request) throws IOException {
         java.net.http.HttpRequest.Builder builder = java.net.http.HttpRequest.newBuilder();
         builder.uri(new URLWrapper(request.getURL()).toURI());
+        builder.timeout(Duration.ofMillis(this.client.getReadTimeout()));
         if (request instanceof HttpContentRequest && ((HttpContentRequest) request).hasContent()) {
             HttpContent content = ((HttpContentRequest) request).getContent();
             builder.method(request.getMethod(), BodyPublishers.ofByteArray(content.getAsBytes()));
