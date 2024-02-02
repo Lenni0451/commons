@@ -51,10 +51,10 @@ public class HttpClientExecutor extends RequestExecutor {
         builder.connectTimeout(Duration.ofMillis(this.client.getConnectTimeout()));
         switch (request.getFollowRedirects()) {
             case NOT_SET:
-                builder.followRedirects(this.client.isFollowRedirects() ? Redirect.ALWAYS : Redirect.NEVER);
+                builder.followRedirects(this.client.isFollowRedirects() ? Redirect.NORMAL : Redirect.NEVER);
                 break;
             case FOLLOW:
-                builder.followRedirects(Redirect.ALWAYS);
+                builder.followRedirects(Redirect.NORMAL);
                 break;
             case IGNORE:
                 builder.followRedirects(Redirect.NEVER);
