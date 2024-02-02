@@ -41,64 +41,64 @@ class HttpClientTest {
     }
 
     @Test
-    void testGet() {
-        HttpRequest request = assertDoesNotThrow(() -> this.client.get(baseUrl + "/echo"));
-        HttpResponse response = assertDoesNotThrow(() -> this.client.execute(request));
+    void testGet() throws IOException {
+        HttpRequest request = this.client.get(baseUrl + "/echo");
+        HttpResponse response = this.client.execute(request);
         assertEquals(StatusCodes.OK, response.getStatusCode());
     }
 
     @Test
-    void testErrorGet() {
-        HttpRequest request = assertDoesNotThrow(() -> this.client.get(baseUrl + "/response?content=123&code=404"));
-        HttpResponse response = assertDoesNotThrow(() -> this.client.execute(request));
+    void testErrorGet() throws IOException {
+        HttpRequest request = this.client.get(baseUrl + "/response?content=123&code=404");
+        HttpResponse response = this.client.execute(request);
         assertEquals(StatusCodes.NOT_FOUND, response.getStatusCode());
         assertEquals("123", response.getContentAsString());
     }
 
     @Test
-    void testCustomCode() {
-        HttpRequest request = assertDoesNotThrow(() -> this.client.get(baseUrl + "/response?content=321&code=432"));
-        HttpResponse response = assertDoesNotThrow(() -> this.client.execute(request));
+    void testCustomCode() throws IOException {
+        HttpRequest request = this.client.get(baseUrl + "/response?content=321&code=432");
+        HttpResponse response = this.client.execute(request);
         assertEquals(432, response.getStatusCode());
         assertEquals("321", response.getContentAsString());
     }
 
     @Test
-    void testPostString() {
-        HttpRequest request = assertDoesNotThrow(() -> this.client.post(baseUrl + "/echo").setContent(new StringContent("Hello World")));
-        HttpResponse response = assertDoesNotThrow(() -> this.client.execute(request));
+    void testPostString() throws IOException {
+        HttpRequest request = this.client.post(baseUrl + "/echo").setContent(new StringContent("Hello World"));
+        HttpResponse response = this.client.execute(request);
         assertEquals(StatusCodes.OK, response.getStatusCode());
         assertEquals("Hello World", response.getContentAsString());
     }
 
     @Test
-    void testPostForm() {
-        HttpRequest request = assertDoesNotThrow(() -> this.client.post(baseUrl + "/echo").setContent(new URLEncodedFormContent().put("content", "Hello World")));
-        HttpResponse response = assertDoesNotThrow(() -> this.client.execute(request));
+    void testPostForm() throws IOException {
+        HttpRequest request = this.client.post(baseUrl + "/echo").setContent(new URLEncodedFormContent().put("content", "Hello World"));
+        HttpResponse response = this.client.execute(request);
         assertEquals(StatusCodes.OK, response.getStatusCode());
         assertEquals("content=Hello+World", response.getContentAsString());
     }
 
     @Test
-    void testEmptyGet() {
-        HttpRequest request = assertDoesNotThrow(() -> this.client.get(baseUrl + "/empty"));
-        HttpResponse response = assertDoesNotThrow(() -> this.client.execute(request));
+    void testEmptyGet() throws IOException {
+        HttpRequest request = this.client.get(baseUrl + "/empty");
+        HttpResponse response = this.client.execute(request);
         assertEquals(StatusCodes.OK, response.getStatusCode());
         assertEquals(0, response.getContent().length);
         assertEquals("", response.getContentAsString());
     }
 
     @Test
-    void testEmptyPost() {
-        HttpRequest request = assertDoesNotThrow(() -> this.client.post(baseUrl + "/echo"));
-        HttpResponse response = assertDoesNotThrow(() -> this.client.execute(request));
+    void testEmptyPost() throws IOException {
+        HttpRequest request = this.client.post(baseUrl + "/echo");
+        HttpResponse response = this.client.execute(request);
         assertEquals(StatusCodes.OK, response.getStatusCode());
         assertEquals(0, response.getContent().length);
     }
 
     @Test
-    void connectFail() {
-        HttpRequest request = assertDoesNotThrow(() -> this.client.get("http://" + System.currentTimeMillis()));
+    void connectFail() throws IOException {
+        HttpRequest request = this.client.get("http://" + System.currentTimeMillis());
         assertThrows(IOException.class, () -> this.client.execute(request));
     }
 
@@ -120,9 +120,9 @@ class HttpClientTest {
     }
 
     @Test
-    void failingHeaderRetry() {
+    void failingHeaderRetry() throws IOException {
         this.client.setRetryHandler(new RetryHandler(Integer.MAX_VALUE, Integer.MAX_VALUE));
-        HttpRequest request = assertDoesNotThrow(() -> this.client.get(baseUrl + "/retryCookie"));
+        HttpRequest request = this.client.get(baseUrl + "/retryCookie");
         request.setRetryHandler(new RetryHandler(0, 1));
         assertThrows(RetryExceededException.class, () -> this.client.execute(request));
     }
