@@ -44,14 +44,14 @@ class HttpClientTest {
     void testGet() {
         HttpRequest request = assertDoesNotThrow(() -> this.client.get(baseUrl + "/echo"));
         HttpResponse response = assertDoesNotThrow(() -> this.client.execute(request));
-        assertEquals(200, response.getStatusCode());
+        assertEquals(StatusCodes.OK, response.getStatusCode());
     }
 
     @Test
     void testErrorGet() {
         HttpRequest request = assertDoesNotThrow(() -> this.client.get(baseUrl + "/response?content=123&code=404"));
         HttpResponse response = assertDoesNotThrow(() -> this.client.execute(request));
-        assertEquals(404, response.getStatusCode());
+        assertEquals(StatusCodes.NOT_FOUND, response.getStatusCode());
         assertEquals("123", response.getContentAsString());
     }
 
@@ -67,7 +67,7 @@ class HttpClientTest {
     void testPostString() {
         HttpRequest request = assertDoesNotThrow(() -> this.client.post(baseUrl + "/echo").setContent(new StringContent("Hello World")));
         HttpResponse response = assertDoesNotThrow(() -> this.client.execute(request));
-        assertEquals(200, response.getStatusCode());
+        assertEquals(StatusCodes.OK, response.getStatusCode());
         assertEquals("Hello World", response.getContentAsString());
     }
 
@@ -75,7 +75,7 @@ class HttpClientTest {
     void testPostForm() {
         HttpRequest request = assertDoesNotThrow(() -> this.client.post(baseUrl + "/echo").setContent(new URLEncodedFormContent().put("content", "Hello World")));
         HttpResponse response = assertDoesNotThrow(() -> this.client.execute(request));
-        assertEquals(200, response.getStatusCode());
+        assertEquals(StatusCodes.OK, response.getStatusCode());
         assertEquals("content=Hello+World", response.getContentAsString());
     }
 
@@ -83,7 +83,7 @@ class HttpClientTest {
     void testEmptyGet() {
         HttpRequest request = assertDoesNotThrow(() -> this.client.get(baseUrl + "/empty"));
         HttpResponse response = assertDoesNotThrow(() -> this.client.execute(request));
-        assertEquals(200, response.getStatusCode());
+        assertEquals(StatusCodes.OK, response.getStatusCode());
         assertEquals(0, response.getContent().length);
         assertEquals("", response.getContentAsString());
     }
@@ -92,7 +92,7 @@ class HttpClientTest {
     void testEmptyPost() {
         HttpRequest request = assertDoesNotThrow(() -> this.client.post(baseUrl + "/echo"));
         HttpResponse response = assertDoesNotThrow(() -> this.client.execute(request));
-        assertEquals(200, response.getStatusCode());
+        assertEquals(StatusCodes.OK, response.getStatusCode());
         assertEquals(0, response.getContent().length);
     }
 
@@ -107,7 +107,7 @@ class HttpClientTest {
         this.client.setRetryHandler(new RetryHandler(0, 4/*1 initial request + 4 retries*/));
         HttpRequest request = this.client.get(baseUrl + "/retryCookie");
         HttpResponse response = this.client.execute(request);
-        assertEquals(200, response.getStatusCode());
+        assertEquals(StatusCodes.OK, response.getStatusCode());
         assertEquals("OK", response.getContentAsString());
     }
 
@@ -131,8 +131,26 @@ class HttpClientTest {
     void contentType() throws IOException {
         HttpRequest request = this.client.post(baseUrl + "/contentType").setContent(new ByteArrayContent("Hello World".getBytes(StandardCharsets.UTF_8)));
         HttpResponse response = this.client.execute(request);
-        assertEquals(200, response.getStatusCode());
+        assertEquals(StatusCodes.OK, response.getStatusCode());
         assertEquals("application/octet-stream", response.getContentAsString());
+    }
+
+    @Test
+    void followRedirect() throws IOException {
+        this.client.setFollowRedirects(true);
+        HttpRequest request = this.client.get(baseUrl + "/redirect");
+        HttpResponse response = this.client.execute(request);
+        assertEquals(StatusCodes.OK, response.getStatusCode());
+        assertEquals("test", response.getContentAsString());
+    }
+
+    @Test
+    void dontFollowRedirect() throws IOException {
+        this.client.setFollowRedirects(false);
+        HttpRequest request = this.client.get(baseUrl + "/redirect");
+        HttpResponse response = this.client.execute(request);
+        assertEquals(StatusCodes.MOVED_PERMANENTLY, response.getStatusCode());
+        assertEquals("redirect", response.getContentAsString());
     }
 
 }

@@ -18,6 +18,8 @@ public class TestWebServer {
         this.server.createContext("/empty", new EmptyContentHandler());
         this.server.createContext("/retryCookie", new RetryCookieHandler());
         this.server.createContext("/contentType", new ContentTypeEchoHandler());
+        this.server.createContext("/redirect", new RedirectHandler());
+        this.server.createContext("/constant", new ConstantContentHandler());
     }
 
     public int bind() throws IOException {
