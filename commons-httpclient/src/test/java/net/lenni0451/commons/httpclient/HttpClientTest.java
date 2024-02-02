@@ -56,6 +56,14 @@ class HttpClientTest {
     }
 
     @Test
+    void testCustomCode() {
+        HttpRequest request = assertDoesNotThrow(() -> this.client.get(baseUrl + "/response?content=321&code=432"));
+        HttpResponse response = assertDoesNotThrow(() -> this.client.execute(request));
+        assertEquals(432, response.getStatusCode());
+        assertEquals("321", response.getContentAsString());
+    }
+
+    @Test
     void testPostString() {
         HttpRequest request = assertDoesNotThrow(() -> this.client.post(baseUrl + "/echo").setContent(new StringContent("Hello World")));
         HttpResponse response = assertDoesNotThrow(() -> this.client.execute(request));
