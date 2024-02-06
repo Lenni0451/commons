@@ -6,6 +6,7 @@ import java.util.Objects;
 
 public class Color {
 
+    public static final Color TRANSPARENT = Color.fromRGBA(0, 0, 0, 0);
     public static final Color BLACK = Color.fromRGB(0, 0, 0);
     public static final Color LIGHT_GRAY = Color.fromRGB(192, 192, 192);
     public static final Color GRAY = Color.fromRGB(128, 128, 128);
