@@ -159,11 +159,9 @@ public class LineArgumentBuilder<S> extends ArgumentBuilder<S, LineArgumentBuild
      * The line can no longer be modified after this method has been called.
      *
      * @param executor The executor
-     * @param <MS>     The sender type
-     * @param <T>      The type of the parent
      * @return The line argument builder
      */
-    public <MS, T extends ArgumentBuilder<MS, T>> ArgumentBuilder<MS, T> execute(final Consumer<CommandContext<S>> executor) {
+    public ArgumentBuilder<S, ?> execute(final Consumer<CommandContext<S>> executor) {
         return this.execute(context -> {
             executor.accept(context);
             return 1;
@@ -175,15 +173,13 @@ public class LineArgumentBuilder<S> extends ArgumentBuilder<S, LineArgumentBuild
      * The line can no longer be modified after this method has been called.
      *
      * @param executor The executor
-     * @param <MS>     The sender type
-     * @param <T>      The type of the parent
      * @return The line argument builder
      */
-    public <MS, T extends ArgumentBuilder<MS, T>> ArgumentBuilder<MS, T> execute(final Command<S> executor) {
+    public ArgumentBuilder<S, ?> execute(final Command<S> executor) {
         this.checkMutable();
         if (this.nodes.isEmpty()) throw new IllegalStateException("Cannot add an executor to a builder with no nodes");
         this.executor = executor;
-        return (ArgumentBuilder<MS, T>) this;
+        return this;
     }
 
     @Override
