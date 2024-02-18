@@ -136,7 +136,7 @@ public class LineArgumentBuilder<S> extends ArgumentBuilder<S, LineArgumentBuild
         this.checkMutable();
         this.requires(LiteralArgumentBuilder.class);
         if (this.nodes.size() == 1 && this.parent == null) throw new IllegalStateException("A parent node must be set to use a default value on the first node");
-        this.getLastNode().defaultValue = "";
+        this.getLastNode().defaultValue = () -> "";
         return this;
     }
 
@@ -147,10 +147,20 @@ public class LineArgumentBuilder<S> extends ArgumentBuilder<S, LineArgumentBuild
      * @return The line argument builder
      */
     public LineArgumentBuilder<S> defaultValue(final Object defaultValue) {
+        return this.defaultValue(() -> defaultValue);
+    }
+
+    /**
+     * Make the most recent <b>argument</b> node optional with the given default supplier.
+     *
+     * @param supplier The default supplier
+     * @return The line argument builder
+     */
+    public LineArgumentBuilder<S> defaultValue(final Supplier<Object> supplier) {
         this.checkMutable();
         this.requires(RequiredArgumentBuilder.class);
         if (this.nodes.size() == 1 && this.parent == null) throw new IllegalStateException("A parent node must be set to use a default value on the first node");
-        this.getLastNode().defaultValue = defaultValue;
+        this.getLastNode().defaultValue = supplier;
         return this;
     }
 
@@ -218,7 +228,7 @@ public class LineArgumentBuilder<S> extends ArgumentBuilder<S, LineArgumentBuild
             List<LineNode<S>> missing = this.nodes.subList(start, this.nodes.size());
             for (LineNode<S> missingNode : missing) {
                 if (missingNode.name != null && missingNode.defaultValue != null) {
-                    arguments.put(missingNode.name, new ParsedArgument<>(-1, -1, missingNode.defaultValue));
+                    arguments.put(missingNode.name, new ParsedArgument<>(-1, -1, missingNode.defaultValue.get()));
                 }
             }
             return this.executor.run(ctx);
@@ -247,7 +257,7 @@ public class LineArgumentBuilder<S> extends ArgumentBuilder<S, LineArgumentBuild
         private final String name;
         private final ArgumentBuilder<S, ?> node;
         @Nullable
-        private Object defaultValue;
+        private Supplier<Object> defaultValue;
 
         private LineNode(@Nullable final String name, final ArgumentBuilder<S, ?> node) {
             this.name = name;

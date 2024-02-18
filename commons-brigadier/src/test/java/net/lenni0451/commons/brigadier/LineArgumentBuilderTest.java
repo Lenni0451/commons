@@ -17,7 +17,7 @@ class LineArgumentBuilderTest implements CommandBuilder<CommandExecutor> {
         CommandDispatcher<CommandExecutor> dispatcher = new CommandDispatcher<>();
         dispatcher.register(
                 line(literal("test"), line -> line
-                        .argument("test", BoolArgumentType.bool()).defaultValue(false)
+                        .argument("test", BoolArgumentType.bool()).defaultValue(() -> false)
                         .argument("i", IntegerArgumentType.integer()).defaultValue(10)
                         .literal("lel")
                         .execute(ctx -> {
