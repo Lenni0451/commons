@@ -198,10 +198,7 @@ public class LineArgumentBuilder<S> extends ArgumentBuilder<S, LineArgumentBuild
             LineNode<S> next = i + 1 < this.nodes.size() ? this.nodes.get(i + 1) : null;
 
             if (i == 0 && node.defaultValue != null) this.parent.executes(this.makeDefaultExecutor(0));
-            if (next == null || next.defaultValue != null) {
-                List<LineNode<S>> missing = this.nodes.subList(i + 1, this.nodes.size());
-                node.node.executes(this.makeDefaultExecutor(i + 1));
-            }
+            if (next == null || next.defaultValue != null) node.node.executes(this.makeDefaultExecutor(i + 1));
             CommandNode<S> newNode = node.node.build();
             if (root == null) root = newNode;
             if (current != null) current.addChild(newNode);
