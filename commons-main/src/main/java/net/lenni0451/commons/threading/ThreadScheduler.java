@@ -107,6 +107,38 @@ public class ThreadScheduler {
         return this.executor.scheduleAtFixedRate(this.wrapExecute(task), startDelay, repeatDelay, timeUnit);
     }
 
+    /**
+     * Shutdown the scheduler.<br>
+     * All tasks that are currently running will be finished but no new tasks will be accepted.
+     */
+    public void shutdown() {
+        this.executor.shutdown();
+    }
+
+    /**
+     * Shutdown the scheduler and wait for all tasks to finish.
+     *
+     * @param timeout The maximum time to wait for the tasks to finish in milliseconds
+     * @return Whether all tasks finished before the timeout
+     * @throws InterruptedException If the current thread was interrupted while waiting
+     */
+    public boolean shutdown(final long timeout) throws InterruptedException {
+        return this.shutdown(timeout, TimeUnit.MILLISECONDS);
+    }
+
+    /**
+     * Shutdown the scheduler and wait for all tasks to finish.
+     *
+     * @param timeout  The maximum time to wait for the tasks to finish
+     * @param timeUnit The time unit of the timeout
+     * @return Whether all tasks finished before the timeout
+     * @throws InterruptedException If the current thread was interrupted while waiting
+     */
+    public boolean shutdown(final long timeout, final TimeUnit timeUnit) throws InterruptedException {
+        this.shutdown();
+        return this.executor.awaitTermination(timeout, timeUnit);
+    }
+
 
     private Runnable wrapExecute(final Runnable task) {
         if (!this.taskThreads) return task;
