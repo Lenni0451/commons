@@ -72,8 +72,9 @@ public class GBC {
      * The required {@code gridy} will be calculated automatically.
      *
      * @param parent The parent container
+     * @return The next {@code gridy} value
      */
-    public static void fillVerticalSpace(final Container parent) {
+    public static int fillVerticalSpace(final Container parent) {
         GridBagLayout layout = (GridBagLayout) parent.getLayout();
         int gridy = 0;
         for (Component component : parent.getComponents()) {
@@ -81,6 +82,7 @@ public class GBC {
             if (gbc.gridy > gridy) gridy = gbc.gridy;
         }
         GBC.create(parent).gridy(gridy + 1).anchor(GridBagConstraints.WEST).weighty(1).fill(GridBagConstraints.HORIZONTAL).add(Box.createHorizontalGlue());
+        return gridy + 2;
     }
 
 
