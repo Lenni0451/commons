@@ -29,6 +29,7 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
     private int readTimeout = 10_000;
     private RetryHandler retryHandler = new RetryHandler();
     private ProxyHandler proxyHandler = new ProxyHandler();
+    private boolean ignoreInvalidSSL = false;
 
     /**
      * Create a new http client with the default executor.
@@ -176,6 +177,24 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
      */
     public void setProxyHandler(@Nonnull final ProxyHandler proxyHandler) {
         this.proxyHandler = proxyHandler;
+    }
+
+    /**
+     * @return Whether invalid SSL certificates should be ignored
+     */
+    public boolean isIgnoreInvalidSSL() {
+        return this.ignoreInvalidSSL;
+    }
+
+    /**
+     * Set whether invalid SSL certificates should be ignored.
+     *
+     * @param ignoreInvalidSSL Whether invalid SSL certificates should be ignored
+     * @return This instance for chaining
+     */
+    public HttpClient setIgnoreInvalidSSL(final boolean ignoreInvalidSSL) {
+        this.ignoreInvalidSSL = ignoreInvalidSSL;
+        return this;
     }
 
     /**

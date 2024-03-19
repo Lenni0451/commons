@@ -34,6 +34,10 @@ public abstract class RequestExecutor {
         return request.isCookieManagerSet() ? request.getCookieManager() : this.client.getCookieManager();
     }
 
+    protected final boolean isIgnoreInvalidSSL(@Nonnull final HttpRequest request) {
+        return request.isIgnoreInvalidSSLSet() ? request.getIgnoreInvalidSSL() : this.client.isIgnoreInvalidSSL();
+    }
+
     protected final Map<String, List<String>> getHeaders(@Nonnull final HttpRequest request, @Nullable final CookieManager cookieManager) throws IOException {
         Map<String, List<String>> headers = new HashMap<>();
         if (request instanceof HttpContentRequest) {

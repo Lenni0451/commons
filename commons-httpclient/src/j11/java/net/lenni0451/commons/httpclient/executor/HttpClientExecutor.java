@@ -7,6 +7,7 @@ import net.lenni0451.commons.httpclient.content.HttpContent;
 import net.lenni0451.commons.httpclient.proxy.ProxyType;
 import net.lenni0451.commons.httpclient.requests.HttpContentRequest;
 import net.lenni0451.commons.httpclient.requests.HttpRequest;
+import net.lenni0451.commons.httpclient.utils.IgnoringTrustManager;
 import net.lenni0451.commons.httpclient.utils.URLWrapper;
 
 import javax.annotation.Nonnull;
@@ -44,10 +45,11 @@ public class HttpClientExecutor extends RequestExecutor {
         return new HttpResponse(new URLWrapper(response.uri()).toURL(), response.statusCode(), response.body(), response.headers().map());
     }
 
-    private java.net.http.HttpClient buildClient(final HttpRequest request) {
+    private java.net.http.HttpClient buildClient(final HttpRequest request) throws IOException {
         java.net.http.HttpClient.Builder builder = java.net.http.HttpClient.newBuilder();
         CookieManager cookieManager = this.getCookieManager(request);
         if (cookieManager != null) builder.cookieHandler(cookieManager);
+        if (this.isIgnoreInvalidSSL(request)) builder.sslContext(IgnoringTrustManager.makeIgnoringSSLContext());
         builder.connectTimeout(Duration.ofMillis(this.client.getConnectTimeout()));
         switch (request.getFollowRedirects()) {
             case NOT_SET:

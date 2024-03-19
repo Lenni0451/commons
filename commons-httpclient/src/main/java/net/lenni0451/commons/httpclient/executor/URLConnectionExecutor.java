@@ -6,9 +6,11 @@ import net.lenni0451.commons.httpclient.proxy.SingleProxySelector;
 import net.lenni0451.commons.httpclient.requests.HttpContentRequest;
 import net.lenni0451.commons.httpclient.requests.HttpRequest;
 import net.lenni0451.commons.httpclient.utils.HttpRequestUtils;
+import net.lenni0451.commons.httpclient.utils.IgnoringTrustManager;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.CookieManager;
@@ -38,6 +40,10 @@ public class URLConnectionExecutor extends RequestExecutor {
             if (proxySelector != null) proxySelector.set();
             URL url = request.getURL();
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            if (this.isIgnoreInvalidSSL(request) && connection instanceof HttpsURLConnection) {
+                HttpsURLConnection httpsConnection = (HttpsURLConnection) connection;
+                httpsConnection.setSSLSocketFactory(IgnoringTrustManager.makeIgnoringSSLContext().getSocketFactory());
+            }
             this.setupConnection(connection, cookieManager, request);
             connection.connect();
             return connection;
