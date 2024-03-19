@@ -81,8 +81,8 @@ public class GBC {
             GridBagConstraints gbc = layout.getConstraints(component);
             if (gbc.gridy > gridy) gridy = gbc.gridy;
         }
-        GBC.create(parent).gridy(gridy + 1).anchor(GridBagConstraints.WEST).weighty(1).fill(GridBagConstraints.HORIZONTAL).add(Box.createHorizontalGlue());
-        return gridy + 2;
+        GBC.create(parent).gridy(++gridy).anchor(GridBagConstraints.WEST).weighty(1).fill(GridBagConstraints.HORIZONTAL).add(Box.createHorizontalGlue());
+        return ++gridy;
     }
 
 
