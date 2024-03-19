@@ -63,6 +63,7 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
      * Set the executor to use for all requests.
      *
      * @param executorSupplier The supplier for the executor to use
+     * @return This instance for chaining
      */
     public HttpClient setExecutor(@Nonnull final Function<HttpClient, RequestExecutor> executorSupplier) {
         this.executor = executorSupplier.apply(this);
