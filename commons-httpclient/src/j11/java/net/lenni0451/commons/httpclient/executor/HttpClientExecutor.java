@@ -11,6 +11,7 @@ import net.lenni0451.commons.httpclient.utils.IgnoringTrustManager;
 import net.lenni0451.commons.httpclient.utils.URLWrapper;
 
 import javax.annotation.Nonnull;
+import java.io.Closeable;
 import java.io.IOException;
 import java.net.CookieManager;
 import java.net.http.HttpClient.Redirect;
@@ -19,6 +20,9 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * This executor uses the Java 11 HttpClient to execute requests.<br>
@@ -34,19 +38,26 @@ public class HttpClientExecutor extends RequestExecutor {
     @Nonnull
     @Override
     public HttpResponse execute(@Nonnull final HttpRequest request) throws IOException {
-        java.net.http.HttpClient httpClient = this.buildClient(request);
-        java.net.http.HttpRequest httpRequest = this.buildRequest(request);
-        java.net.http.HttpResponse<byte[]> response;
+        ExecutorService executor = Executors.newCachedThreadPool();
+        java.net.http.HttpClient httpClient = null;
         try {
-            response = httpClient.send(httpRequest, BodyHandlers.ofByteArray());
-        } catch (InterruptedException e) {
-            throw new IOException(e);
+            httpClient = this.buildClient(request, executor);
+            java.net.http.HttpRequest httpRequest = this.buildRequest(request);
+            java.net.http.HttpResponse<byte[]> response;
+            try {
+                response = httpClient.send(httpRequest, BodyHandlers.ofByteArray());
+            } catch (InterruptedException e) {
+                throw new IOException(e);
+            }
+            return new HttpResponse(new URLWrapper(response.uri()).toURL(), response.statusCode(), response.body(), response.headers().map());
+        } finally {
+            executor.shutdownNow();
+            if (httpClient instanceof Closeable) ((Closeable) httpClient).close();
         }
-        return new HttpResponse(new URLWrapper(response.uri()).toURL(), response.statusCode(), response.body(), response.headers().map());
     }
 
-    private java.net.http.HttpClient buildClient(final HttpRequest request) throws IOException {
-        java.net.http.HttpClient.Builder builder = java.net.http.HttpClient.newBuilder();
+    private java.net.http.HttpClient buildClient(final HttpRequest request, final Executor executor) throws IOException {
+        java.net.http.HttpClient.Builder builder = java.net.http.HttpClient.newBuilder().executor(executor);
         CookieManager cookieManager = this.getCookieManager(request);
         if (cookieManager != null) builder.cookieHandler(cookieManager);
         if (this.isIgnoreInvalidSSL(request)) builder.sslContext(IgnoringTrustManager.makeIgnoringSSLContext());
