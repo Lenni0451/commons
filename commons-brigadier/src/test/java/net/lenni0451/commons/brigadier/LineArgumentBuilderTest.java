@@ -21,7 +21,6 @@ class LineArgumentBuilderTest implements CommandBuilder<CommandExecutor> {
                         .argument("i", IntegerArgumentType.integer()).defaultValue(10)
                         .literal("lel")
                         .execute(ctx -> {
-                            System.out.println(ctx.getArgument("test", boolean.class) + " Hi " + ctx.getArgument("i", int.class) + " Kevin");
                         }))
         );
 
