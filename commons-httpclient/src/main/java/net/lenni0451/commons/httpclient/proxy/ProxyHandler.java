@@ -10,8 +10,7 @@ import java.net.SocketAddress;
 public class ProxyHandler {
 
     private ProxyType proxyType;
-    private String host;
-    private int port;
+    private SocketAddress address;
     private String username;
     private String password;
 
@@ -23,9 +22,16 @@ public class ProxyHandler {
     }
 
     public ProxyHandler(final ProxyType proxyType, final String host, final int port, @Nullable final String username, @Nullable final String password) {
+        this(proxyType, new InetSocketAddress(host, port), username, password);
+    }
+
+    public ProxyHandler(final ProxyType proxyType, final SocketAddress address) {
+        this(proxyType, address, null, null);
+    }
+
+    public ProxyHandler(final ProxyType proxyType, final SocketAddress address, @Nullable final String username, @Nullable final String password) {
         this.proxyType = proxyType;
-        this.host = host;
-        this.port = port;
+        this.address = address;
         this.username = username;
         this.password = password;
     }
@@ -38,9 +44,18 @@ public class ProxyHandler {
      * @param port The port of the proxy
      */
     public void setProxy(final ProxyType type, final String host, final int port) {
+        this.setProxy(type, new InetSocketAddress(host, port));
+    }
+
+    /**
+     * Set the proxy to use.
+     *
+     * @param type The type of the proxy
+     * @param address The address of the proxy
+     */
+    public void setProxy(final ProxyType type, final SocketAddress address) {
         this.proxyType = type;
-        this.host = host;
-        this.port = port;
+        this.address = address;
     }
 
     /**
@@ -48,15 +63,14 @@ public class ProxyHandler {
      */
     public void unsetProxy() {
         this.proxyType = null;
-        this.host = null;
-        this.port = 0;
+        this.address = null;
     }
 
     /**
      * @return If the proxy is set
      */
     public boolean isProxySet() {
-        return this.proxyType != null && this.host != null && this.port != 0;
+        return this.proxyType != null && this.address != null;
     }
 
     /**
@@ -77,36 +91,20 @@ public class ProxyHandler {
     }
 
     /**
-     * @return The proxy host
+     * @return The proxy address
      */
     @Nullable
-    public String getHost() {
-        return this.host;
+    public SocketAddress getAddress() {
+        return this.address;
     }
 
     /**
-     * Set the proxy host.
+     * Set the proxy address.
      *
-     * @param host The proxy host
+     * @param address The proxy address
      */
-    public void setHost(@Nonnull final String host) {
-        this.host = host;
-    }
-
-    /**
-     * @return The proxy port
-     */
-    public int getPort() {
-        return this.port;
-    }
-
-    /**
-     * Set the proxy port.
-     *
-     * @param port The proxy port
-     */
-    public void setPort(final int port) {
-        this.port = port;
+    public void setHost(@Nonnull final SocketAddress address) {
+        this.address = address;
     }
 
     /**
@@ -178,17 +176,17 @@ public class ProxyHandler {
     public Proxy toJavaProxy() {
         switch (this.proxyType) {
             case HTTP:
-                return new Proxy(Proxy.Type.HTTP, new InetSocketAddress(this.host, this.port));
+                return new Proxy(Proxy.Type.HTTP, address);
             case SOCKS4:
                 try {
                     Class<?> clazz = Class.forName("sun.net.SocksProxy");
                     Method createMethod = clazz.getDeclaredMethod("create", SocketAddress.class, int.class);
-                    return (Proxy) createMethod.invoke(null, new InetSocketAddress(this.host, this.port), 4);
+                    return (Proxy) createMethod.invoke(null, address, 4);
                 } catch (Throwable t) {
                     throw new UnsupportedOperationException("SOCKS4 proxy type is not supported", t);
                 }
             case SOCKS5:
-                return new Proxy(Proxy.Type.SOCKS, new InetSocketAddress(this.host, this.port));
+                return new Proxy(Proxy.Type.SOCKS, address);
             default:
                 throw new IllegalStateException("Unknown proxy type: " + this.proxyType.name());
         }
