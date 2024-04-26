@@ -103,7 +103,7 @@ public class ProxyHandler {
      *
      * @param address The proxy address
      */
-    public void setHost(@Nonnull final SocketAddress address) {
+    public void setAddress(@Nonnull final SocketAddress address) {
         this.address = address;
     }
 
