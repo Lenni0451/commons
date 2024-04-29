@@ -42,28 +42,34 @@ public class ProxyHandler {
      * @param type The type of the proxy
      * @param host The host of the proxy
      * @param port The port of the proxy
+     * @return This instance for chaining
      */
-    public void setProxy(final ProxyType type, final String host, final int port) {
-        this.setProxy(type, new InetSocketAddress(host, port));
+    public ProxyHandler setProxy(final ProxyType type, final String host, final int port) {
+        return this.setProxy(type, new InetSocketAddress(host, port));
     }
 
     /**
      * Set the proxy to use.
      *
-     * @param type The type of the proxy
+     * @param type    The type of the proxy
      * @param address The address of the proxy
+     * @return This instance for chaining
      */
-    public void setProxy(final ProxyType type, final SocketAddress address) {
+    public ProxyHandler setProxy(final ProxyType type, final SocketAddress address) {
         this.proxyType = type;
         this.address = address;
+        return this;
     }
 
     /**
      * Unset the proxy.
+     *
+     * @return This instance for chaining
      */
-    public void unsetProxy() {
+    public ProxyHandler unsetProxy() {
         this.proxyType = null;
         this.address = null;
+        return this;
     }
 
     /**
@@ -85,9 +91,11 @@ public class ProxyHandler {
      * Set the type of the proxy.
      *
      * @param type The type of the proxy
+     * @return This instance for chaining
      */
-    public void setProxyType(@Nonnull final ProxyType type) {
+    public ProxyHandler setProxyType(@Nonnull final ProxyType type) {
         this.proxyType = type;
+        return this;
     }
 
     /**
@@ -102,9 +110,11 @@ public class ProxyHandler {
      * Set the proxy address.
      *
      * @param address The proxy address
+     * @return This instance for chaining
      */
-    public void setAddress(@Nonnull final SocketAddress address) {
+    public ProxyHandler setAddress(@Nonnull final SocketAddress address) {
         this.address = address;
+        return this;
     }
 
     /**
@@ -126,9 +136,11 @@ public class ProxyHandler {
      * Set the username for the proxy.
      *
      * @param username The username for the proxy
+     * @return This instance for chaining
      */
-    public void setUsername(@Nullable final String username) {
+    public ProxyHandler setUsername(@Nullable final String username) {
         this.username = username;
+        return this;
     }
 
     /**
@@ -143,9 +155,11 @@ public class ProxyHandler {
      * Set the password for the proxy.
      *
      * @param password The password for the proxy
+     * @return This instance for chaining
      */
-    public void setPassword(@Nullable final String password) {
+    public ProxyHandler setPassword(@Nullable final String password) {
         this.password = password;
+        return this;
     }
 
     /**
@@ -176,17 +190,17 @@ public class ProxyHandler {
     public Proxy toJavaProxy() {
         switch (this.proxyType) {
             case HTTP:
-                return new Proxy(Proxy.Type.HTTP, address);
+                return new Proxy(Proxy.Type.HTTP, this.address);
             case SOCKS4:
                 try {
                     Class<?> clazz = Class.forName("sun.net.SocksProxy");
                     Method createMethod = clazz.getDeclaredMethod("create", SocketAddress.class, int.class);
-                    return (Proxy) createMethod.invoke(null, address, 4);
+                    return (Proxy) createMethod.invoke(null, this.address, 4);
                 } catch (Throwable t) {
                     throw new UnsupportedOperationException("SOCKS4 proxy type is not supported", t);
                 }
             case SOCKS5:
-                return new Proxy(Proxy.Type.SOCKS, address);
+                return new Proxy(Proxy.Type.SOCKS, this.address);
             default:
                 throw new IllegalStateException("Unknown proxy type: " + this.proxyType.name());
         }
