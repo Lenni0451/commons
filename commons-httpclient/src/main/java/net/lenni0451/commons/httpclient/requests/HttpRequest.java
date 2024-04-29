@@ -1,11 +1,16 @@
 package net.lenni0451.commons.httpclient.requests;
 
 import net.lenni0451.commons.httpclient.HeaderStore;
+import net.lenni0451.commons.httpclient.HttpClient;
+import net.lenni0451.commons.httpclient.HttpResponse;
 import net.lenni0451.commons.httpclient.RetryHandler;
+import net.lenni0451.commons.httpclient.handler.HttpResponseHandler;
 import net.lenni0451.commons.httpclient.utils.ResettableStorage;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.net.CookieManager;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -18,6 +23,7 @@ public class HttpRequest extends HeaderStore<HttpRequest> {
     private final ResettableStorage<CookieManager> cookieManager = new ResettableStorage<>();
     private final ResettableStorage<RetryHandler> retryHandler = new ResettableStorage<>();
     private final ResettableStorage<Boolean> ignoreInvalidSSL = new ResettableStorage<>();
+    private WeakReference<HttpClient> boundClient;
 
     public HttpRequest(final String method, final String url) throws MalformedURLException {
         this(method, new URL(url));
@@ -178,6 +184,50 @@ public class HttpRequest extends HeaderStore<HttpRequest> {
     public HttpRequest setIgnoreInvalidSSL(final boolean ignoreInvalidSSL) {
         this.ignoreInvalidSSL.set(ignoreInvalidSSL);
         return this;
+    }
+
+    /**
+     * Bind this request to a client for execution.
+     *
+     * @param client The client to bind to
+     * @return This instance for chaining
+     */
+    public HttpRequest bind(@Nullable final HttpClient client) {
+        if (client == null) this.boundClient = null;
+        else this.boundClient = new WeakReference<>(client);
+        return this;
+    }
+
+    /**
+     * Execute this request and return the response.<br>
+     * If a client is bound to this request it will be used for execution.<br>
+     * If no client is bound a new client will be created.
+     *
+     * @return The response of the request
+     * @throws IOException If an I/O error occurs
+     */
+    public HttpResponse execute() throws IOException {
+        HttpClient client = null;
+        if (this.boundClient != null) client = this.boundClient.get();
+        if (client == null) client = new HttpClient();
+        return client.execute(this);
+    }
+
+    /**
+     * Execute this request and pass the response to the response handler.<br>
+     * If a client is bound to this request it will be used for execution.<br>
+     * If no client is bound a new client will be created.
+     *
+     * @param responseHandler The response handler
+     * @param <R>             The return type of the response handler
+     * @return The return value of the response handler
+     * @throws IOException If an I/O error occurs
+     */
+    public <R> R execute(final HttpResponseHandler<R> responseHandler) throws IOException {
+        HttpClient client = null;
+        if (this.boundClient != null) client = this.boundClient.get();
+        if (client == null) client = new HttpClient();
+        return client.execute(this, responseHandler);
     }
 
 

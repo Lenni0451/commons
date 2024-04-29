@@ -255,4 +255,10 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
         throw new IllegalStateException("Connect retry failed but no exception was thrown");
     }
 
+    @Override
+    public <T extends HttpRequest> T bind(T request) {
+        request.bind(this);
+        return request;
+    }
+
 }

@@ -40,7 +40,7 @@ public class HttpContentRequest extends HttpRequest {
      * @param content The content to set
      * @return This instance for chaining
      */
-    public HttpRequest setContent(@Nullable final HttpContent content) {
+    public HttpContentRequest setContent(@Nullable final HttpContent content) {
         this.content = content;
         return this;
     }

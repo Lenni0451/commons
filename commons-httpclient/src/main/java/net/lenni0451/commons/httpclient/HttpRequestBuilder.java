@@ -10,6 +10,17 @@ import java.net.URL;
 public interface HttpRequestBuilder {
 
     /**
+     * Bind the given request to a client.
+     *
+     * @param request The request to bind
+     * @param <T>     The type of the request
+     * @return The bound request
+     */
+    default <T extends HttpRequest> T bind(final T request) {
+        return request;
+    }
+
+    /**
      * Create a new GET request with the given url.
      *
      * @param url The url to send the request to
@@ -17,7 +28,7 @@ public interface HttpRequestBuilder {
      * @throws MalformedURLException If the url is invalid
      */
     default GetRequest get(final String url) throws MalformedURLException {
-        return new GetRequest(url);
+        return this.bind(new GetRequest(url));
     }
 
     /**
@@ -27,7 +38,7 @@ public interface HttpRequestBuilder {
      * @return The created request
      */
     default GetRequest get(final URL url) {
-        return new GetRequest(url);
+        return this.bind(new GetRequest(url));
     }
 
     /**
@@ -38,7 +49,7 @@ public interface HttpRequestBuilder {
      * @throws MalformedURLException If the url is invalid
      */
     default HeadRequest head(final String url) throws MalformedURLException {
-        return new HeadRequest(url);
+        return this.bind(new HeadRequest(url));
     }
 
     /**
@@ -48,7 +59,7 @@ public interface HttpRequestBuilder {
      * @return The created request
      */
     default HeadRequest head(final URL url) {
-        return new HeadRequest(url);
+        return this.bind(new HeadRequest(url));
     }
 
     /**
@@ -59,7 +70,7 @@ public interface HttpRequestBuilder {
      * @throws MalformedURLException If the url is invalid
      */
     default DeleteRequest delete(final String url) throws MalformedURLException {
-        return new DeleteRequest(url);
+        return this.bind(new DeleteRequest(url));
     }
 
     /**
@@ -69,7 +80,7 @@ public interface HttpRequestBuilder {
      * @return The created request
      */
     default DeleteRequest delete(final URL url) {
-        return new DeleteRequest(url);
+        return this.bind(new DeleteRequest(url));
     }
 
     /**
@@ -80,7 +91,7 @@ public interface HttpRequestBuilder {
      * @throws MalformedURLException If the url is invalid
      */
     default PostRequest post(final String url) throws MalformedURLException {
-        return new PostRequest(url);
+        return this.bind(new PostRequest(url));
     }
 
     /**
@@ -90,7 +101,7 @@ public interface HttpRequestBuilder {
      * @return The created request
      */
     default PostRequest post(final URL url) {
-        return new PostRequest(url);
+        return this.bind(new PostRequest(url));
     }
 
     /**
@@ -101,7 +112,7 @@ public interface HttpRequestBuilder {
      * @throws MalformedURLException If the url is invalid
      */
     default PutRequest put(final String url) throws MalformedURLException {
-        return new PutRequest(url);
+        return this.bind(new PutRequest(url));
     }
 
     /**
@@ -111,7 +122,7 @@ public interface HttpRequestBuilder {
      * @return The created request
      */
     default PutRequest put(final URL url) {
-        return new PutRequest(url);
+        return this.bind(new PutRequest(url));
     }
 
     /**
@@ -123,7 +134,7 @@ public interface HttpRequestBuilder {
      * @throws MalformedURLException If the url is invalid
      */
     default HttpRequest request(final String method, final String url) throws MalformedURLException {
-        return new HttpRequest(method, url);
+        return this.bind(new HttpRequest(method, url));
     }
 
     /**
@@ -134,7 +145,7 @@ public interface HttpRequestBuilder {
      * @return The created request
      */
     default HttpRequest request(final String method, final URL url) {
-        return new HttpRequest(method, url);
+        return this.bind(new HttpRequest(method, url));
     }
 
     /**
@@ -147,7 +158,7 @@ public interface HttpRequestBuilder {
      * @throws MalformedURLException If the url is invalid
      */
     default HttpContentRequest contentRequest(final String method, final String url) throws MalformedURLException {
-        return new HttpContentRequest(method, url);
+        return this.bind(new HttpContentRequest(method, url));
     }
 
     /**
@@ -159,7 +170,7 @@ public interface HttpRequestBuilder {
      * @return The created request
      */
     default HttpContentRequest contentRequest(final String method, final URL url) {
-        return new HttpContentRequest(method, url);
+        return this.bind(new HttpContentRequest(method, url));
     }
 
 }
