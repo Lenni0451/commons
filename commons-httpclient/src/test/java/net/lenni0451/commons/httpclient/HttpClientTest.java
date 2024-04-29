@@ -90,7 +90,7 @@ class HttpClientTest {
     }
 
     @Test
-    void connectFail() throws IOException {
+    void connectFail() {
         assertThrows(IOException.class, () -> this.client.get("http://" + System.currentTimeMillis()).execute());
     }
 
