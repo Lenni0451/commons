@@ -1,8 +1,11 @@
 package net.lenni0451.commons.debugging;
 
+import lombok.experimental.UtilityClass;
+
 /**
  * This class can be used to count method calls per second.
  */
+@UtilityClass
 public class MethodCallCounter {
 
     private static long lastReset = System.currentTimeMillis();

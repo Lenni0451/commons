@@ -1,8 +1,11 @@
 package net.lenni0451.commons.debugging;
 
+import lombok.experimental.UtilityClass;
+
 /**
  * Print debug messages to the console without spamming the same message multiple times.
  */
+@UtilityClass
 public class CachedSysout {
 
     private static String lastMessage;

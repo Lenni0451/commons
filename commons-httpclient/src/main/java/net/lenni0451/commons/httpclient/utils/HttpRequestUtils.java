@@ -1,5 +1,7 @@
 package net.lenni0451.commons.httpclient.utils;
 
+import lombok.experimental.UtilityClass;
+
 import javax.annotation.Nullable;
 import javax.annotation.WillNotClose;
 import java.io.ByteArrayOutputStream;
@@ -14,6 +16,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 
+@UtilityClass
 public class HttpRequestUtils {
 
     /**

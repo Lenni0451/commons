@@ -1,9 +1,11 @@
 package net.lenni0451.commons.httpclient.constants;
 
+import lombok.experimental.UtilityClass;
 import net.lenni0451.commons.httpclient.model.ContentType;
 
 import java.nio.charset.StandardCharsets;
 
+@UtilityClass
 public class ContentTypes {
 
     public static final ContentType WILDCARD = new ContentType("*/*");

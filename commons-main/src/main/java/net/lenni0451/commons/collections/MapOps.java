@@ -1,9 +1,12 @@
 package net.lenni0451.commons.collections;
 
+import lombok.experimental.UtilityClass;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+@UtilityClass
 public class MapOps {
 
     /**

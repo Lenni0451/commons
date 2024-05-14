@@ -1,5 +1,6 @@
 package net.lenni0451.commons.network;
 
+import lombok.experimental.UtilityClass;
 import net.lenni0451.commons.network.trust.AllHostnameVerifier;
 import net.lenni0451.commons.network.trust.AllTrustManager;
 
@@ -11,6 +12,7 @@ import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 
+@UtilityClass
 public class InetUtils {
 
     /**

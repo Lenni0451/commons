@@ -1,9 +1,12 @@
 package net.lenni0451.commons.httpclient.constants;
 
+import lombok.experimental.UtilityClass;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+@UtilityClass
 public class StatusCodes {
 
     /**

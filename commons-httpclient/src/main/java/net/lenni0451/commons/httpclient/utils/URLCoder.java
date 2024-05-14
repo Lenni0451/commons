@@ -1,12 +1,14 @@
 package net.lenni0451.commons.httpclient.utils;
 
 import lombok.SneakyThrows;
+import lombok.experimental.UtilityClass;
 
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
+@UtilityClass
 public class URLCoder {
 
     /**
