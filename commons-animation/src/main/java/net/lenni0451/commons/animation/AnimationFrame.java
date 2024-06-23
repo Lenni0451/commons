@@ -3,20 +3,23 @@ package net.lenni0451.commons.animation;
 import net.lenni0451.commons.animation.easing.EasingFunction;
 import net.lenni0451.commons.animation.easing.EasingMode;
 
-public class AnimationFrame {
+class AnimationFrame {
 
     private final EasingFunction easingFunction;
     private final EasingMode easingMode;
-    private final float startValue;
-    private final float endValue;
+    private final float[] startValue;
+    private final float[] endValue;
     private final int duration;
 
-    public AnimationFrame(final EasingFunction easingFunction, final EasingMode easingMode, final float startValue, final float endValue, final int duration) {
+    public AnimationFrame(final EasingFunction easingFunction, final EasingMode easingMode, final float[] startValue, final float[] endValue, final int duration) {
         this.easingFunction = easingFunction;
         this.easingMode = easingMode;
         this.startValue = startValue;
         this.endValue = endValue;
         this.duration = duration;
+
+        if (startValue.length != endValue.length) throw new IllegalArgumentException("The start and end value arrays must have the same length!");
+        if (startValue.length == 0) throw new IllegalArgumentException("The start and end value arrays must have at least one element!");
     }
 
     public EasingFunction getEasingFunction() {
@@ -27,15 +30,15 @@ public class AnimationFrame {
         return this.easingMode;
     }
 
-    public float getStartValue() {
+    public float[] getStartValue() {
         return this.startValue;
     }
 
-    public float getEndValue() {
+    public float[] getEndValue() {
         return this.endValue;
     }
 
-    public float getDuration() {
+    public int getDuration() {
         return this.duration;
     }
 
@@ -43,12 +46,22 @@ public class AnimationFrame {
         return this.duration - (System.currentTimeMillis() - startTime);
     }
 
-    public float getValue(final long startTime) {
-        return this.startValue + (this.endValue - this.startValue) * this.getProgress(startTime, this.easingMode);
+    public float[] getValue(final long startTime) {
+        float progress = this.getProgress(startTime, this.easingMode);
+        float[] result = new float[this.startValue.length];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = this.startValue[i] + (this.endValue[i] - this.startValue[i]) * progress;
+        }
+        return result;
     }
 
-    public float getInvertedValue(long startTime) {
-        return this.endValue + (this.startValue - this.endValue) * this.getProgress(startTime, this.easingMode.invert());
+    public float[] getInvertedValue(long startTime) {
+        float progress = this.getProgress(startTime, this.easingMode.invert());
+        float[] result = new float[this.startValue.length];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = this.endValue[i] + (this.startValue[i] - this.endValue[i]) * progress;
+        }
+        return result;
     }
 
     private float getProgress(final long startTime, final EasingMode easingMode) {
