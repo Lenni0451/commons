@@ -89,13 +89,15 @@ public class Animation {
     }
 
     /**
-     * Set the mode of the animation.
+     * Set the mode of the animation.<br>
+     * This will reset the animation.
      *
      * @param mode The mode of the animation
      * @return The current animation instance
      */
     public Animation setMode(final AnimationMode mode) {
         this.mode = mode;
+        this.reset();
         return this;
     }
 
