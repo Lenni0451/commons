@@ -121,6 +121,13 @@ public class Animation {
     }
 
     /**
+     * @return If the animation is finished
+     */
+    public boolean isFinished() {
+        return this.state.equals(State.FINISHED);
+    }
+
+    /**
      * @return The direction of the animation
      */
     public AnimationDirection getDirection() {
