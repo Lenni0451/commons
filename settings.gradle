@@ -12,6 +12,7 @@ plugins {
 rootProject.name = "commons"
 
 include(":commons-all")
+include(":commons-animation")
 include(":commons-brigadier")
 include(":commons-core")
 include(":commons-debugging")
