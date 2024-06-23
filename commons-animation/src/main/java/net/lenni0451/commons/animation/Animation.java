@@ -145,6 +145,40 @@ public class Animation {
     }
 
     /**
+     * @return The current frame of the animation
+     */
+    public int getCurrentFrame() {
+        return this.currentFrame;
+    }
+
+    /**
+     * @return The number of frames in the animation
+     */
+    public int getFrameCount() {
+        return this.frames.size();
+    }
+
+    /**
+     * Get the start value of the given frame.
+     *
+     * @param frame The frame to get the start value from
+     * @return The start value of the frame
+     */
+    public float[] getStart(final int frame) {
+        return this.frames.get(frame).getStartValue();
+    }
+
+    /**
+     * Get the end value of the given frame.
+     *
+     * @param frame The frame to get the end value from
+     * @return The end value of the frame
+     */
+    public float[] getEnd(final int frame) {
+        return this.frames.get(frame).getEndValue();
+    }
+
+    /**
      * Reverse the current animation direction.
      *
      * @return The current animation instance
