@@ -20,7 +20,7 @@ public class Animation {
     private AnimationDirection direction;
     private long startTime;
     private int currentFrame;
-    private float[] stoppedValue = new float[0];
+    private float[] stoppedValue;
 
     public Animation() {
         this(AnimationMode.DEFAULT);
@@ -50,7 +50,6 @@ public class Animation {
             return this.frames.get(this.frames.size() - 1);
         });
         this.frames.add(frame);
-        if (this.frames.size() == 1) this.stoppedValue = frame.getStartValue();
         return this;
     }
 
@@ -198,8 +197,7 @@ public class Animation {
         this.direction = AnimationDirection.FORWARDS;
         this.startTime = 0;
         this.currentFrame = 0;
-        if (this.frames.isEmpty()) this.stoppedValue = new float[0];
-        else this.stoppedValue = this.frames.get(0).getStartValue();
+        this.stoppedValue = null;
         return this;
     }
 
@@ -216,7 +214,7 @@ public class Animation {
     public float[] getValues() {
         if (this.frames.isEmpty()) throw new IllegalStateException("Can't get values from an animation without frames");
         if (this.stoppedValue != null) return this.stoppedValue;
-        if (this.state.equals(State.FINISHED)) {
+        if (!this.isRunning()) {
             if (this.direction.equals(AnimationDirection.FORWARDS)) return this.frames.get(0).getStartValue();
             else if (this.direction.equals(AnimationDirection.BACKWARDS)) return this.frames.get(this.frames.size() - 1).getEndValue();
             else throw new IllegalStateException("Unknown Animation Direction: " + this.direction);
