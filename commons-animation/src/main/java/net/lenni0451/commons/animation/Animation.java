@@ -63,11 +63,11 @@ public class Animation {
      * @param startValue      The start value for the frame
      * @param endValue        The end value for the frame
      * @param duration        The duration for the frame
-     * @param reverseBehavior The reverse behavior for the frame
+     * @param easingBehavior The reverse behavior for the frame
      * @return The current animation instance
      */
-    public Animation frame(@Nullable final EasingFunction easingFunction, @Nullable final EasingMode easingMode, final float startValue, final float endValue, @Nullable final Integer duration, @Nullable final ReverseBehavior reverseBehavior) {
-        return this.frame(easingFunction, easingMode, new float[]{startValue}, new float[]{endValue}, duration, reverseBehavior);
+    public Animation frame(@Nullable final EasingFunction easingFunction, @Nullable final EasingMode easingMode, final float startValue, final float endValue, @Nullable final Integer duration, @Nullable final EasingBehavior easingBehavior) {
+        return this.frame(easingFunction, easingMode, new float[]{startValue}, new float[]{endValue}, duration, easingBehavior);
     }
 
     /**
@@ -80,11 +80,11 @@ public class Animation {
      * @param startValue      The start value for the frame
      * @param endValue        The end value for the frame
      * @param duration        The duration for the frame
-     * @param reverseBehavior The reverse behavior for the frame
+     * @param easingBehavior The reverse behavior for the frame
      * @return The current animation instance
      */
-    public Animation frame(@Nullable final EasingFunction easingFunction, @Nullable final EasingMode easingMode, @Nullable final float[] startValue, @Nullable final float[] endValue, @Nullable final Integer duration, @Nullable final ReverseBehavior reverseBehavior) {
-        return this.frame(f -> f.easingFunction(easingFunction).easingMode(easingMode).start(startValue).end(endValue).duration(duration).reverseBehavior(reverseBehavior));
+    public Animation frame(@Nullable final EasingFunction easingFunction, @Nullable final EasingMode easingMode, @Nullable final float[] startValue, @Nullable final float[] endValue, @Nullable final Integer duration, @Nullable final EasingBehavior easingBehavior) {
+        return this.frame(f -> f.easingFunction(easingFunction).easingMode(easingMode).start(startValue).end(endValue).duration(duration).reverseBehavior(easingBehavior));
     }
 
     /**

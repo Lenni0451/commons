@@ -12,15 +12,15 @@ class AnimationFrame {
     private final float[] startValue;
     private final float[] endValue;
     private final int duration;
-    private final ReverseBehavior reverseBehavior;
+    private final EasingBehavior easingBehavior;
 
-    public AnimationFrame(final EasingFunction easingFunction, final EasingMode easingMode, final float[] startValue, final float[] endValue, final int duration, final ReverseBehavior reverseBehavior) {
+    public AnimationFrame(final EasingFunction easingFunction, final EasingMode easingMode, final float[] startValue, final float[] endValue, final int duration, final EasingBehavior easingBehavior) {
         this.easingFunction = easingFunction;
         this.easingMode = easingMode;
         this.startValue = startValue;
         this.endValue = endValue;
         this.duration = duration;
-        this.reverseBehavior = reverseBehavior;
+        this.easingBehavior = easingBehavior;
 
         if (startValue.length != endValue.length) throw new IllegalArgumentException("The start and end value arrays must have the same length!");
         if (startValue.length == 0) throw new IllegalArgumentException("The start and end value arrays must have at least one element!");
@@ -40,7 +40,7 @@ class AnimationFrame {
     }
 
     public float[] getInvertedValue(final long startTime) {
-        float progress = this.getProgress(startTime, this.reverseBehavior.apply(this.easingMode));
+        float progress = this.getProgress(startTime, this.easingBehavior.apply(this.easingMode));
         float[] result = new float[this.startValue.length];
         for (int i = 0; i < result.length; i++) {
             result[i] = this.endValue[i] + (this.startValue[i] - this.endValue[i]) * progress;
