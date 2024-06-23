@@ -85,7 +85,7 @@ public class Animation {
      * @return The current animation instance
      */
     public Animation frame(@Nullable final EasingFunction easingFunction, @Nullable final EasingMode easingMode, @Nullable final float[] startValue, @Nullable final float[] endValue, @Nullable final Integer duration, @Nullable final EasingBehavior easingBehavior) {
-        return this.frame(f -> f.easingFunction(easingFunction).easingMode(easingMode).start(startValue).end(endValue).duration(duration).reverseBehavior(easingBehavior));
+        return this.frame(f -> f.easingFunction(easingFunction).easingMode(easingMode).start(startValue).end(endValue).duration(duration).easingBehavior(easingBehavior));
     }
 
     /**

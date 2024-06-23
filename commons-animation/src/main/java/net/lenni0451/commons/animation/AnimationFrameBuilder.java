@@ -74,12 +74,12 @@ public class AnimationFrameBuilder {
     }
 
     /**
-     * Set the reverse behavior for the frame.
+     * Set the easing behavior for the frame.
      *
      * @param easingBehavior The reverse behavior
      * @return The current builder instance
      */
-    public AnimationFrameBuilder reverseBehavior(@Nullable final EasingBehavior easingBehavior) {
+    public AnimationFrameBuilder easingBehavior(@Nullable final EasingBehavior easingBehavior) {
         this.easingBehavior = easingBehavior;
         return this;
     }
