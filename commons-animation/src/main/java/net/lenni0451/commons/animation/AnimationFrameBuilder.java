@@ -13,6 +13,7 @@ public class AnimationFrameBuilder {
     private float[] startValue;
     private float[] endValue;
     private Integer duration;
+    private ReverseBehavior reverseBehavior;
 
     AnimationFrameBuilder() {
     }
@@ -72,14 +73,26 @@ public class AnimationFrameBuilder {
         return this;
     }
 
+    /**
+     * Set the reverse behavior for the frame.
+     *
+     * @param reverseBehavior The reverse behavior
+     * @return The current builder instance
+     */
+    public AnimationFrameBuilder reverseBehavior(@Nullable final ReverseBehavior reverseBehavior) {
+        this.reverseBehavior = reverseBehavior;
+        return this;
+    }
+
     AnimationFrame build(final Supplier<AnimationFrame> parent) {
         if (this.easingFunction == null) this.easingFunction = parent.get().getEasingFunction();
         if (this.easingMode == null) this.easingMode = parent.get().getEasingMode();
         if (this.startValue == null) this.startValue = parent.get().getEndValue();
         if (this.endValue == null) throw new IllegalArgumentException("The end value must be set!");
         if (this.duration == null) this.duration = parent.get().getDuration();
+        if (this.reverseBehavior == null) this.reverseBehavior = parent.get().getReverseBehavior();
 
-        return new AnimationFrame(this.easingFunction, this.easingMode, this.startValue, this.endValue, this.duration);
+        return new AnimationFrame(this.easingFunction, this.easingMode, this.startValue, this.endValue, this.duration, this.reverseBehavior);
     }
 
 }

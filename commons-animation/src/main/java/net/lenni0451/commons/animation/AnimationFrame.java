@@ -1,8 +1,10 @@
 package net.lenni0451.commons.animation;
 
+import lombok.Getter;
 import net.lenni0451.commons.animation.easing.EasingFunction;
 import net.lenni0451.commons.animation.easing.EasingMode;
 
+@Getter
 class AnimationFrame {
 
     private final EasingFunction easingFunction;
@@ -10,36 +12,18 @@ class AnimationFrame {
     private final float[] startValue;
     private final float[] endValue;
     private final int duration;
+    private final ReverseBehavior reverseBehavior;
 
-    public AnimationFrame(final EasingFunction easingFunction, final EasingMode easingMode, final float[] startValue, final float[] endValue, final int duration) {
+    public AnimationFrame(final EasingFunction easingFunction, final EasingMode easingMode, final float[] startValue, final float[] endValue, final int duration, final ReverseBehavior reverseBehavior) {
         this.easingFunction = easingFunction;
         this.easingMode = easingMode;
         this.startValue = startValue;
         this.endValue = endValue;
         this.duration = duration;
+        this.reverseBehavior = reverseBehavior;
 
         if (startValue.length != endValue.length) throw new IllegalArgumentException("The start and end value arrays must have the same length!");
         if (startValue.length == 0) throw new IllegalArgumentException("The start and end value arrays must have at least one element!");
-    }
-
-    public EasingFunction getEasingFunction() {
-        return this.easingFunction;
-    }
-
-    public EasingMode getEasingMode() {
-        return this.easingMode;
-    }
-
-    public float[] getStartValue() {
-        return this.startValue;
-    }
-
-    public float[] getEndValue() {
-        return this.endValue;
-    }
-
-    public int getDuration() {
-        return this.duration;
     }
 
     public long getTimeLeft(final long startTime) {
@@ -55,8 +39,8 @@ class AnimationFrame {
         return result;
     }
 
-    public float[] getInvertedValue(long startTime) {
-        float progress = this.getProgress(startTime, this.easingMode.invert());
+    public float[] getInvertedValue(final long startTime) {
+        float progress = this.getProgress(startTime, this.reverseBehavior.apply(this.easingMode));
         float[] result = new float[this.startValue.length];
         for (int i = 0; i < result.length; i++) {
             result[i] = this.endValue[i] + (this.startValue[i] - this.endValue[i]) * progress;

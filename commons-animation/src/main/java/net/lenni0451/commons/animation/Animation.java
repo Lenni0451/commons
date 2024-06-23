@@ -59,15 +59,16 @@ public class Animation {
      * Fields that are set to {@code null} will be copied from the last frame.<br>
      * The start value will be copied from the end value of the last frame.
      *
-     * @param easingFunction The easing function for the frame
-     * @param easingMode     The easing mode for the frame
-     * @param startValue     The start value for the frame
-     * @param endValue       The end value for the frame
-     * @param duration       The duration for the frame
+     * @param easingFunction  The easing function for the frame
+     * @param easingMode      The easing mode for the frame
+     * @param startValue      The start value for the frame
+     * @param endValue        The end value for the frame
+     * @param duration        The duration for the frame
+     * @param reverseBehavior The reverse behavior for the frame
      * @return The current animation instance
      */
-    public Animation frame(@Nullable final EasingFunction easingFunction, @Nullable final EasingMode easingMode, final float startValue, final float endValue, @Nullable final Integer duration) {
-        return this.frame(f -> f.easingFunction(easingFunction).easingMode(easingMode).start(startValue).end(endValue).duration(duration));
+    public Animation frame(@Nullable final EasingFunction easingFunction, @Nullable final EasingMode easingMode, final float startValue, final float endValue, @Nullable final Integer duration, @Nullable final ReverseBehavior reverseBehavior) {
+        return this.frame(easingFunction, easingMode, new float[]{startValue}, new float[]{endValue}, duration, reverseBehavior);
     }
 
     /**
@@ -75,15 +76,16 @@ public class Animation {
      * Fields that are set to {@code null} will be copied from the last frame.<br>
      * The start value will be copied from the end value of the last frame.
      *
-     * @param easingFunction The easing function for the frame
-     * @param easingMode     The easing mode for the frame
-     * @param startValue     The start value for the frame
-     * @param endValue       The end value for the frame
-     * @param duration       The duration for the frame
+     * @param easingFunction  The easing function for the frame
+     * @param easingMode      The easing mode for the frame
+     * @param startValue      The start value for the frame
+     * @param endValue        The end value for the frame
+     * @param duration        The duration for the frame
+     * @param reverseBehavior The reverse behavior for the frame
      * @return The current animation instance
      */
-    public Animation frame(@Nullable final EasingFunction easingFunction, @Nullable final EasingMode easingMode, @Nullable final float[] startValue, @Nullable final float[] endValue, @Nullable final Integer duration) {
-        return this.frame(f -> f.easingFunction(easingFunction).easingMode(easingMode).start(startValue).end(endValue).duration(duration));
+    public Animation frame(@Nullable final EasingFunction easingFunction, @Nullable final EasingMode easingMode, @Nullable final float[] startValue, @Nullable final float[] endValue, @Nullable final Integer duration, @Nullable final ReverseBehavior reverseBehavior) {
+        return this.frame(f -> f.easingFunction(easingFunction).easingMode(easingMode).start(startValue).end(endValue).duration(duration).reverseBehavior(reverseBehavior));
     }
 
     /**
