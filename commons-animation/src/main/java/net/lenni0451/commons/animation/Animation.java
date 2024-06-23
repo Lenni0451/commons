@@ -202,6 +202,25 @@ public class Animation {
     }
 
     /**
+     * Finish the animation immediately.<br>
+     * This will stop the animation if it is running.
+     *
+     * @return The current animation instance
+     */
+    public Animation finish() {
+        this.state = State.FINISHED;
+        this.startTime = 0;
+        if (this.direction.equals(AnimationDirection.FORWARDS)) {
+            this.currentFrame = this.frames.size() - 1;
+            this.stoppedValue = this.frames.get(this.currentFrame).getEndValue();
+        } else {
+            this.currentFrame = 0;
+            this.stoppedValue = this.frames.get(0).getStartValue();
+        }
+        return this;
+    }
+
+    /**
      * @return The current value of the animation
      */
     public float getValue() {
