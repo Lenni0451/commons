@@ -149,7 +149,8 @@ public class Animation {
     public Animation start(final AnimationDirection direction) {
         if (this.isRunning()) return this;
         if (this.direction.equals(direction)) return this;
-        this.direction = direction;
+        this.state = State.PAUSED; //Set the state in case it was FINISHED
+        this.reverse();
         return this.start();
     }
 
