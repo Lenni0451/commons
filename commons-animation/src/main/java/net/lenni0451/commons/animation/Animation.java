@@ -17,9 +17,10 @@ public class Animation {
     private AnimationMode mode;
 
     private State state;
+    private AnimationDirection direction;
     private long startTime;
     private int currentFrame;
-    private float[] stoppedValue;
+    private float[] stoppedValue = new float[0];
 
     public Animation() {
         this(AnimationMode.DEFAULT);
@@ -28,7 +29,9 @@ public class Animation {
     public Animation(final AnimationMode mode) {
         this.frames = new ArrayList<>();
         this.mode = mode;
-        this.state = State.STOPPED;
+
+        this.state = State.PAUSED;
+        this.direction = AnimationDirection.FORWARDS;
     }
 
     /**
@@ -42,11 +45,29 @@ public class Animation {
     public Animation frame(final Consumer<AnimationFrameBuilder> frameBuilder) {
         AnimationFrameBuilder builder = new AnimationFrameBuilder();
         frameBuilder.accept(builder);
-        this.frames.add(builder.build(() -> {
+        AnimationFrame frame = builder.build(() -> {
             if (this.frames.isEmpty()) throw new IllegalStateException("Can't copy values from an animation without frames");
             return this.frames.get(this.frames.size() - 1);
-        }));
+        });
+        this.frames.add(frame);
+        if (this.frames.size() == 1) this.stoppedValue = frame.getStartValue();
         return this;
+    }
+
+    /**
+     * Add a new frame to the animation.<br>
+     * Fields that are set to {@code null} will be copied from the last frame.<br>
+     * The start value will be copied from the end value of the last frame.
+     *
+     * @param easingFunction The easing function for the frame
+     * @param easingMode     The easing mode for the frame
+     * @param startValue     The start value for the frame
+     * @param endValue       The end value for the frame
+     * @param duration       The duration for the frame
+     * @return The current animation instance
+     */
+    public Animation frame(@Nullable final EasingFunction easingFunction, @Nullable final EasingMode easingMode, final float startValue, final float endValue, @Nullable final Integer duration) {
+        return this.frame(f -> f.easingFunction(easingFunction).easingMode(easingMode).start(startValue).end(endValue).duration(duration));
     }
 
     /**
@@ -80,33 +101,52 @@ public class Animation {
      * @return If the animation is running
      */
     public boolean isRunning() {
-        return this.state.equals(State.RUNNING) || this.state.equals(State.REVERSED);
+        return this.state.equals(State.RUNNING);
     }
 
     /**
-     * @return If the animation is reversed
+     * @return The direction of the animation
      */
-    public boolean isReversed() {
-        return this.state.equals(State.REVERSED);
+    public AnimationDirection getDirection() {
+        return this.direction;
     }
 
     /**
-     * @return If the animation is finished
+     * Set the direction of the animation.
+     *
+     * @param direction The direction of the animation
      */
-    public boolean isFinished() {
-        return this.state.equals(State.FINISHED);
+    public Animation setDirection(final AnimationDirection direction) {
+        if (!this.direction.equals(direction)) this.reverse();
+        return this;
     }
 
     /**
-     * Reverse the current animation state.
+     * Reverse the current animation direction.
      *
      * @return The current animation instance
      */
     public Animation reverse() {
-        if (this.state.equals(State.RUNNING)) this.state = State.REVERSED;
-        else if (this.state.equals(State.REVERSED)) this.state = State.RUNNING;
-        else throw new IllegalStateException("Can't reverse an animation that is not running");
+        this.direction = this.direction.getOpposite();
+        if (this.isRunning()) {
+            AnimationFrame frame = this.frames.get(this.currentFrame);
+            this.startTime = System.currentTimeMillis() - frame.getTimeLeft(this.startTime);
+        }
         return this;
+    }
+
+    /**
+     * Start the animation in the given direction.<br>
+     * If the given direction is already set, this method will do nothing.
+     *
+     * @param direction The direction to start the animation in
+     * @return The current animation instance
+     */
+    public Animation start(final AnimationDirection direction) {
+        if (this.isRunning()) return this;
+        if (this.direction.equals(direction)) return this;
+        this.direction = direction;
+        return this.start();
     }
 
     /**
@@ -116,12 +156,12 @@ public class Animation {
      * @return The current animation instance
      */
     public Animation start() {
-        if (!this.state.equals(State.STOPPED)) return this;
+        if (this.isRunning()) return this;
+        if (this.state.equals(State.FINISHED)) return this;
         if (this.frames.isEmpty()) throw new IllegalStateException("Can't start an animation without frames");
 
         this.state = State.RUNNING;
-        this.startTime = System.currentTimeMillis();
-        this.currentFrame = 0;
+        this.startTime = System.currentTimeMillis() - this.startTime;
         this.stoppedValue = null;
         return this;
     }
@@ -136,7 +176,9 @@ public class Animation {
     public Animation stop() {
         if (!this.isRunning()) return this;
         this.stoppedValue = this.getValues();
-        this.state = State.STOPPED;
+        this.state = State.PAUSED;
+        AnimationFrame frame = this.frames.get(this.currentFrame);
+        this.startTime = frame.getDuration() - frame.getTimeLeft(this.startTime);
         return this;
     }
 
@@ -147,10 +189,12 @@ public class Animation {
      * @return The current animation instance
      */
     public Animation reset() {
-        this.state = State.STOPPED;
+        this.state = State.PAUSED;
+        this.direction = AnimationDirection.FORWARDS;
         this.startTime = 0;
         this.currentFrame = 0;
-        this.stoppedValue = null;
+        if (this.frames.isEmpty()) this.stoppedValue = new float[0];
+        else this.stoppedValue = this.frames.get(0).getStartValue();
         return this;
     }
 
@@ -167,30 +211,34 @@ public class Animation {
     public float[] getValues() {
         if (this.frames.isEmpty()) throw new IllegalStateException("Can't get values from an animation without frames");
         if (this.stoppedValue != null) return this.stoppedValue;
-        if (this.state.equals(State.STOPPED)) return this.frames.get(0).getStartValue();
-        if (this.state.equals(State.FINISHED)) return this.frames.get(this.frames.size() - 1).getEndValue();
+        if (this.state.equals(State.FINISHED)) {
+            if (this.direction.equals(AnimationDirection.FORWARDS)) return this.frames.get(0).getStartValue();
+            else if (this.direction.equals(AnimationDirection.BACKWARDS)) return this.frames.get(this.frames.size() - 1).getEndValue();
+            else throw new IllegalStateException("Unknown Animation Direction: " + this.direction);
+        }
 
         while (true) {
             AnimationFrame frame = this.frames.get(this.currentFrame);
             long timeLeft = frame.getTimeLeft(this.startTime);
             if (timeLeft > 0) {
-                if (this.state.equals(State.RUNNING)) return frame.getValue(this.startTime);
-                else if (this.state.equals(State.REVERSED)) return frame.getInvertedValue(this.startTime);
-                else throw new IllegalStateException("Unknown Animation State: " + this.state);
+                if (this.direction.equals(AnimationDirection.FORWARDS)) return frame.getValue(this.startTime);
+                else if (this.direction.equals(AnimationDirection.BACKWARDS)) return frame.getInvertedValue(this.startTime);
+                else throw new IllegalStateException("Unknown Animation Direction: " + this.direction);
             }
 
-            int nextFrame = this.currentFrame + (this.state.equals(State.REVERSED) ? -1 : 1);
+            int nextFrame = this.currentFrame + this.direction.getDirection();
             if (nextFrame < 0) {
                 switch (this.mode) {
                     case DEFAULT:
                         this.state = State.FINISHED;
+                        this.startTime = 0;
                         this.stoppedValue = this.frames.get(0).getStartValue();
                         return this.stoppedValue;
                     case LOOP:
                         this.currentFrame = this.frames.size() - 1;
                         break;
                     case PING_PONG:
-                        this.state = State.RUNNING;
+                        this.direction = AnimationDirection.FORWARDS;
                         this.currentFrame = 0;
                         break;
                     default:
@@ -200,13 +248,14 @@ public class Animation {
                 switch (this.mode) {
                     case DEFAULT:
                         this.state = State.FINISHED;
+                        this.startTime = 0;
                         this.stoppedValue = this.frames.get(this.frames.size() - 1).getEndValue();
                         return this.stoppedValue;
                     case LOOP:
                         this.currentFrame = 0;
                         break;
                     case PING_PONG:
-                        this.state = State.REVERSED;
+                        this.direction = AnimationDirection.BACKWARDS;
                         this.currentFrame = this.frames.size() - 1;
                         break;
                     default:
@@ -221,7 +270,7 @@ public class Animation {
 
 
     private enum State {
-        STOPPED, RUNNING, REVERSED, FINISHED
+        PAUSED, RUNNING, FINISHED
     }
 
 }
