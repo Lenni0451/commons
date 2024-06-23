@@ -15,6 +15,7 @@ public class Animation {
 
     private final List<AnimationFrame> frames;
     private AnimationMode mode;
+    private boolean frameByFrame;
 
     private State state;
     private AnimationDirection direction;
@@ -58,11 +59,11 @@ public class Animation {
      * Fields that are set to {@code null} will be copied from the last frame.<br>
      * The start value will be copied from the end value of the last frame.
      *
-     * @param easingFunction  The easing function for the frame
-     * @param easingMode      The easing mode for the frame
-     * @param startValue      The start value for the frame
-     * @param endValue        The end value for the frame
-     * @param duration        The duration for the frame
+     * @param easingFunction The easing function for the frame
+     * @param easingMode     The easing mode for the frame
+     * @param startValue     The start value for the frame
+     * @param endValue       The end value for the frame
+     * @param duration       The duration for the frame
      * @param easingBehavior The reverse behavior for the frame
      * @return The current animation instance
      */
@@ -75,11 +76,11 @@ public class Animation {
      * Fields that are set to {@code null} will be copied from the last frame.<br>
      * The start value will be copied from the end value of the last frame.
      *
-     * @param easingFunction  The easing function for the frame
-     * @param easingMode      The easing mode for the frame
-     * @param startValue      The start value for the frame
-     * @param endValue        The end value for the frame
-     * @param duration        The duration for the frame
+     * @param easingFunction The easing function for the frame
+     * @param easingMode     The easing mode for the frame
+     * @param startValue     The start value for the frame
+     * @param endValue       The end value for the frame
+     * @param duration       The duration for the frame
      * @param easingBehavior The reverse behavior for the frame
      * @return The current animation instance
      */
@@ -97,6 +98,18 @@ public class Animation {
     public Animation setMode(final AnimationMode mode) {
         this.mode = mode;
         this.reset();
+        return this;
+    }
+
+    /**
+     * Set if the animation should be played frame by frame or not.<br>
+     * If {@code true}, manually calling the {@link #start()} method is required to continue the animation.
+     *
+     * @param frameByFrame If the animation should be played frame by frame
+     * @return The current animation instance
+     */
+    public Animation setFrameByFrame(boolean frameByFrame) {
+        this.frameByFrame = frameByFrame;
         return this;
     }
 
@@ -286,7 +299,14 @@ public class Animation {
             } else {
                 this.currentFrame = nextFrame;
             }
-            this.startTime = System.currentTimeMillis() + timeLeft;
+            if (this.frameByFrame) {
+                this.state = State.PAUSED;
+                this.startTime = 0;
+                this.stoppedValue = this.frames.get(this.currentFrame).getStartValue();
+                return this.stoppedValue;
+            } else {
+                this.startTime = System.currentTimeMillis() + timeLeft;
+            }
         }
     }
 
