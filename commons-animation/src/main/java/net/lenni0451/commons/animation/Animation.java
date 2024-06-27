@@ -187,7 +187,13 @@ public class Animation {
         this.direction = this.direction.getOpposite();
         if (this.isRunning()) {
             AnimationFrame frame = this.frames.get(this.currentFrame);
-            this.startTime = System.currentTimeMillis() - frame.getTimeLeft(this.startTime);
+            if (frame.getEasingBehavior().equals(EasingBehavior.KEEP)) {
+                float progress = frame.getProgress(this.startTime);
+                progress = 1 - frame.getEasingMode().call(frame.getEasingFunction(), progress);
+                this.startTime = System.currentTimeMillis() - (long) (progress * frame.getDuration());
+            } else {
+                this.startTime = System.currentTimeMillis() - frame.getTimeLeft(this.startTime);
+            }
         }
         return this;
     }
