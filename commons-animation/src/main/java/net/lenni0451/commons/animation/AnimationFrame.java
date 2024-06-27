@@ -53,19 +53,10 @@ class AnimationFrame {
         }
     }
 
-    private float getProgress(final long startTime) {
+    public float getProgress(final long startTime) {
         float progress = (float) (System.currentTimeMillis() - startTime) / this.duration;
-        if (progress > 1) return 0;
-        switch (this.easingMode) {
-            case EASE_IN:
-                return this.easingFunction.easeIn(progress);
-            case EASE_OUT:
-                return this.easingFunction.easeOut(progress);
-            case EASE_IN_OUT:
-                return this.easingFunction.easeInOut(progress);
-            default:
-                return progress;
-        }
+        if (progress > 1) return 1;
+        return this.easingMode.call(this.easingFunction, progress);
     }
 
 }
