@@ -19,8 +19,8 @@ public class DynamicAnimation {
     private long startTime;
     private long duration;
 
-    public DynamicAnimation(final EasingFunction easingFunction, final EasingMode easingMode, final long durationPerUnit, final float durationUnit) {
-        this(easingFunction, easingMode, durationPerUnit, durationUnit, 0);
+    public DynamicAnimation(final EasingFunction easingFunction, final EasingMode easingMode, final long duration, final float target) {
+        this(easingFunction, easingMode, duration, 0, target);
     }
 
     public DynamicAnimation(final EasingFunction easingFunction, final EasingMode easingMode, final long durationPerUnit, final float durationUnit, final float target) {
@@ -89,7 +89,11 @@ public class DynamicAnimation {
         this.start = this.getValue();
         this.target = target;
         this.startTime = System.currentTimeMillis();
-        this.duration = (long) (Math.abs(this.target - this.start) / this.durationUnit * this.durationPerUnit);
+        if (this.durationUnit == 0) {
+            this.duration = this.durationPerUnit;
+        } else {
+            this.duration = (long) (Math.abs(this.target - this.start) / this.durationUnit * this.durationPerUnit);
+        }
         return this;
     }
 
