@@ -138,6 +138,7 @@ public class Animation {
      * Set the direction of the animation.
      *
      * @param direction The direction of the animation
+     * @return The current animation instance
      */
     public Animation setDirection(final AnimationDirection direction) {
         if (!this.direction.equals(direction)) this.reverse();
