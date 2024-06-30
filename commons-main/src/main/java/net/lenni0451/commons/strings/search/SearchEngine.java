@@ -4,10 +4,7 @@ import net.lenni0451.commons.math.MathUtils;
 import net.lenni0451.commons.strings.search.tokens.ISearchToken;
 import net.lenni0451.commons.strings.search.tokens.QueryTokenizer;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -32,23 +29,22 @@ public class SearchEngine<T> {
      *
      * @param filter The filter that should be applied to the results
      * @param query  The query to search for
-     * @return A list of objects that match the query
+     * @return The search result containing the results and metadata
      */
-    public List<T> search(final ResultFilter filter, final String query) {
-        List<SearchResult<T>> results = new ArrayList<>();
+    public SearchResult<T> search(final ResultFilter filter, final String query) {
+        List<SearchScore<T>> results = new ArrayList<>();
         List<ISearchToken> tokens = QueryTokenizer.tokenize(query);
-        if (tokens.isEmpty()) {
-            List<T> objects = new ArrayList<>();
-            this.supplier.get().forEach(objects::add);
-            return objects;
-        }
+        if (tokens.isEmpty()) return new SearchResult<>(query, 0, filter, Collections.emptyList(), true);
 
         Iterator<T> it = this.supplier.get().iterator();
+        boolean hasElements = false;
         while (it.hasNext()) {
+            hasElements = true;
             T object = it.next();
-            SearchResult<T> result = this.calculateScore(object, tokens);
+            SearchScore<T> result = this.calculateScore(object, tokens);
             if (result.score > 0) results.add(result);
         }
+        if (!hasElements) return new SearchResult<>(query, tokens.size(), filter, Collections.emptyList(), true);
         results.sort((o1, o2) -> Integer.compare(o2.score, o1.score));
         switch (filter) {
             case ALL:
@@ -64,24 +60,24 @@ public class SearchEngine<T> {
                 break;
         }
         List<T> sortedResults = new ArrayList<>();
-        for (SearchResult<T> result : results) sortedResults.add(result.object);
-        return sortedResults;
+        for (SearchScore<T> result : results) sortedResults.add(result.object);
+        return new SearchResult<>(query, tokens.size(), filter, sortedResults, false);
     }
 
-    private SearchResult<T> calculateScore(final T object, final List<ISearchToken> tokens) {
+    private SearchScore<T> calculateScore(final T object, final List<ISearchToken> tokens) {
         String string = this.toStringFunction.apply(object).toLowerCase(Locale.ROOT);
         int score = 0;
         for (ISearchToken token : tokens) {
             int tokenScore = 0;
             tokenScore += token.matches(string);
             tokenScore += token.contains(string);
-            if (token.required() && tokenScore == 0) return new SearchResult<>(object, 0);
+            if (token.required() && tokenScore == 0) return new SearchScore<>(object, 0);
             score += tokenScore;
         }
-        return new SearchResult<>(object, score);
+        return new SearchScore<>(object, score);
     }
 
-    private void filterScoreGap(final List<SearchResult<T>> results) {
+    private void filterScoreGap(final List<SearchScore<T>> results) {
         if (results.size() <= 1) return;
         int maxScore = results.get(0).score;
         int minScore = results.get(results.size() - 1).score;
@@ -94,11 +90,11 @@ public class SearchEngine<T> {
     }
 
 
-    private static class SearchResult<T> {
+    private static class SearchScore<T> {
         private final T object;
         private final int score;
 
-        private SearchResult(final T object, final int score) {
+        private SearchScore(final T object, final int score) {
             this.object = object;
             this.score = score;
         }
