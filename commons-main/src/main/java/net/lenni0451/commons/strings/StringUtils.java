@@ -1,92 +1,96 @@
-package net.lenni0451.commons;
+package net.lenni0451.commons.strings;
 
 import lombok.experimental.UtilityClass;
 
-@Deprecated
 @UtilityClass
 public class StringUtils {
 
     /**
-     * Please use {@link net.lenni0451.commons.strings.StringUtils#uppercaseFirst(String)}.
+     * Uppercase the first letter of the string and lowercase the rest.
      *
      * @param s The string to uppercase
      * @return The uppercase string
      */
-    @Deprecated
     public static String uppercaseFirst(final String s) {
-        return net.lenni0451.commons.strings.StringUtils.uppercaseFirst(s);
+        return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
     }
 
     /**
-     * Please use {@link net.lenni0451.commons.strings.StringUtils#repeat(char, int)}.
+     * Repeat the char a given amount of times.
      *
      * @param c     The char to repeat
      * @param count The amount of times to repeat
      * @return The repeated string
      */
-    @Deprecated
     public static String repeat(final char c, final int count) {
-        return net.lenni0451.commons.strings.StringUtils.repeat(c, count);
+        StringBuilder out = new StringBuilder();
+        for (int i = 0; i < count; i++) out.append(c);
+        return out.toString();
     }
 
     /**
-     * Please use {@link net.lenni0451.commons.strings.StringUtils#repeat(String, int)}.
+     * Repeat the string a given amount of times.
      *
      * @param s     The string to repeat
      * @param count The amount of times to repeat
      * @return The repeated string
      */
-    @Deprecated
     public static String repeat(final String s, final int count) {
-        return net.lenni0451.commons.strings.StringUtils.repeat(s, count);
+        StringBuilder out = new StringBuilder();
+        for (int i = 0; i < count; i++) out.append(s);
+        return out.toString();
     }
 
     /**
-     * Please use {@link net.lenni0451.commons.strings.StringUtils#cut(String, int)}.
+     * Cut the string to the given length.<br>
+     * If the string is shorter it will be returned as it is.
      *
      * @param s      The string to cut
      * @param length The length to cut to
      * @return The cut string
      */
-    @Deprecated
     public static String cut(final String s, final int length) {
-        return net.lenni0451.commons.strings.StringUtils.cut(s, length);
+        if (s.length() < length) return s;
+        return s.substring(0, length);
     }
 
     /**
-     * Please use {@link net.lenni0451.commons.strings.StringUtils#cut(String, char, int)}.
+     * Cut the string to the given length.<br>
+     * The filler will be appended if the string is shorter.
      *
      * @param s      The string to cut
      * @param filler The filler to add if the string is shorter
      * @param length The length to cut to
      * @return The cut string
      */
-    @Deprecated
     public static String cut(String s, final char filler, final int length) {
-        return net.lenni0451.commons.strings.StringUtils.cut(s, filler, length);
+        if (s.length() < length) return s + repeat(filler, length - s.length());
+        return s.substring(0, length);
     }
 
     /**
-     * Please use {@link net.lenni0451.commons.strings.StringUtils#count(String, String)}.
+     * Count the amount of occurrences of a string in another string.
      *
      * @param s       The string to search in
      * @param toCount The string to count
      * @return The amount of occurrences
      */
-    @Deprecated
     public static int count(final String s, final String toCount) {
-        return net.lenni0451.commons.strings.StringUtils.count(s, toCount);
+        int count = s.length() - s.replace(toCount, "").length();
+        return count / toCount.length();
     }
 
     /**
-     * Please use {@link net.lenni0451.commons.strings.StringUtils#flip(String)}.
+     * Flip the given string.
      *
      * @param s The string to flip
      * @return The flipped string
      */
-    @Deprecated
     public static String flip(final String s) {
-        return net.lenni0451.commons.strings.StringUtils.flip(s);
+        char[] chars = s.toCharArray();
+        char[] out = new char[chars.length];
+        for (int i = 0; i < chars.length; i++) out[i] = chars[chars.length - i - 1];
+        return new String(out);
     }
 
 }
