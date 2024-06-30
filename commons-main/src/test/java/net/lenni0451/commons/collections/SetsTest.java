@@ -61,7 +61,7 @@ class SetsTest {
 
     @Test
     void newHashSet() {
-        Set<String> set = Sets.newHashSet("A", "B");
+        Set<String> set = Sets.hashSet("A", "B");
         assertInstanceOf(HashSet.class, set);
         assertTrue(set.contains("A"));
         assertTrue(set.contains("B"));
@@ -69,7 +69,7 @@ class SetsTest {
 
     @Test
     void newLinkedHashSet() {
-        Set<String> set = Sets.newLinkedHashSet("A", "B");
+        Set<String> set = Sets.linkedHashSet("A", "B");
         assertInstanceOf(HashSet.class, set);
         assertTrue(set.contains("A"));
         assertTrue(set.contains("B"));
@@ -77,7 +77,7 @@ class SetsTest {
 
     @Test
     void newConcurrentSkipListSet() {
-        Set<String> set = Sets.newConcurrentSkipListSet("A", "B");
+        Set<String> set = Sets.concurrentSkipListSet("A", "B");
         assertInstanceOf(ConcurrentSkipListSet.class, set);
         assertTrue(set.contains("A"));
         assertTrue(set.contains("B"));

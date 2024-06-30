@@ -1,9 +1,11 @@
 package net.lenni0451.commons;
 
 import lombok.experimental.UtilityClass;
+import org.jetbrains.annotations.ApiStatus;
 
 @Deprecated
 @UtilityClass
+@ApiStatus.ScheduledForRemoval
 public class StringUtils {
 
     /**
@@ -13,6 +15,7 @@ public class StringUtils {
      * @return The uppercase string
      */
     @Deprecated
+    @ApiStatus.ScheduledForRemoval
     public static String uppercaseFirst(final String s) {
         return net.lenni0451.commons.strings.StringUtils.uppercaseFirst(s);
     }
@@ -25,6 +28,7 @@ public class StringUtils {
      * @return The repeated string
      */
     @Deprecated
+    @ApiStatus.ScheduledForRemoval
     public static String repeat(final char c, final int count) {
         return net.lenni0451.commons.strings.StringUtils.repeat(c, count);
     }
@@ -37,6 +41,7 @@ public class StringUtils {
      * @return The repeated string
      */
     @Deprecated
+    @ApiStatus.ScheduledForRemoval
     public static String repeat(final String s, final int count) {
         return net.lenni0451.commons.strings.StringUtils.repeat(s, count);
     }
@@ -49,6 +54,7 @@ public class StringUtils {
      * @return The cut string
      */
     @Deprecated
+    @ApiStatus.ScheduledForRemoval
     public static String cut(final String s, final int length) {
         return net.lenni0451.commons.strings.StringUtils.cut(s, length);
     }
@@ -62,6 +68,7 @@ public class StringUtils {
      * @return The cut string
      */
     @Deprecated
+    @ApiStatus.ScheduledForRemoval
     public static String cut(String s, final char filler, final int length) {
         return net.lenni0451.commons.strings.StringUtils.cut(s, filler, length);
     }
@@ -74,6 +81,7 @@ public class StringUtils {
      * @return The amount of occurrences
      */
     @Deprecated
+    @ApiStatus.ScheduledForRemoval
     public static int count(final String s, final String toCount) {
         return net.lenni0451.commons.strings.StringUtils.count(s, toCount);
     }
@@ -85,6 +93,7 @@ public class StringUtils {
      * @return The flipped string
      */
     @Deprecated
+    @ApiStatus.ScheduledForRemoval
     public static String flip(final String s) {
         return net.lenni0451.commons.strings.StringUtils.flip(s);
     }

@@ -1,6 +1,7 @@
 package net.lenni0451.commons.collections;
 
 import lombok.experimental.UtilityClass;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentSkipListSet;
@@ -81,7 +82,7 @@ public class Sets {
      * @return The created set
      */
     @SafeVarargs
-    public static <T> HashSet<T> newHashSet(final T... objects) {
+    public static <T> HashSet<T> hashSet(final T... objects) {
         return any(HashSet::new, objects);
     }
 
@@ -92,7 +93,7 @@ public class Sets {
      * @param <T>         The object type
      * @return The created set
      */
-    public static <T> HashSet<T> newHashSet(final Consumer<HashSet<T>> setConsumer) {
+    public static <T> HashSet<T> hashSet(final Consumer<HashSet<T>> setConsumer) {
         return any(HashSet::new, setConsumer);
     }
 
@@ -104,7 +105,7 @@ public class Sets {
      * @return The created set
      */
     @SafeVarargs
-    public static <T> LinkedHashSet<T> newLinkedHashSet(final T... objects) {
+    public static <T> LinkedHashSet<T> linkedHashSet(final T... objects) {
         return any(LinkedHashSet::new, objects);
     }
 
@@ -115,7 +116,7 @@ public class Sets {
      * @param <T>         The object type
      * @return The created set
      */
-    public static <T> LinkedHashSet<T> newLinkedHashSet(final Consumer<LinkedHashSet<T>> setConsumer) {
+    public static <T> LinkedHashSet<T> linkedHashSet(final Consumer<LinkedHashSet<T>> setConsumer) {
         return any(LinkedHashSet::new, setConsumer);
     }
 
@@ -127,7 +128,7 @@ public class Sets {
      * @return The created set
      */
     @SafeVarargs
-    public static <T> ConcurrentSkipListSet<T> newConcurrentSkipListSet(final T... objects) {
+    public static <T> ConcurrentSkipListSet<T> concurrentSkipListSet(final T... objects) {
         return any(ConcurrentSkipListSet::new, objects);
     }
 
@@ -138,8 +139,65 @@ public class Sets {
      * @param <T>         The object type
      * @return The created set
      */
-    public static <T> ConcurrentSkipListSet<T> newConcurrentSkipListSet(final Consumer<ConcurrentSkipListSet<T>> setConsumer) {
+    public static <T> ConcurrentSkipListSet<T> concurrentSkipListSet(final Consumer<ConcurrentSkipListSet<T>> setConsumer) {
         return any(ConcurrentSkipListSet::new, setConsumer);
+    }
+
+    /**
+     * <b>Deprecated</b> - Use {@link #hashSet(Object[])} instead.
+     */
+    @Deprecated
+    @SafeVarargs
+    @ApiStatus.ScheduledForRemoval
+    public static <T> HashSet<T> newHashSet(final T... objects) {
+        return hashSet(objects);
+    }
+
+    /**
+     * <b>Deprecated</b> - Use {@link #hashSet(Consumer)} instead.
+     */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval
+    public static <T> HashSet<T> newHashSet(final Consumer<HashSet<T>> setConsumer) {
+        return hashSet(setConsumer);
+    }
+
+    /**
+     * <b>Deprecated</b> - Use {@link #linkedHashSet(Object[])} instead.
+     */
+    @Deprecated
+    @SafeVarargs
+    @ApiStatus.ScheduledForRemoval
+    public static <T> LinkedHashSet<T> newLinkedHashSet(final T... objects) {
+        return linkedHashSet(objects);
+    }
+
+    /**
+     * <b>Deprecated</b> - Use {@link #linkedHashSet(Consumer)} instead.
+     */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval
+    public static <T> LinkedHashSet<T> newLinkedHashSet(final Consumer<LinkedHashSet<T>> setConsumer) {
+        return linkedHashSet(setConsumer);
+    }
+
+    /**
+     * <b>Deprecated</b> - Use {@link #concurrentSkipListSet(Object[])} instead.
+     */
+    @Deprecated
+    @SafeVarargs
+    @ApiStatus.ScheduledForRemoval
+    public static <T> ConcurrentSkipListSet<T> newConcurrentSkipListSet(final T... objects) {
+        return concurrentSkipListSet(objects);
+    }
+
+    /**
+     * <b>Deprecated</b> - Use {@link #concurrentSkipListSet(Consumer)} instead.
+     */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval
+    public static <T> ConcurrentSkipListSet<T> newConcurrentSkipListSet(final Consumer<ConcurrentSkipListSet<T>> setConsumer) {
+        return concurrentSkipListSet(setConsumer);
     }
 
 }

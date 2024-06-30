@@ -16,7 +16,7 @@ class DelegateSetTest {
 
     @BeforeEach
     void setUp() {
-        this.set = Sets.newHashSet("Test1", "Test2", "Test3");
+        this.set = Sets.hashSet("Test1", "Test2", "Test3");
         this.delegate = new DelegateSet<>(this.set);
     }
 
@@ -69,13 +69,13 @@ class DelegateSetTest {
 
     @Test
     void containsAll() {
-        assertEquals(this.set.containsAll(Sets.newHashSet("Test1", "Test2")), this.delegate.containsAll(Sets.newHashSet("Test1", "Test2")));
-        assertEquals(this.set.containsAll(Sets.newHashSet("Test1", "Test10")), this.delegate.containsAll(Sets.newHashSet("Test1", "Test10")));
+        assertEquals(this.set.containsAll(Sets.hashSet("Test1", "Test2")), this.delegate.containsAll(Sets.hashSet("Test1", "Test2")));
+        assertEquals(this.set.containsAll(Sets.hashSet("Test1", "Test10")), this.delegate.containsAll(Sets.hashSet("Test1", "Test10")));
     }
 
     @Test
     void addAll() {
-        this.delegate.addAll(Sets.newHashSet("Test4", "Test5"));
+        this.delegate.addAll(Sets.hashSet("Test4", "Test5"));
         assertEquals(this.set.size(), this.delegate.size());
         assertEquals(this.set.contains("Test4"), this.delegate.contains("Test4"));
         assertEquals(this.set.contains("Test5"), this.delegate.contains("Test5"));
@@ -83,7 +83,7 @@ class DelegateSetTest {
 
     @Test
     void retainAll() {
-        this.delegate.retainAll(Sets.newHashSet("Test1", "Test2"));
+        this.delegate.retainAll(Sets.hashSet("Test1", "Test2"));
         assertEquals(this.set.size(), this.delegate.size());
         assertEquals(this.set.contains("Test1"), this.delegate.contains("Test1"));
         assertEquals(this.set.contains("Test2"), this.delegate.contains("Test2"));
@@ -92,7 +92,7 @@ class DelegateSetTest {
 
     @Test
     void removeAll() {
-        this.delegate.removeAll(Sets.newHashSet("Test1", "Test2"));
+        this.delegate.removeAll(Sets.hashSet("Test1", "Test2"));
         assertEquals(this.set.size(), this.delegate.size());
         assertEquals(this.set.contains("Test1"), this.delegate.contains("Test1"));
         assertEquals(this.set.contains("Test2"), this.delegate.contains("Test2"));
