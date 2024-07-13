@@ -1,0 +1,12 @@
+base {
+    java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation "org.trimou:trimou-core:2.5.1.Final"
+    implementation "com.google.code.gson:gson:2.11.0"
+}

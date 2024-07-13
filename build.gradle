@@ -1,3 +1,5 @@
+import net.lenni0451.commons.buildsrc.TemplateTask
+
 plugins {
     id "io.freefair.lombok" version "8.4" apply false
 }
@@ -51,6 +53,17 @@ subprojects {
     sourcesJar {
         from delombok
         duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    }
+
+    if (project.file("src/main/templates").exists()) {
+        def templateTask = tasks.register("templateTask", TemplateTask) {
+            templateDir = project.file("src/main/templates")
+            outputDir = layout.buildDirectory.dir("generated/templates/main/java")
+        }
+        tasks.compileJava.dependsOn(templateTask)
+        tasks.compileTestJava.dependsOn(templateTask)
+        tasks.sourcesJar.dependsOn(templateTask)
+        sourceSets.main.java.srcDir(templateTask.get().outputDir)
     }
 
     test {
