@@ -1,0 +1,501 @@
+package net.lenni0451.commons.arrays;
+
+import lombok.experimental.UtilityClass;
+
+import java.lang.reflect.Array;
+
+@UtilityClass
+public class ArrayUtils {
+
+    {{#each this}}
+    /**
+     * Get the index of a {{type}} in an array.
+     *
+     * @param array The array to search in
+     * @param {{name}}     The {{type}} to search for
+     * @return The index of the {{type}} or -1 if not found
+     */
+    public static int indexOf(final {{type}}[] array, final {{type}} {{name}}) {
+        for (int x = 0; x < array.length; x++) {
+            if (array[x] == {{name}}) return x;
+        }
+        return -1;
+    }
+
+    /**
+     * Get the index of a {{type}} in an array starting from the end.
+     *
+     * @param array The array to search in
+     * @param {{name}}     The {{type}} to search for
+     * @return The index of the {{type}} or -1 if not found
+     */
+    public static int indexOfLast(final {{type}}[] array, final {{type}} {{name}}) {
+        for (int x = array.length - 1; x >= 0; x--) {
+            if (array[x] == {{name}}) return x;
+        }
+        return -1;
+    }
+
+    /**
+     * Get the index of a {{type}} array in an array.
+     *
+     * @param array The array to search in
+     * @param other The {{type}} array to search for
+     * @return The index of the {{type}} array or -1 if not found
+     */
+    public static int indexOf(final {{type}}[] array, final {{type}}[] other) {
+        for (int x = 0; x < array.length; x++) {
+            if (array[x] == other[0]) {
+                boolean found = true;
+                for (int y = 1; y < other.length; y++) {
+                    if (y + x >= array.length) return -1;
+                    if (array[x + y] != other[y]) {
+                        found = false;
+                        break;
+                    }
+                }
+                if (found) return x;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Add a {{type}} to the end of an array.
+     *
+     * @param array The array to add the {{type}} to
+     * @param {{name}}     The {{type}} to add
+     * @return The new array
+     */
+    public static {{type}}[] add(final {{type}}[] array, final {{type}} {{name}}) {
+        return add(array, array.length, {{name}});
+    }
+
+    /**
+     * Add a {{type}} to the start of an array.
+     *
+     * @param array The array to add the {{type}} to
+     * @param {{name}}     The {{type}} to add
+     * @return The new array
+     */
+    public static {{type}}[] prepend(final {{type}}[] array, final {{type}} {{name}}) {
+        return add(array, 0, {{name}});
+    }
+
+    /**
+     * Add a {{type}} to an array at a specific index.
+     *
+     * @param array The array to add the {{type}} to
+     * @param index The index to add the {{type}} at
+     * @param {{name}}     The {{type}} to add
+     * @return The new array
+     */
+    public static {{type}}[] add(final {{type}}[] array, final int index, final {{type}} {{name}}) {
+        {{type}}[] newArray = new {{type}}[array.length + 1];
+        System.arraycopy(array, 0, newArray, 0, index);
+        newArray[index] = {{name}};
+        System.arraycopy(array, index, newArray, index + 1, array.length - index);
+        return newArray;
+    }
+
+    /**
+     * Add multiple {{type}}s to the end of an array.
+     *
+     * @param array The array to add the {{type}}s to
+     * @param {{type}}s The {{type}}s to add
+     * @return The new array
+     */
+    public static {{type}}[] add(final {{type}}[] array, final {{type}}... {{type}}s) {
+        return add(array, array.length, {{type}}s);
+    }
+
+    /**
+     * Add multiple {{type}}s to the start of an array.
+     *
+     * @param array The array to add the {{type}}s to
+     * @param {{type}}s The {{type}}s to add
+     * @return The new array
+     */
+    public static {{type}}[] prepend(final {{type}}[] array, final {{type}}... {{type}}s) {
+        return add(array, 0, {{type}}s);
+    }
+
+    /**
+     * Add multiple {{type}}s to an array at a specific index.
+     *
+     * @param array The array to add the {{type}}s to
+     * @param index The index to add the {{type}}s at
+     * @param {{type}}s The {{type}}s to add
+     * @return The new array
+     */
+    public static {{type}}[] add(final {{type}}[] array, final int index, final {{type}}... {{type}}s) {
+        {{type}}[] newArray = new {{type}}[array.length + {{type}}s.length];
+        System.arraycopy(array, 0, newArray, 0, index);
+        System.arraycopy({{type}}s, 0, newArray, index, {{type}}s.length);
+        System.arraycopy(array, index, newArray, index + {{type}}s.length, array.length - index);
+        return newArray;
+    }
+
+    /**
+     * Add multiple {{type}} arrays to the end of an array.
+     *
+     * @param array The array to add the other arrays to
+     * @param other The arrays to add
+     * @return The new array
+     */
+    public static {{type}}[] add(final {{type}}[] array, final {{type}}[]... other) {
+        return add(array, array.length, other);
+    }
+
+    /**
+     * Add multiple {{type}} arrays to the start of an array.
+     *
+     * @param array The array to add the other arrays to
+     * @param other The arrays to add
+     * @return The new array
+     */
+    public static {{type}}[] prepend(final {{type}}[] array, final {{type}}[]... other) {
+        return add(array, 0, other);
+    }
+
+    /**
+     * Add multiple {{type}} arrays to an array at a specific index.
+     *
+     * @param array The array to add the other arrays to
+     * @param index The index to add the other arrays at
+     * @param other The arrays to add
+     * @return The new array
+     */
+    public static {{type}}[] add(final {{type}}[] array, final int index, final {{type}}[]... other) {
+        int length = array.length;
+        for ({{type}}[] o : other) length += o.length;
+        {{type}}[] newArray = new {{type}}[length];
+        System.arraycopy(array, 0, newArray, 0, index);
+        int i = index;
+        for ({{type}}[] o : other) {
+            System.arraycopy(o, 0, newArray, i, o.length);
+            i += o.length;
+        }
+        System.arraycopy(array, index, newArray, i, array.length - index);
+        return newArray;
+    }
+
+    /**
+     * Remove a given {{type}} from an array.<br>
+     * <b>Note:</b> This only removes the first occurrence of the {{type}}.<br>
+     * <b>Note:</b> If the {{type}} is not found, the original array is returned.
+     *
+     * @param array The array to remove the {{type}} from
+     * @param {{name}}     The {{type}} to remove
+     * @return The new array
+     */
+    public static {{type}}[] remove(final {{type}}[] array, final {{type}} {{name}}) {
+        int index = indexOf(array, {{name}});
+        if (index == -1) return array;
+        return removeAt(array, index);
+    }
+
+    /**
+     * Remove the first {{type}} from an array.
+     *
+     * @param array The array to remove the {{type}} from
+     * @return The new array
+     */
+    public static {{type}}[] removeFirst(final {{type}}[] array) {
+        return removeAt(array, 0);
+    }
+
+    /**
+     * Remove the last {{type}} from an array.
+     *
+     * @param array The array to remove the {{type}} from
+     * @return The new array
+     */
+    public static {{type}}[] removeLast(final {{type}}[] array) {
+        return removeAt(array, array.length - 1);
+    }
+
+    /**
+     * Remove a {{type}} from an array at a specific index.
+     *
+     * @param array The array to remove the {{type}} from
+     * @param index The index to remove the {{type}} at
+     * @return The new array
+     */
+    public static {{type}}[] removeAt(final {{type}}[] array, final int index) {
+        return removeAt(array, index, 1);
+    }
+
+    /**
+     * Remove multiple {{type}}s from an array at a specific index.
+     *
+     * @param array  The array to remove the {{type}}s from
+     * @param index  The index to remove the {{type}}s at
+     * @param length The number of {{type}}s to remove
+     * @return The new array
+     */
+    public static {{type}}[] removeAt(final {{type}}[] array, final int index, final int length) {
+        {{type}}[] newArray = new {{type}}[array.length - length];
+        System.arraycopy(array, 0, newArray, 0, index);
+        System.arraycopy(array, index + length, newArray, index, array.length - index - length);
+        return newArray;
+    }
+
+    {{/each}}
+    /**
+     * Get the index of an object in an array.
+     *
+     * @param array The array to search in
+     * @param o     The object to search for
+     * @param <O>   The type of the array
+     * @return The index of the object or -1 if not found
+     */
+    public static <O> int indexOf(final O[] array, final O o) {
+        for (int x = 0; x < array.length; x++) {
+            if (array[x] == o) return x;
+        }
+        return -1;
+    }
+
+    /**
+     * Get the index of an object in an array starting from the end.
+     *
+     * @param array The array to search in
+     * @param o     The object to search for
+     * @param <O>   The type of the array
+     * @return The index of the object or -1 if not found
+     */
+    public static <O> int indexOfLast(final O[] array, final O o) {
+        for (int x = array.length - 1; x >= 0; x--) {
+            if (array[x] == o) return x;
+        }
+        return -1;
+    }
+
+    /**
+     * Get the index of an object array in an array.
+     *
+     * @param array The array to search in
+     * @param other The object array to search for
+     * @param <O>   The type of the array
+     * @return The index of the object array or -1 if not found
+     */
+    public static <O> int indexOf(final O[] array, final O[] other) {
+        for (int x = 0; x < array.length; x++) {
+            if (array[x] == other[0]) {
+                boolean found = true;
+                for (int y = 1; y < other.length; y++) {
+                    if (y + x >= array.length) return -1;
+                    if (array[x + y] != other[y]) {
+                        found = false;
+                        break;
+                    }
+                }
+                if (found) return x;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Add an object to the end of an array.
+     *
+     * @param array The array to add the object to
+     * @param o     The object to add
+     * @param <O>   The type of the array
+     * @return The new array
+     */
+    public static <O> O[] add(final O[] array, final O o) {
+        return add(array, array.length, o);
+    }
+
+    /**
+     * Add an object to the start of an array.
+     *
+     * @param array The array to add the object to
+     * @param o     The object to add
+     * @param <O>   The type of the array
+     * @return The new array
+     */
+    public static <O> O[] prepend(final O[] array, final O o) {
+        return add(array, 0, o);
+    }
+
+    /**
+     * Add an object to an array at a specific index.
+     *
+     * @param array The array to add the object to
+     * @param index The index to add the object at
+     * @param o     The object to add
+     * @param <O>   The type of the array
+     * @return The new array
+     */
+    public static <O> O[] add(final O[] array, final int index, final O o) {
+        O[] newArray = (O[]) Array.newInstance(array.getClass().getComponentType(), array.length + 1);
+        System.arraycopy(array, 0, newArray, 0, index);
+        newArray[index] = o;
+        System.arraycopy(array, index, newArray, index + 1, array.length - index);
+        return newArray;
+    }
+
+    /**
+     * Add multiple objects to the end of an array.
+     *
+     * @param array   The array to add the objects to
+     * @param objects The objects to add
+     * @param <O>     The type of the array
+     * @return The new array
+     */
+    @SafeVarargs
+    public static <O> O[] add(final O[] array, final O... objects) {
+        return add(array, array.length, objects);
+    }
+
+    /**
+     * Add multiple objects to the start of an array.
+     *
+     * @param array   The array to add the objects to
+     * @param objects The objects to add
+     * @param <O>     The type of the array
+     * @return The new array
+     */
+    @SafeVarargs
+    public static <O> O[] prepend(final O[] array, final O... objects) {
+        return add(array, 0, objects);
+    }
+
+    /**
+     * Add multiple objects to an array at a specific index.
+     *
+     * @param array   The array to add the objects to
+     * @param index   The index to add the objects at
+     * @param objects The objects to add
+     * @param <O>     The type of the array
+     * @return The new array
+     */
+    @SafeVarargs
+    public static <O> O[] add(final O[] array, final int index, final O... objects) {
+        O[] newArray = (O[]) Array.newInstance(array.getClass().getComponentType(), array.length + objects.length);
+        System.arraycopy(array, 0, newArray, 0, index);
+        System.arraycopy(objects, 0, newArray, index, objects.length);
+        System.arraycopy(array, index, newArray, index + objects.length, array.length - index);
+        return newArray;
+    }
+
+    /**
+     * Add multiple object arrays to the end of an array.
+     *
+     * @param array The array to add the other arrays to
+     * @param other The arrays to add
+     * @param <O>   The type of the array
+     * @return The new array
+     */
+    @SafeVarargs
+    public static <O> O[] add(final O[] array, final O[]... other) {
+        return add(array, array.length, other);
+    }
+
+    /**
+     * Add multiple object arrays to the start of an array.
+     *
+     * @param array The array to add the other arrays to
+     * @param other The arrays to add
+     * @param <O>   The type of the array
+     * @return The new array
+     */
+    @SafeVarargs
+    public static <O> O[] prepend(final O[] array, final O[]... other) {
+        return add(array, 0, other);
+    }
+
+    /**
+     * Add multiple object arrays to an array at a specific index.
+     *
+     * @param array The array to add the other arrays to
+     * @param index The index to add the other arrays at
+     * @param other The arrays to add
+     * @param <O>   The type of the array
+     * @return The new array
+     */
+    @SafeVarargs
+    public static <O> O[] add(final O[] array, final int index, final O[]... other) {
+        int length = array.length;
+        for (O[] o : other) length += o.length;
+        O[] newArray = (O[]) Array.newInstance(array.getClass().getComponentType(), length);
+        System.arraycopy(array, 0, newArray, 0, index);
+        int i = index;
+        for (O[] o : other) {
+            System.arraycopy(o, 0, newArray, i, o.length);
+            i += o.length;
+        }
+        System.arraycopy(array, index, newArray, i, array.length - index);
+        return newArray;
+    }
+
+    /**
+     * Remove a given object from an array.<br>
+     * <b>Note:</b> This only removes the first occurrence of the object.<br>
+     * <b>Note:</b> If the object is not found, the original array is returned.
+     *
+     * @param array The array to remove the object from
+     * @param o     The object to remove
+     * @param <O>   The type of the array
+     * @return The new array
+     */
+    public static <O> O[] remove(final O[] array, final O o) {
+        int index = indexOf(array, o);
+        if (index == -1) return array;
+        return removeAt(array, index);
+    }
+
+    /**
+     * Remove the first object from an array.
+     *
+     * @param array The array to remove the object from
+     * @param <O>   The type of the array
+     * @return The new array
+     */
+    public static <O> O[] removeFirst(final O[] array) {
+        return removeAt(array, 0);
+    }
+
+    /**
+     * Remove the last object from an array.
+     *
+     * @param array The array to remove the object from
+     * @param <O>   The type of the array
+     * @return The new array
+     */
+    public static <O> O[] removeLast(final O[] array) {
+        return removeAt(array, array.length - 1);
+    }
+
+    /**
+     * Remove an object from an array at a specific index.
+     *
+     * @param array The array to remove the object from
+     * @param index The index to remove the object at
+     * @param <O>   The type of the array
+     * @return The new array
+     */
+    public static <O> O[] removeAt(final O[] array, final int index) {
+        return removeAt(array, index, 1);
+    }
+
+    /**
+     * Remove multiple objects from an array at a specific index.
+     *
+     * @param array  The array to remove the objects from
+     * @param index  The index to remove the objects at
+     * @param length The number of objects to remove
+     * @param <O>    The type of the array
+     * @return The new array
+     */
+    public static <O> O[] removeAt(final O[] array, final int index, final int length) {
+        O[] newArray = (O[]) Array.newInstance(array.getClass().getComponentType(), array.length - length);
+        System.arraycopy(array, 0, newArray, 0, index);
+        System.arraycopy(array, index + length, newArray, index, array.length - index - length);
+        return newArray;
+    }
+
+}
