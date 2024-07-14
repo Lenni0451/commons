@@ -1,6 +1,9 @@
 {
     "template": "template.mustache",
     "target": "net/lenni0451/commons/arrays/ArrayUtils.java",
+    "globals": {
+        "test": true
+    },
     "variants": [
         {
             "var": "name"
