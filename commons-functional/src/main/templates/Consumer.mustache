@@ -1,0 +1,36 @@
+package net.lenni0451.commons.functional.consumer{{#throwing}}.throwing{{/throwing}};
+
+@FunctionalInterface
+public interface {{#throwing}}Throwing{{/throwing}}{{prefix}}Consumer<{{join typeArgs delimiter=", "}}{{#throwing}}, T extends Throwable{{/throwing}}> {
+
+    void accept({{#typeArgs}}final {{.}} {{lower .}}{{#iterHasNext}}, {{/iterHasNext}}{{/typeArgs}}){{#throwing}} throws T{{/throwing}};
+
+    /**
+     * Executes the other consumer after this one.<br>
+     * {@code a.before(b);} <i>{@code //a is executed before b}</i>
+     *
+     * @param other The other consumer to execute
+     * @return The wrapper consumer
+     */
+    default {{#throwing}}Throwing{{/throwing}}{{prefix}}Consumer<{{join typeArgs delimiter=", "}}{{#throwing}}, T{{/throwing}}> before(final {{#throwing}}Throwing{{/throwing}}{{prefix}}Consumer<{{join typeArgs delimiter=", "}}{{#throwing}}, T{{/throwing}}> other) {
+        return ({{#typeArgs}}{{lower .}}{{#iterHasNext}}, {{/iterHasNext}}{{/typeArgs}}) -> {
+            this.accept({{#typeArgs}}{{lower .}}{{#iterHasNext}}, {{/iterHasNext}}{{/typeArgs}});
+            other.accept({{#typeArgs}}{{lower .}}{{#iterHasNext}}, {{/iterHasNext}}{{/typeArgs}});
+        };
+    }
+
+    /**
+     * Executes the other consumer before this one.<br>
+     * {@code a.after(b);} <i>{@code //b is executed before a}</i>
+     *
+     * @param other The other consumer to execute
+     * @return The wrapper consumer
+     */
+    default {{#throwing}}Throwing{{/throwing}}{{prefix}}Consumer<{{join typeArgs delimiter=", "}}{{#throwing}}, T{{/throwing}}> after(final {{#throwing}}Throwing{{/throwing}}{{prefix}}Consumer<{{join typeArgs delimiter=", "}}{{#throwing}}, T{{/throwing}}> other) {
+        return ({{#typeArgs}}{{lower .}}{{#iterHasNext}}, {{/iterHasNext}}{{/typeArgs}}) -> {
+            other.accept({{#typeArgs}}{{lower .}}{{#iterHasNext}}, {{/iterHasNext}}{{/typeArgs}});
+            this.accept({{#typeArgs}}{{lower .}}{{#iterHasNext}}, {{/iterHasNext}}{{/typeArgs}});
+        };
+    }
+
+}
