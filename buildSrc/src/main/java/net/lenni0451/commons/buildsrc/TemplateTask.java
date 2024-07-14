@@ -1,6 +1,8 @@
 package net.lenni0451.commons.buildsrc;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
 import net.lenni0451.commons.buildsrc.engine.SingletonTemplateLocator;
 import net.lenni0451.commons.buildsrc.model.TemplateConfig;
@@ -21,7 +23,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 
 public abstract class TemplateTask extends DefaultTask {
 
@@ -42,8 +47,9 @@ public abstract class TemplateTask extends DefaultTask {
         MustacheEngine engine = this.buildTemplateEngine();
         for (TemplateConfig templateConfig : templates) {
             Mustache template = engine.getMustache(templateConfig.template);
-            for (Map<String, String> variant : templateConfig.variants) {
-                String relativeTarget = this.buildVariantTemplate(templateConfig.target, variant).render(null);
+            Mustache variantTemplate = this.buildVariantTemplate(templateConfig.target);
+            for (JsonElement variant : templateConfig.variants) {
+                String relativeTarget = variantTemplate.render(variant);
                 File target = new File(this.getOutputDir().get().getAsFile(), relativeTarget);
                 target.getParentFile().mkdirs();
                 long time = System.nanoTime();
@@ -71,11 +77,8 @@ public abstract class TemplateTask extends DefaultTask {
 
                 if (templateConfig.template == null) throw new IllegalStateException("The template file '" + file.getName() + "' does not contain a 'template' field");
                 if (templateConfig.target == null) throw new IllegalStateException("The template file '" + file.getName() + "' does not contain a 'target' field");
-                if (templateConfig.variants == null) {
-                    templateConfig.variants = new Map[1];
-                    templateConfig.variants[0] = Collections.emptyMap();
-                }
-                if (templateConfig.variables == null) templateConfig.variables = new Map[0];
+                if (templateConfig.variants == null) templateConfig.variants = new JsonElement[]{new JsonObject()};
+                if (templateConfig.variables == null) templateConfig.variables = new JsonObject();
 
                 templates.add(templateConfig);
             }
@@ -97,8 +100,8 @@ public abstract class TemplateTask extends DefaultTask {
                 .build();
     }
 
-    private Mustache buildVariantTemplate(final String input, final Map<String, String> variant) {
-        MustacheEngineBuilder builder = MustacheEngineBuilder
+    private Mustache buildVariantTemplate(final String input) {
+        return MustacheEngineBuilder
                 .newBuilder()
                 .addTemplateLocator(new SingletonTemplateLocator(input))
                 .registerHelpers(
@@ -106,9 +109,9 @@ public abstract class TemplateTask extends DefaultTask {
                                 .all()
                                 .build()
                 )
-                .setProperty(EngineConfigurationKey.SKIP_VALUE_ESCAPING, true);
-        for (Map.Entry<String, String> entry : variant.entrySet()) builder.addGlobalData(entry.getKey(), entry.getValue());
-        return builder.build().getMustache("variant");
+                .setProperty(EngineConfigurationKey.SKIP_VALUE_ESCAPING, true)
+                .build()
+                .getMustache("variant");
     }
 
 }
