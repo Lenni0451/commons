@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
-import net.lenni0451.commons.buildsrc.engine.SingletonTemplateLocator;
 import net.lenni0451.commons.buildsrc.helper.LowerCaseHelper;
 import net.lenni0451.commons.buildsrc.model.TemplateConfig;
 import org.gradle.api.DefaultTask;
@@ -43,9 +42,9 @@ public abstract class TemplateTask extends DefaultTask {
         System.out.println("Loaded " + templates.size() + " templates");
 
         for (TemplateConfig templateConfig : templates) {
-            MustacheEngine engine = this.buildTemplateEngine(templateConfig.globals);
-            Mustache template = engine.getMustache(templateConfig.template);
-            Mustache variantTemplate = this.buildVariantTemplate(templateConfig.target, templateConfig.globals);
+            MustacheEngine templateEngine = this.buildTemplateEngine(templateConfig.globals);
+            Mustache template = templateEngine.getMustache(templateConfig.template);
+            Mustache variantTemplate = templateEngine.compileMustache(templateConfig.target);
             for (JsonElement variant : templateConfig.variants) {
                 String relativeTarget = variantTemplate.render(variant);
                 File target = new File(this.getOutputDir().get().getAsFile(), relativeTarget);
@@ -112,20 +111,6 @@ public abstract class TemplateTask extends DefaultTask {
                 .setProperty(EngineConfigurationKey.SKIP_VALUE_ESCAPING, true);
         for (Map.Entry<String, JsonElement> entry : globals.entrySet()) builder.addGlobalData(entry.getKey(), entry.getValue());
         return builder.build();
-    }
-
-    private Mustache buildVariantTemplate(final String input, final JsonObject globals) {
-        MustacheEngineBuilder builder = MustacheEngineBuilder
-                .newBuilder()
-                .addTemplateLocator(new SingletonTemplateLocator(input))
-                .registerHelpers(
-                        HelpersBuilder
-                                .all()
-                                .build()
-                )
-                .setProperty(EngineConfigurationKey.SKIP_VALUE_ESCAPING, true);
-        for (Map.Entry<String, JsonElement> entry : globals.entrySet()) builder.addGlobalData(entry.getKey(), entry.getValue());
-        return builder.build().getMustache("variant");
     }
 
 }
