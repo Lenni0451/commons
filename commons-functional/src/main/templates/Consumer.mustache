@@ -1,7 +1,10 @@
 package net.lenni0451.commons.functional.consumer{{#throwing}}.throwing{{/throwing}};
 
+{{#var "methodArgs"}}{{#typeArgs}}{{lower .}}{{#iterHasNext}}, {{/iterHasNext}}{{/typeArgs}}{{/var}}
+{{#var "className"}}{{#throwing}}Throwing{{/throwing}}{{prefix}}Consumer{{/var}}
+{{#var "joinedTypeArgs"}}{{join typeArgs delimiter=", "}}{{#throwing}}, T{{/throwing}}{{/var}}
 @FunctionalInterface
-public interface {{#throwing}}Throwing{{/throwing}}{{prefix}}Consumer<{{join typeArgs delimiter=", "}}{{#throwing}}, T extends Throwable{{/throwing}}> {
+public interface {{var "className"}}<{{join typeArgs delimiter=", "}}{{#throwing}}, T extends Throwable{{/throwing}}> {
 
     void accept({{#typeArgs}}final {{.}} {{lower .}}{{#iterHasNext}}, {{/iterHasNext}}{{/typeArgs}}){{#throwing}} throws T{{/throwing}};
 
@@ -12,10 +15,10 @@ public interface {{#throwing}}Throwing{{/throwing}}{{prefix}}Consumer<{{join typ
      * @param other The other consumer to execute
      * @return The wrapper consumer
      */
-    default {{#throwing}}Throwing{{/throwing}}{{prefix}}Consumer<{{join typeArgs delimiter=", "}}{{#throwing}}, T{{/throwing}}> before(final {{#throwing}}Throwing{{/throwing}}{{prefix}}Consumer<{{join typeArgs delimiter=", "}}{{#throwing}}, T{{/throwing}}> other) {
-        return ({{#typeArgs}}{{lower .}}{{#iterHasNext}}, {{/iterHasNext}}{{/typeArgs}}) -> {
-            this.accept({{#typeArgs}}{{lower .}}{{#iterHasNext}}, {{/iterHasNext}}{{/typeArgs}});
-            other.accept({{#typeArgs}}{{lower .}}{{#iterHasNext}}, {{/iterHasNext}}{{/typeArgs}});
+    default {{var "className"}}<{{var "joinedTypeArgs"}}> before(final {{var "className"}}<{{var "joinedTypeArgs"}}> other) {
+        return ({{var "methodArgs"}}) -> {
+            this.accept({{var "methodArgs"}});
+            other.accept({{var "methodArgs"}});
         };
     }
 
@@ -26,10 +29,10 @@ public interface {{#throwing}}Throwing{{/throwing}}{{prefix}}Consumer<{{join typ
      * @param other The other consumer to execute
      * @return The wrapper consumer
      */
-    default {{#throwing}}Throwing{{/throwing}}{{prefix}}Consumer<{{join typeArgs delimiter=", "}}{{#throwing}}, T{{/throwing}}> after(final {{#throwing}}Throwing{{/throwing}}{{prefix}}Consumer<{{join typeArgs delimiter=", "}}{{#throwing}}, T{{/throwing}}> other) {
-        return ({{#typeArgs}}{{lower .}}{{#iterHasNext}}, {{/iterHasNext}}{{/typeArgs}}) -> {
-            other.accept({{#typeArgs}}{{lower .}}{{#iterHasNext}}, {{/iterHasNext}}{{/typeArgs}});
-            this.accept({{#typeArgs}}{{lower .}}{{#iterHasNext}}, {{/iterHasNext}}{{/typeArgs}});
+    default {{var "className"}}<{{var "joinedTypeArgs"}}> after(final {{var "className"}}<{{var "joinedTypeArgs"}}> other) {
+        return ({{var "methodArgs"}}) -> {
+            other.accept({{var "methodArgs"}});
+            this.accept({{var "methodArgs"}});
         };
     }
 

@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
 import net.lenni0451.commons.buildsrc.helper.LowerCaseHelper;
+import net.lenni0451.commons.buildsrc.helper.VarHelper;
 import net.lenni0451.commons.buildsrc.model.TemplateConfig;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.DirectoryProperty;
@@ -106,6 +107,7 @@ public abstract class TemplateTask extends DefaultTask {
                         HelpersBuilder
                                 .all()
                                 .add("lower", new LowerCaseHelper())
+                                .add("var", new VarHelper())
                                 .build()
                 )
                 .setProperty(EngineConfigurationKey.SKIP_VALUE_ESCAPING, true);
