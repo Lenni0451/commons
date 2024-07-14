@@ -1,12 +1,12 @@
 package net.lenni0451.commons.buildsrc.model;
 
-import java.util.Map;
+import com.google.gson.JsonElement;
 
 public class TemplateConfig {
 
     public String template;
     public String target;
-    public Map<String, String>[] variants;
-    public Map<String, String>[] variables;
+    public JsonElement[] variants;
+    public JsonElement variables;
 
 }
