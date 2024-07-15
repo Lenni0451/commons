@@ -50,11 +50,6 @@ subprojects {
         archives javadocJar, sourcesJar
     }
 
-    sourcesJar {
-        from delombok
-        duplicatesStrategy = DuplicatesStrategy.INCLUDE
-    }
-
     if (project.file("src/main/templates").exists()) {
         def templateTask = tasks.register("templateTask", TemplateTask) {
             templateDir = project.file("src/main/templates")
