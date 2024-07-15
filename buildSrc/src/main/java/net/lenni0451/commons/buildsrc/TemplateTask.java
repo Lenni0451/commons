@@ -20,10 +20,7 @@ import org.trimou.engine.locator.FileSystemTemplateLocator;
 import org.trimou.engine.resolver.MapResolver;
 import org.trimou.handlebars.HelpersBuilder;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 public abstract class TemplateTask extends DefaultTask {
@@ -51,8 +48,10 @@ public abstract class TemplateTask extends DefaultTask {
                 File target = new File(this.getOutputDir().get().getAsFile(), relativeTarget);
                 target.getParentFile().mkdirs();
                 long time = System.nanoTime();
-                try (FileWriter writer = new FileWriter(target)) {
+                try (FileOutputStream fos = new FileOutputStream(target)) {
+                    StringWriter writer = new StringWriter();
                     template.render(writer, this.merge(variant, templateConfig.variables));
+                    fos.write(OutputCleaner.clean(writer.toString()).getBytes());
                 }
                 time = System.nanoTime() - time;
                 System.out.println("Rendered template '" + templateConfig.template + "' to '" + target.getAbsolutePath() + "' in " + (time / 1_000_000) + "ms");

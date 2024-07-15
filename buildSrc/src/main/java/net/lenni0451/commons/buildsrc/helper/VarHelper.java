@@ -1,5 +1,6 @@
 package net.lenni0451.commons.buildsrc.helper;
 
+import net.lenni0451.commons.buildsrc.OutputCleaner;
 import org.trimou.handlebars.AbstractHelper;
 import org.trimou.handlebars.Options;
 
@@ -18,7 +19,7 @@ public class VarHelper extends AbstractHelper {
             StringBuilder content = new StringBuilder();
             options.fn(content);
             this.variables.put(varName, content.toString());
-            this.append(options, "//variable '" + varName + "' set to '" + content.toString().replace("\n", "") + "'");
+            this.append(options, OutputCleaner.CLEAN_PLACEHOLDER);
         } else {
             this.append(options, this.variables.get(varName));
         }
