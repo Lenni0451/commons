@@ -1,13 +1,10 @@
 {
-    "template": "Consumer.mustache",
-    "target": "net/lenni0451/commons/functional/consumer/{{prefix}}Consumer.java",
+    "template": "MultiFunction.mustache",
+    "target": "net/lenni0451/commons/functional/functions/throwing/Throwing{{prefix}}Function.java",
+    "globals": {
+        "throwing": true
+    },
     "variants": [
-        {
-            "prefix": "",
-            "typeArgs": [
-                "O"
-            ]
-        },
         {
             "prefix": "Bi",
             "typeArgs": [
