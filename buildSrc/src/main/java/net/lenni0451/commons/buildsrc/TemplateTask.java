@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
 import net.lenni0451.commons.buildsrc.helper.LowerCaseHelper;
+import net.lenni0451.commons.buildsrc.helper.UpperCaseHelper;
 import net.lenni0451.commons.buildsrc.helper.VarHelper;
 import net.lenni0451.commons.buildsrc.model.TemplateConfig;
 import org.gradle.api.DefaultTask;
@@ -35,13 +36,13 @@ public abstract class TemplateTask extends DefaultTask {
 
     @TaskAction
     public void run() throws Throwable {
-        List<TemplateConfig> templates = this.loadTemplates();
+        List<TemplateConfig> templates = this.loadTemplates(this.getTemplateDir().get().getAsFile());
         if (templates.isEmpty()) return;
         System.out.println("Loaded " + templates.size() + " templates");
 
         for (TemplateConfig templateConfig : templates) {
             MustacheEngine templateEngine = this.buildTemplateEngine(templateConfig.globals);
-            Mustache template = templateEngine.getMustache(templateConfig.template);
+            Mustache template = templateEngine.getMustache(new File(templateConfig.baseDir, templateConfig.template).getPath());
             Mustache variantTemplate = templateEngine.compileMustache(templateConfig.target);
             for (JsonElement variant : templateConfig.variants) {
                 String relativeTarget = variantTemplate.render(variant);
@@ -59,26 +60,29 @@ public abstract class TemplateTask extends DefaultTask {
         }
     }
 
-    private List<TemplateConfig> loadTemplates() throws IOException {
-        File templateDir = this.getTemplateDir().get().getAsFile();
-        if (!templateDir.exists() || !templateDir.isDirectory()) return Collections.emptyList();
-        File[] files = templateDir.listFiles();
+    private List<TemplateConfig> loadTemplates(final File dir) throws IOException {
+        if (!dir.exists() || !dir.isDirectory()) return Collections.emptyList();
+        File[] files = dir.listFiles();
         if (files == null) return Collections.emptyList();
 
         List<TemplateConfig> templates = new ArrayList<>();
         for (File file : files) {
-            if (!file.isFile() || !file.getName().toLowerCase(Locale.ROOT).endsWith(".json")) continue;
-            try (JsonReader reader = new JsonReader(new FileReader(file))) {
-                TemplateConfig templateConfig = GSON.fromJson(reader, TemplateConfig.class);
-                if (templateConfig == null) throw new IllegalStateException("The template file '" + file.getName() + "' could not be parsed");
+            if (file.isDirectory()) {
+                templates.addAll(this.loadTemplates(file));
+            } else if (file.isFile() && file.getName().toLowerCase(Locale.ROOT).endsWith(".json")) {
+                try (JsonReader reader = new JsonReader(new FileReader(file))) {
+                    TemplateConfig templateConfig = GSON.fromJson(reader, TemplateConfig.class);
+                    if (templateConfig == null) throw new IllegalStateException("The template file '" + file.getName() + "' could not be parsed");
 
-                if (templateConfig.template == null) throw new IllegalStateException("The template file '" + file.getName() + "' does not contain a 'template' field");
-                if (templateConfig.target == null) throw new IllegalStateException("The template file '" + file.getName() + "' does not contain a 'target' field");
-                if (templateConfig.globals == null) templateConfig.globals = new JsonObject();
-                if (templateConfig.variants == null) templateConfig.variants = new JsonElement[]{new JsonObject()};
-                if (templateConfig.variables == null) templateConfig.variables = new JsonObject();
+                    templateConfig.baseDir = this.getTemplateDir().get().getAsFile().toPath().relativize(file.getParentFile().toPath()).toString();
+                    if (templateConfig.template == null) throw new IllegalStateException("The template file '" + file.getName() + "' does not contain a 'template' field");
+                    if (templateConfig.target == null) throw new IllegalStateException("The template file '" + file.getName() + "' does not contain a 'target' field");
+                    if (templateConfig.globals == null) templateConfig.globals = new JsonObject();
+                    if (templateConfig.variants == null) templateConfig.variants = new JsonElement[]{new JsonObject()};
+                    if (templateConfig.variables == null) templateConfig.variables = new JsonObject();
 
-                templates.add(templateConfig);
+                    templates.add(templateConfig);
+                }
             }
         }
         return templates;
@@ -106,6 +110,7 @@ public abstract class TemplateTask extends DefaultTask {
                         HelpersBuilder
                                 .all()
                                 .add("lower", new LowerCaseHelper())
+                                .add("upper", new UpperCaseHelper())
                                 .add("var", new VarHelper())
                                 .build()
                 )
