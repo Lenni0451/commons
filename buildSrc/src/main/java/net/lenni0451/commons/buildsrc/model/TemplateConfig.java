@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 
 public class TemplateConfig {
 
+    public String baseDir;
     public String template;
     public String target;
     public JsonObject globals;
