@@ -1,0 +1,30 @@
+{
+    "template": "Multiple.mustache",
+    "target": "net/lenni0451/commons/functional/multiples/{{type}}.java",
+    "variants": [
+        {
+            "type": "Tuple",
+            "fields": [
+                ["a", "left", "first"],
+                ["b", "right", "second"]
+            ]
+        },
+        {
+            "type": "Triple",
+            "fields": [
+                ["a", "left", "first"],
+                ["b", "middle", "second"],
+                ["c", "right", "third"]
+            ]
+        },
+        {
+            "type": "Quadruple",
+            "fields": [
+                ["a", "first"],
+                ["b", "second"],
+                ["c", "third"],
+                ["d", "fourth"]
+            ]
+        }
+    ]
+}

@@ -1,0 +1,46 @@
+package net.lenni0451.commons.functional.multiples.{{package}};
+
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import net.lenni0451.commons.functional.multiples.{{type}};
+
+{{#var "className"}}{{capitalize package}}{{type}}{{/var}}
+{{#var "typeargs"}}{{#fields}}{{upper ..0}}{{#iterHasNext}}, {{/iterHasNext}}{{/fields}}{{/var}}
+{{#var "allargs"}}{{#fields}}final {{upper ..0}} {{..0}}{{#iterHasNext}}, {{/iterHasNext}}{{/fields}}{{/var}}
+@ToString
+@EqualsAndHashCode
+public class {{var "className"}}<{{var "typeargs"}}> implements {{type}}<{{var "typeargs"}}> {
+
+    {{#fields}}
+    private{{#immutable}} final{{/immutable}} {{upper ..0}} {{..0}};
+    {{/fields}}
+
+    public {{var "className"}}({{var "allargs"}}) {
+        {{#fields}}
+        this.{{..0}} = {{..0}};
+        {{/fields}}
+    }
+
+    {{^immutable}}
+    public void set({{var "allargs"}}) {
+        {{#fields}}
+        this.{{..0}} = {{..0}};
+        {{/fields}}
+    }
+
+    {{/immutable}}
+    {{#fields}}
+    public {{upper ..0}} get{{capitalize ..0}}() {
+        return this.{{..0}};
+    }
+
+    {{^immutable}}
+    {{#.}}
+    public void set{{capitalize .}}(final {{upper ..0}} {{..0}}) {
+        this.{{..0}} = {{..0}};
+    }
+
+    {{/.}}
+    {{/immutable}}
+    {{/fields}}
+}
