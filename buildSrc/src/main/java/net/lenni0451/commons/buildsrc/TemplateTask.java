@@ -3,7 +3,9 @@ package net.lenni0451.commons.buildsrc;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.google.gson.stream.JsonReader;
+import net.lenni0451.commons.buildsrc.helper.CapitalizeHelper;
 import net.lenni0451.commons.buildsrc.helper.LowerCaseHelper;
 import net.lenni0451.commons.buildsrc.helper.UpperCaseHelper;
 import net.lenni0451.commons.buildsrc.helper.VarHelper;
@@ -19,6 +21,7 @@ import org.trimou.engine.MustacheEngineBuilder;
 import org.trimou.engine.config.EngineConfigurationKey;
 import org.trimou.engine.locator.FileSystemTemplateLocator;
 import org.trimou.engine.resolver.MapResolver;
+import org.trimou.gson.resolver.JsonElementResolver;
 import org.trimou.handlebars.HelpersBuilder;
 
 import java.io.*;
@@ -115,6 +118,7 @@ public abstract class TemplateTask extends DefaultTask {
     private MustacheEngine buildTemplateEngine(final JsonObject globals) {
         MustacheEngineBuilder builder = MustacheEngineBuilder
                 .newBuilder()
+                .setProperty(JsonElementResolver.UNWRAP_JSON_PRIMITIVE_KEY, true)
                 .addTemplateLocator(new FileSystemTemplateLocator(0, this.getTemplateDir().get().getAsFile().getAbsolutePath()))
                 .addResolver(new MapResolver())
                 .registerHelpers(
@@ -123,11 +127,21 @@ public abstract class TemplateTask extends DefaultTask {
                                 .add("lower", new LowerCaseHelper())
                                 .add("upper", new UpperCaseHelper())
                                 .add("var", new VarHelper())
+                                .add("capitalize", new CapitalizeHelper())
                                 .build()
                 )
                 .setProperty(EngineConfigurationKey.SKIP_VALUE_ESCAPING, true);
-        for (Map.Entry<String, JsonElement> entry : globals.entrySet()) builder.addGlobalData(entry.getKey(), entry.getValue());
+        for (Map.Entry<String, JsonElement> entry : globals.entrySet()) builder.addGlobalData(entry.getKey(), this.resolvePrimitive(entry.getValue()));
         return builder.build();
+    }
+
+    private Object resolvePrimitive(final JsonElement element) {
+        if (!(element instanceof JsonPrimitive)) return element;
+        JsonPrimitive primitive = (JsonPrimitive) element;
+        if (primitive.isBoolean()) return primitive.getAsBoolean();
+        if (primitive.isString()) return primitive.getAsString();
+        if (primitive.isNumber()) return primitive.getAsNumber();
+        return primitive;
     }
 
 }
