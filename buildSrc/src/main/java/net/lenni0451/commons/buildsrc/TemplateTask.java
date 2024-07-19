@@ -70,22 +70,33 @@ public abstract class TemplateTask extends DefaultTask {
             if (file.isDirectory()) {
                 templates.addAll(this.loadTemplates(file));
             } else if (file.isFile() && file.getName().toLowerCase(Locale.ROOT).endsWith(".json")) {
-                try (JsonReader reader = new JsonReader(new FileReader(file))) {
-                    TemplateConfig templateConfig = GSON.fromJson(reader, TemplateConfig.class);
-                    if (templateConfig == null) throw new IllegalStateException("The template file '" + file.getName() + "' could not be parsed");
-
-                    templateConfig.baseDir = this.getTemplateDir().get().getAsFile().toPath().relativize(file.getParentFile().toPath()).toString();
-                    if (templateConfig.template == null) throw new IllegalStateException("The template file '" + file.getName() + "' does not contain a 'template' field");
-                    if (templateConfig.target == null) throw new IllegalStateException("The template file '" + file.getName() + "' does not contain a 'target' field");
-                    if (templateConfig.globals == null) templateConfig.globals = new JsonObject();
-                    if (templateConfig.variants == null) templateConfig.variants = new JsonElement[]{new JsonObject()};
-                    if (templateConfig.variables == null) templateConfig.variables = new JsonObject();
-
-                    templates.add(templateConfig);
-                }
+                templates.add(this.loadTemplate(file));
             }
         }
         return templates;
+    }
+
+    private TemplateConfig loadTemplate(final File file) throws IOException {
+        if (!file.exists()) throw new FileNotFoundException("The template file '" + file.getName() + "' does not exist");
+        if (!file.isFile()) throw new IllegalStateException("The template file '" + file.getName() + "' is not a file");
+
+        try (JsonReader reader = new JsonReader(new FileReader(file))) {
+            TemplateConfig templateConfig = GSON.fromJson(reader, TemplateConfig.class);
+            if (templateConfig == null) throw new IllegalStateException("The template file '" + file.getName() + "' could not be parsed");
+
+            if (templateConfig.parent != null) {
+                TemplateConfig basedOn = this.loadTemplate(new File(file.getParentFile(), templateConfig.parent));
+                templateConfig.copyFrom(basedOn);
+            }
+            templateConfig.baseDir = this.getTemplateDir().get().getAsFile().toPath().relativize(file.getParentFile().toPath()).toString();
+            if (templateConfig.template == null) throw new IllegalStateException("The template file '" + file.getName() + "' does not contain a 'template' field");
+            if (templateConfig.target == null) throw new IllegalStateException("The template file '" + file.getName() + "' does not contain a 'target' field");
+            if (templateConfig.globals == null) templateConfig.globals = new JsonObject();
+            if (templateConfig.variants == null) templateConfig.variants = new JsonElement[]{new JsonObject()};
+            if (templateConfig.variables == null) templateConfig.variables = new JsonObject();
+
+            return templateConfig;
+        }
     }
 
     private JsonElement merge(final JsonElement variant, final JsonElement variables) {
