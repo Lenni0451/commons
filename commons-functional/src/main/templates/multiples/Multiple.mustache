@@ -1,0 +1,34 @@
+package net.lenni0451.commons.functional.multiples;
+
+import net.lenni0451.commons.functional.multiples.immutable.Immutable{{type}};
+import net.lenni0451.commons.functional.multiples.mutable.Mutable{{type}};
+
+{{#var "typeargs"}}{{#fields}}{{upper ..0}}{{#iterHasNext}}, {{/iterHasNext}}{{/fields}}{{/var}}
+{{#var "methodArgs"}}{{#fields}}final {{upper ..0}} {{..0}}{{#iterHasNext}}, {{/iterHasNext}}{{/fields}}{{/var}}
+{{#var "callArgs"}}{{#fields}}{{..0}}{{#iterHasNext}}, {{/iterHasNext}}{{/fields}}{{/var}}
+public interface {{type}}<{{var "typeargs"}}> {
+
+    static <{{var "typeargs"}}> Mutable{{type}}<{{var "typeargs"}}> mutable({{var "methodArgs"}}) {
+        return new Mutable{{type}}<>({{var "callArgs"}});
+    }
+
+    static <{{var "typeargs"}}> Immutable{{type}}<{{var "typeargs"}}> immutable({{var "methodArgs"}}) {
+        return new Immutable{{type}}<>({{var "callArgs"}});
+    }
+
+
+    {{#fields}}
+    {{#var "returnType"}}{{upper ..0}}{{/var}}
+    {{#.}}
+    {{#iterIsFirst}}
+    {{var "returnType"}} get{{capitalize .}}();
+    {{/iterIsFirst}}
+    {{^iterIsFirst}}
+    default {{var "returnType"}} get{{capitalize .}}() {
+        return this.get{{var "returnType"}}();
+    }
+    {{/iterIsFirst}}
+
+    {{/.}}
+    {{/fields}}
+}

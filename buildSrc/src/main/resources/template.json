@@ -1,0 +1,29 @@
+{
+    "template": "template.mustache",
+    "target": "net/lenni0451/commons/arrays/ArrayUtils.java",
+    "globals": {
+        "test": true
+    },
+    "variants": [
+        {
+            "var": "name"
+        }
+    ],
+    "variables": [
+        {
+            "type": "byte",
+            "name": "b",
+            "suffix": ""
+        },
+        {
+            "type": "int",
+            "name": "i",
+            "suffix": ""
+        },
+        {
+            "type": "long",
+            "name": "l",
+            "suffix": "L"
+        }
+    ]
+}

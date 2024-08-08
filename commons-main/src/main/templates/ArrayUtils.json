@@ -1,0 +1,38 @@
+{
+    "template": "ArrayUtils.mustache",
+    "target": "net/lenni0451/commons/arrays/ArrayUtils.java",
+    "variables": [
+        {
+            "type": "boolean",
+            "name": "b"
+        },
+        {
+            "type": "byte",
+            "name": "b"
+        },
+        {
+            "type": "short",
+            "name": "s"
+        },
+        {
+            "type": "char",
+            "name": "c"
+        },
+        {
+            "type": "int",
+            "name": "i"
+        },
+        {
+            "type": "long",
+            "name": "l"
+        },
+        {
+            "type": "float",
+            "name": "f"
+        },
+        {
+            "type": "double",
+            "name": "d"
+        }
+    ]
+}

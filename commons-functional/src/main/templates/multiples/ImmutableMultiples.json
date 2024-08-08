@@ -1,0 +1,9 @@
+{
+    "parent": "Multiples.json",
+    "template": "MultipleImpl.mustache",
+    "target": "net/lenni0451/commons/functional/multiples/{{package}}/{{capitalize package}}{{type}}.java",
+    "globals": {
+        "package": "immutable",
+        "immutable": true
+    }
+}

@@ -1,0 +1,11 @@
+package net.lenni0451.commons.functional.functions{{#throwing}}.throwing{{/throwing}};
+
+{{#var "methodArgs"}}{{#typeArgs}}final {{.}} {{lower .}}{{#iterHasNext}}, {{/iterHasNext}}{{/typeArgs}}{{/var}}
+{{#var "className"}}{{#throwing}}Throwing{{/throwing}}{{prefix}}Function{{/var}}
+{{#var "joinedTypeArgs"}}{{join typeArgs delimiter=", "}}{{/var}}
+@FunctionalInterface
+public interface {{var "className"}}<{{var "joinedTypeArgs"}}, R{{#throwing}}, T extends Throwable{{/throwing}}> {
+
+    R apply({{var "methodArgs"}}){{#throwing}} throws T{{/throwing}};
+
+}

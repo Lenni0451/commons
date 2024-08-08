@@ -1,0 +1,27 @@
+{
+    "template": "Consumer.mustache",
+    "target": "net/lenni0451/commons/functional/consumer/{{prefix}}Consumer.java",
+    "variants": [
+        {
+            "prefix": "",
+            "typeArgs": [
+                "O"
+            ]
+        },
+        {
+            "prefix": "Bi",
+            "typeArgs": [
+                "A",
+                "B"
+            ]
+        },
+        {
+            "prefix": "Tri",
+            "typeArgs": [
+                "A",
+                "B",
+                "C"
+            ]
+        }
+    ]
+}

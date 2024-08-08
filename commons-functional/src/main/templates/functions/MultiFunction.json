@@ -1,0 +1,21 @@
+{
+    "template": "MultiFunction.mustache",
+    "target": "net/lenni0451/commons/functional/functions/{{prefix}}Function.java",
+    "variants": [
+        {
+            "prefix": "Bi",
+            "typeArgs": [
+                "A",
+                "B"
+            ]
+        },
+        {
+            "prefix": "Tri",
+            "typeArgs": [
+                "A",
+                "B",
+                "C"
+            ]
+        }
+    ]
+}

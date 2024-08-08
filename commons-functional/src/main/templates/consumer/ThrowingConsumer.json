@@ -1,0 +1,7 @@
+{
+    "parent": "Consumer.json",
+    "target": "net/lenni0451/commons/functional/consumer/throwing/Throwing{{prefix}}Consumer.java",
+    "globals": {
+        "throwing": true
+    }
+}

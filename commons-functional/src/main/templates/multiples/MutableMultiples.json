@@ -1,0 +1,7 @@
+{
+    "parent": "ImmutableMultiples.json",
+    "globals": {
+        "package": "mutable",
+        "immutable": false
+    }
+}
