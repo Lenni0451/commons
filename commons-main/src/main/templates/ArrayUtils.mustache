@@ -8,6 +8,30 @@ import java.lang.reflect.Array;
 public class ArrayUtils {
 
     {{#each this}}
+    // -------------------- {{type}} --------------------
+
+    /**
+     * Check if an array contains a specific {{type}}.
+     *
+     * @param array The array to search in
+     * @param {{name}}     The {{type}} to search for
+     * @return If the {{type}} is in the array
+     */
+    public static boolean contains(final {{type}}[] array, final {{type}} {{name}}) {
+        return indexOf(array, {{name}}) != -1;
+    }
+
+    /**
+     * Check if an array contains another {{type}} array.
+     *
+     * @param array The array to search in
+     * @param other The {{type}} array to search for
+     * @return If the {{type}} array is in the array
+     */
+    public static boolean contains(final {{type}}[] array, final {{type}}[] other) {
+        return indexOf(array, other) != -1;
+    }
+
     /**
      * Get the index of a {{type}} in an array.
      *
@@ -241,7 +265,46 @@ public class ArrayUtils {
         return newArray;
     }
 
+    /**
+     * Reverse an array in place.
+     *
+     * @param array The array to reverse
+     */
+    public static void reverse(final {{type}}[] array) {
+        for (int x = 0; x < array.length / 2; x++) {
+            {{type}} temp = array[x];
+            array[x] = array[array.length - x - 1];
+            array[array.length - x - 1] = temp;
+        }
+    }
+
     {{/each}}
+    // -------------------- Object --------------------
+
+    /**
+     * Check if an array contains a specific object.
+     *
+     * @param array The array to search in
+     * @param o     The object to search for
+     * @param <O>   The type of the array
+     * @return If the object is in the array
+     */
+    public static <O> boolean contains(final O[] array, final O o) {
+        return indexOf(array, o) != -1;
+    }
+
+    /**
+     * Check if an array contains another object array.
+     *
+     * @param array The array to search in
+     * @param other The object array to search for
+     * @param <O>   The type of the array
+     * @return If the object array is in the array
+     */
+    public static <O> boolean contains(final O[] array, final O[] other) {
+        return indexOf(array, other) != -1;
+    }
+
     /**
      * Get the index of an object in an array.
      *
@@ -496,6 +559,20 @@ public class ArrayUtils {
         System.arraycopy(array, 0, newArray, 0, index);
         System.arraycopy(array, index + length, newArray, index, array.length - index - length);
         return newArray;
+    }
+
+    /**
+     * Reverse an array in place.
+     *
+     * @param array The array to reverse
+     * @param <O>   The type of the array
+     */
+    public static <O> void reverse(final O[] array) {
+        for (int x = 0; x < array.length / 2; x++) {
+            O temp = array[x];
+            array[x] = array[array.length - x - 1];
+            array[array.length - x - 1] = temp;
+        }
     }
 
 }
