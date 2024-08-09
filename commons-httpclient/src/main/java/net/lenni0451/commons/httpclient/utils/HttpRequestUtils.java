@@ -31,6 +31,7 @@ public class HttpRequestUtils {
         Map<String, List<String>> headers = new HashMap<>();
         for (Map<String, List<String>> map : maps) {
             for (Map.Entry<String, List<String>> entry : map.entrySet()) {
+                if (entry.getValue().isEmpty()) continue; //Skip empty headers
                 headers.put(entry.getKey().toLowerCase(Locale.ROOT), entry.getValue());
             }
         }
