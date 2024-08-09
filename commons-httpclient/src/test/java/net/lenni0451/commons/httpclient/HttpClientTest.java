@@ -144,9 +144,9 @@ class HttpClientTest {
     }
 
     @Test
-    void streamedContent() throws IOException {
+    void streamed() throws IOException {
         byte[] payload = "Hello World".getBytes(StandardCharsets.UTF_8);
-        HttpResponse response = this.client.post(baseUrl + "/echo").setContent(new StreamedHttpContent(ContentTypes.APPLICATION_OCTET_STREAM, new ByteArrayInputStream(payload), payload.length).setBufferSize(1)).execute();
+        HttpResponse response = this.client.post(baseUrl + "/echo").setContent(new StreamedHttpContent(ContentTypes.APPLICATION_OCTET_STREAM, new ByteArrayInputStream(payload), payload.length).setBufferSize(1)).setStreamedResponse(true).execute();
         assertEquals(StatusCodes.OK, response.getStatusCode());
         assertEquals("Hello World", response.getContentAsString());
     }

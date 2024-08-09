@@ -45,13 +45,13 @@ public class HttpClientExecutor extends RequestExecutor {
         try {
             httpClient = this.buildClient(request, executor);
             java.net.http.HttpRequest httpRequest = this.buildRequest(request);
-            java.net.http.HttpResponse<byte[]> response;
-            try {
-                response = httpClient.send(httpRequest, BodyHandlers.ofByteArray());
-            } catch (InterruptedException e) {
-                throw new IOException(e);
+            if (request.isStreamedResponse()) {
+                java.net.http.HttpResponse<InputStream> response = this.executeRequest(httpClient, httpRequest, BodyHandlers.ofInputStream());
+                return new HttpResponse(new URLWrapper(response.uri()).toURL(), response.statusCode(), response.body(), response.headers().map());
+            } else {
+                java.net.http.HttpResponse<byte[]> response = this.executeRequest(httpClient, httpRequest, BodyHandlers.ofByteArray());
+                return new HttpResponse(new URLWrapper(response.uri()).toURL(), response.statusCode(), response.body(), response.headers().map());
             }
-            return new HttpResponse(new URLWrapper(response.uri()).toURL(), response.statusCode(), response.body(), response.headers().map());
         } finally {
             executor.shutdownNow();
             if (httpClient instanceof Closeable) ((Closeable) httpClient).close();
@@ -107,6 +107,14 @@ public class HttpClientExecutor extends RequestExecutor {
             for (String value : entry.getValue()) builder.header(entry.getKey(), value);
         }
         return builder.build();
+    }
+
+    private <T> java.net.http.HttpResponse<T> executeRequest(final java.net.http.HttpClient httpClient, final java.net.http.HttpRequest httpRequest, final java.net.http.HttpResponse.BodyHandler<T> bodyHandler) throws IOException {
+        try {
+            return httpClient.send(httpRequest, bodyHandler);
+        } catch (InterruptedException e) {
+            throw new IOException("Request interrupted", e);
+        }
     }
 
 }

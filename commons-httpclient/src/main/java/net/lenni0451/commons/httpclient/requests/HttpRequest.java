@@ -19,6 +19,7 @@ public class HttpRequest extends HeaderStore<HttpRequest> {
 
     private final String method;
     private final URL url;
+    private boolean streamedResponse;
     private FollowRedirects followRedirects = FollowRedirects.NOT_SET;
     private final ResettableStorage<CookieManager> cookieManager = new ResettableStorage<>();
     private final ResettableStorage<RetryHandler> retryHandler = new ResettableStorage<>();
@@ -46,6 +47,27 @@ public class HttpRequest extends HeaderStore<HttpRequest> {
      */
     public URL getURL() {
         return this.url;
+    }
+
+    /**
+     * @return If the response should be streamed
+     */
+    public boolean isStreamedResponse() {
+        return this.streamedResponse;
+    }
+
+    /**
+     * Set if the response should be streamed.<br>
+     * Streaming the response will not buffer the content and will allow you to read the content while it is being downloaded.<br>
+     * Use the {@link HttpResponse#getInputStream()} method to get the stream.<br>
+     * Some executors may not support streaming responses. All built-in executors support this feature.
+     *
+     * @param streamedResponse If the response should be streamed
+     * @return This instance for chaining
+     */
+    public HttpRequest setStreamedResponse(final boolean streamedResponse) {
+        this.streamedResponse = streamedResponse;
+        return this;
     }
 
     /**

@@ -19,6 +19,7 @@ import java.io.OutputStream;
 import java.net.CookieManager;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -84,6 +85,7 @@ public class URLConnectionExecutor extends RequestExecutor {
     }
 
     private HttpResponse executeRequest(final HttpURLConnection connection, @Nullable final CookieManager cookieManager, final HttpRequest request) throws IOException {
+        boolean closeConnection = true;
         try {
             if (connection.getDoOutput()) {
                 HttpContent content = ((HttpContentRequest) request).getContent();
@@ -100,23 +102,26 @@ public class URLConnectionExecutor extends RequestExecutor {
                 }
                 os.flush();
             }
-            byte[] body = HttpRequestUtils.readBody(connection);
 
-            HttpResponse response = new HttpResponse(
-                    request.getURL(),
-                    connection.getResponseCode(),
-                    body,
-                    connection
-                            .getHeaderFields()
-                            .entrySet()
-                            .stream()
-                            .filter(e -> e.getKey() != null)
-                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
-            );
+            Map<String, List<String>> headers = connection
+                    .getHeaderFields()
+                    .entrySet()
+                    .stream()
+                    .filter(e -> e.getKey() != null)
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            HttpResponse response;
+            if (request.isStreamedResponse()) {
+                InputStream body = HttpRequestUtils.getInputStream(connection);
+                response = new HttpResponse(request.getURL(), connection.getResponseCode(), body, headers);
+                closeConnection = false; //The connection needs to remain open for streamed responses
+            } else {
+                byte[] body = HttpRequestUtils.readBody(connection);
+                response = new HttpResponse(request.getURL(), connection.getResponseCode(), body, headers);
+            }
             HttpRequestUtils.updateCookies(cookieManager, request.getURL(), connection.getHeaderFields());
             return response;
         } finally {
-            connection.disconnect();
+            if (closeConnection) connection.disconnect();
         }
     }
 
