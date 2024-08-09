@@ -4,6 +4,7 @@ import net.lenni0451.commons.httpclient.HttpClient;
 import net.lenni0451.commons.httpclient.HttpResponse;
 import net.lenni0451.commons.httpclient.constants.Headers;
 import net.lenni0451.commons.httpclient.content.HttpContent;
+import net.lenni0451.commons.httpclient.content.StreamedHttpContent;
 import net.lenni0451.commons.httpclient.proxy.ProxyType;
 import net.lenni0451.commons.httpclient.requests.HttpContentRequest;
 import net.lenni0451.commons.httpclient.requests.HttpRequest;
@@ -13,6 +14,7 @@ import net.lenni0451.commons.httpclient.utils.URLWrapper;
 import javax.annotation.Nonnull;
 import java.io.Closeable;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.CookieManager;
 import java.net.http.HttpClient.Redirect;
 import java.net.http.HttpRequest.BodyPublishers;
@@ -91,7 +93,12 @@ public class HttpClientExecutor extends RequestExecutor {
         builder.timeout(Duration.ofMillis(this.client.getReadTimeout()));
         if (request instanceof HttpContentRequest && ((HttpContentRequest) request).hasContent()) {
             HttpContent content = ((HttpContentRequest) request).getContent();
-            builder.method(request.getMethod(), BodyPublishers.ofByteArray(content.getAsBytes()));
+            if (content instanceof StreamedHttpContent) {
+                InputStream inputStream = ((StreamedHttpContent) content).getInputStream();
+                builder.method(request.getMethod(), BodyPublishers.ofInputStream(() -> inputStream));
+            } else {
+                builder.method(request.getMethod(), BodyPublishers.ofByteArray(content.getAsBytes()));
+            }
         } else {
             builder.method(request.getMethod(), BodyPublishers.noBody());
         }

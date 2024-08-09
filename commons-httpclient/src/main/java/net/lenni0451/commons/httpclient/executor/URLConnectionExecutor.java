@@ -2,6 +2,8 @@ package net.lenni0451.commons.httpclient.executor;
 
 import net.lenni0451.commons.httpclient.HttpClient;
 import net.lenni0451.commons.httpclient.HttpResponse;
+import net.lenni0451.commons.httpclient.content.HttpContent;
+import net.lenni0451.commons.httpclient.content.StreamedHttpContent;
 import net.lenni0451.commons.httpclient.proxy.SingleProxySelector;
 import net.lenni0451.commons.httpclient.requests.HttpContentRequest;
 import net.lenni0451.commons.httpclient.requests.HttpRequest;
@@ -12,6 +14,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.CookieManager;
 import java.net.HttpURLConnection;
@@ -54,12 +57,19 @@ public class URLConnectionExecutor extends RequestExecutor {
 
     private void setupConnection(final HttpURLConnection connection, @Nullable final CookieManager cookieManager, final HttpRequest request) throws IOException {
         HttpRequestUtils.setHeaders(connection, this.getHeaders(request, cookieManager));
+        HttpContentRequest contentRequest = request instanceof HttpContentRequest ? (HttpContentRequest) request : null;
+        HttpContent content = contentRequest != null ? contentRequest.getContent() : null;
 
         connection.setConnectTimeout(this.client.getConnectTimeout());
         connection.setReadTimeout(this.client.getReadTimeout());
         connection.setRequestMethod(request.getMethod());
         connection.setDoInput(true);
-        connection.setDoOutput(request instanceof HttpContentRequest && ((HttpContentRequest) request).getContent() != null);
+        if (contentRequest != null && content != null) {
+            connection.setDoOutput(true);
+            if (content instanceof StreamedHttpContent) connection.setFixedLengthStreamingMode(content.getContentLength());
+        } else {
+            connection.setDoOutput(false);
+        }
         switch (request.getFollowRedirects()) {
             case NOT_SET:
                 connection.setInstanceFollowRedirects(this.client.isFollowRedirects());
@@ -76,8 +86,18 @@ public class URLConnectionExecutor extends RequestExecutor {
     private HttpResponse executeRequest(final HttpURLConnection connection, @Nullable final CookieManager cookieManager, final HttpRequest request) throws IOException {
         try {
             if (connection.getDoOutput()) {
+                HttpContent content = ((HttpContentRequest) request).getContent();
                 OutputStream os = connection.getOutputStream();
-                os.write(((HttpContentRequest) request).getContent().getAsBytes());
+                if (content instanceof StreamedHttpContent) {
+                    StreamedHttpContent streamedContent = (StreamedHttpContent) content;
+                    InputStream is = streamedContent.getInputStream();
+                    byte[] buffer = new byte[streamedContent.getBufferSize()];
+                    int read;
+                    while ((read = is.read(buffer)) != -1) os.write(buffer, 0, read);
+                    is.close();
+                } else {
+                    os.write(content.getAsBytes());
+                }
                 os.flush();
             }
             byte[] body = HttpRequestUtils.readBody(connection);

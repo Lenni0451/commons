@@ -1,7 +1,9 @@
 package net.lenni0451.commons.httpclient;
 
+import net.lenni0451.commons.httpclient.constants.ContentTypes;
 import net.lenni0451.commons.httpclient.constants.Headers;
 import net.lenni0451.commons.httpclient.constants.StatusCodes;
+import net.lenni0451.commons.httpclient.content.StreamedHttpContent;
 import net.lenni0451.commons.httpclient.content.impl.ByteArrayContent;
 import net.lenni0451.commons.httpclient.content.impl.StringContent;
 import net.lenni0451.commons.httpclient.content.impl.URLEncodedFormContent;
@@ -13,6 +15,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
@@ -138,6 +141,14 @@ class HttpClientTest {
         HttpResponse response = this.client.get(baseUrl + "/redirect").execute();
         assertEquals(StatusCodes.MOVED_PERMANENTLY, response.getStatusCode());
         assertEquals("redirect", response.getContentAsString());
+    }
+
+    @Test
+    void streamedContent() throws IOException {
+        byte[] payload = "Hello World".getBytes(StandardCharsets.UTF_8);
+        HttpResponse response = this.client.post(baseUrl + "/echo").setContent(new StreamedHttpContent(ContentTypes.APPLICATION_OCTET_STREAM, new ByteArrayInputStream(payload), payload.length).setBufferSize(1)).execute();
+        assertEquals(StatusCodes.OK, response.getStatusCode());
+        assertEquals("Hello World", response.getContentAsString());
     }
 
 }

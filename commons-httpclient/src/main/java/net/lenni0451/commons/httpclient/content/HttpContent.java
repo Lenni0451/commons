@@ -9,6 +9,7 @@ import net.lenni0451.commons.httpclient.model.ContentType;
 import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
@@ -87,6 +88,18 @@ public abstract class HttpContent {
      */
     public static HttpContent form(final Map<String, String> form) {
         return new URLEncodedFormContent(form);
+    }
+
+    /**
+     * Create a new streamed content from the given input stream.
+     *
+     * @param contentType   The content type
+     * @param inputStream   The input stream
+     * @param contentLength The content length
+     * @return The created content
+     */
+    public static StreamedHttpContent streamed(final ContentType contentType, final InputStream inputStream, final int contentLength) {
+        return new StreamedHttpContent(contentType, inputStream, contentLength);
     }
 
 
