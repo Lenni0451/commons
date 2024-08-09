@@ -3,6 +3,8 @@ package net.lenni0451.commons;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 
+import java.util.function.Supplier;
+
 @UtilityClass
 public class Sneaky {
 
@@ -47,6 +49,27 @@ public class Sneaky {
     @SneakyThrows
     public static <O> O sneak(final SneakySupplier<O> supplier) {
         return supplier.get();
+    }
+
+    /**
+     * Convert a {@link SneakyRunnable} to a {@link Runnable}.
+     *
+     * @param runnable The sneaky runnable to convert
+     * @return The converted runnable
+     */
+    public Runnable toRunnable(final SneakyRunnable runnable) {
+        return () -> sneak(runnable);
+    }
+
+    /**
+     * Convert a {@link SneakySupplier} to a {@link Supplier}.
+     *
+     * @param supplier The sneaky supplier to convert
+     * @param <O>      The type of the value
+     * @return The converted supplier
+     */
+    public <O> O toSupplier(final SneakySupplier<O> supplier) {
+        return sneak(supplier);
     }
 
 
