@@ -176,9 +176,11 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
      * Set the proxy handler for all requests.
      *
      * @param proxyHandler The proxy handler
+     * @return This instance for chaining
      */
-    public void setProxyHandler(@Nonnull final ProxyHandler proxyHandler) {
+    public HttpClient setProxyHandler(@Nonnull final ProxyHandler proxyHandler) {
         this.proxyHandler = proxyHandler;
+        return this;
     }
 
     /**

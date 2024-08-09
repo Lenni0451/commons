@@ -4,6 +4,7 @@ import lombok.experimental.UtilityClass;
 
 import javax.annotation.Nullable;
 import javax.annotation.WillNotClose;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -90,11 +91,22 @@ public class HttpRequestUtils {
      * @throws IOException If an I/O error occurs
      */
     public static byte[] readBody(final HttpURLConnection connection) throws IOException {
+        return readFromStream(getInputStream(connection));
+    }
+
+    /**
+     * Get the input stream of a connection.
+     *
+     * @param connection The connection to get the input stream from
+     * @return The input stream of the connection
+     * @throws IOException If an I/O error occurs
+     */
+    public static InputStream getInputStream(final HttpURLConnection connection) throws IOException {
         InputStream is;
         if (connection.getResponseCode() >= 400) is = connection.getErrorStream();
         else is = connection.getInputStream();
-        if (is == null) return new byte[0];
-        return readFromStream(is);
+        if (is == null) is = new ByteArrayInputStream(new byte[0]);
+        return is;
     }
 
     /**
