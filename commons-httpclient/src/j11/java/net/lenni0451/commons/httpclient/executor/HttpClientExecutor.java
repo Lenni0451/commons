@@ -8,6 +8,7 @@ import net.lenni0451.commons.httpclient.content.StreamedHttpContent;
 import net.lenni0451.commons.httpclient.proxy.ProxyType;
 import net.lenni0451.commons.httpclient.requests.HttpContentRequest;
 import net.lenni0451.commons.httpclient.requests.HttpRequest;
+import net.lenni0451.commons.httpclient.utils.CloseListenerInputStream;
 import net.lenni0451.commons.httpclient.utils.IgnoringTrustManager;
 import net.lenni0451.commons.httpclient.utils.URLWrapper;
 
@@ -42,19 +43,21 @@ public class HttpClientExecutor extends RequestExecutor {
     public HttpResponse execute(@Nonnull final HttpRequest request) throws IOException {
         ExecutorService executor = Executors.newCachedThreadPool();
         java.net.http.HttpClient httpClient = null;
+        boolean close = true;
         try {
             httpClient = this.buildClient(request, executor);
             java.net.http.HttpRequest httpRequest = this.buildRequest(request);
             if (request.isStreamedResponse()) {
                 java.net.http.HttpResponse<InputStream> response = this.executeRequest(httpClient, httpRequest, BodyHandlers.ofInputStream());
-                return new HttpResponse(new URLWrapper(response.uri()).toURL(), response.statusCode(), response.body(), response.headers().map());
+                InputStream inputStream = new CloseListenerInputStream(response.body(), this.closeListener(executor, httpClient));
+                close = false;
+                return new HttpResponse(new URLWrapper(response.uri()).toURL(), response.statusCode(), inputStream, response.headers().map());
             } else {
                 java.net.http.HttpResponse<byte[]> response = this.executeRequest(httpClient, httpRequest, BodyHandlers.ofByteArray());
                 return new HttpResponse(new URLWrapper(response.uri()).toURL(), response.statusCode(), response.body(), response.headers().map());
             }
         } finally {
-            executor.shutdownNow();
-            if (httpClient instanceof Closeable) ((Closeable) httpClient).close();
+            if (close) this.closeListener(executor, httpClient).close();
         }
     }
 
@@ -115,6 +118,13 @@ public class HttpClientExecutor extends RequestExecutor {
         } catch (InterruptedException e) {
             throw new IOException("Request interrupted", e);
         }
+    }
+
+    private CloseListenerInputStream.CloseListener closeListener(final ExecutorService executor, final java.net.http.HttpClient httpClient) {
+        return () -> {
+            executor.shutdownNow();
+            if (httpClient instanceof Closeable) ((Closeable) httpClient).close();
+        };
     }
 
 }
