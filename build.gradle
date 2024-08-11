@@ -1,10 +1,13 @@
-import net.lenni0451.commons.buildsrc.TemplateTask
+plugins {
+    id "net.lenni0451.template-processor" version "1.0.0" apply false
+}
 
 subprojects {
     apply plugin: "java-library"
     apply plugin: "maven-publish"
     apply plugin: "signing"
     apply plugin: "checkstyle"
+    apply plugin: "net.lenni0451.template-processor"
 
     base {
         java.toolchain.languageVersion = JavaLanguageVersion.of(8)
@@ -47,15 +50,10 @@ subprojects {
         archives javadocJar, sourcesJar
     }
 
-    if (project.file("src/main/templates").exists()) {
-        def templateTask = tasks.register("templateTask", TemplateTask) {
-            templateDir = project.file("src/main/templates")
-            outputDir = layout.buildDirectory.dir("generated/templates/main/java")
-        }
-        tasks.compileJava.dependsOn(templateTask)
-        tasks.compileTestJava.dependsOn(templateTask)
-        tasks.sourcesJar.dependsOn(templateTask)
-        sourceSets.main.java.srcDir(templateTask.get().outputDir)
+    templateProcessor {
+        templateDir = project.file("src/main/templates")
+        outputDir = layout.buildDirectory.dir("generated/templates/main/java")
+        markAsSource(project.sourceSets.main)
     }
 
     test {
