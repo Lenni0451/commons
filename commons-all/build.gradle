@@ -1,4 +1,6 @@
 dependencies {
+    api project(":commons-animation")
+    api project(":commons-brigadier")
     api project(":commons-debugging")
     api project(":commons-functional")
     api project(":commons-httpclient")
