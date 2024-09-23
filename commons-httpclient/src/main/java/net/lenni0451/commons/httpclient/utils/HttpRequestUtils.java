@@ -1,6 +1,7 @@
 package net.lenni0451.commons.httpclient.utils;
 
 import lombok.experimental.UtilityClass;
+import net.lenni0451.commons.httpclient.constants.Headers;
 
 import javax.annotation.Nullable;
 import javax.annotation.WillNotClose;
@@ -73,14 +74,28 @@ public class HttpRequestUtils {
     }
 
     /**
-     * Set the headers for a connection.
+     * Set the headers for a connection.<br>
+     * Cookies will be merged into one header separated by {@code ;}.
      *
      * @param connection The connection to set the headers for
      * @param headers    The headers to set
      */
     public static void setHeaders(final HttpURLConnection connection, final Map<String, List<String>> headers) {
         for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
-            connection.setRequestProperty(entry.getKey(), String.join("; ", entry.getValue()));
+            if (Headers.COOKIE.equalsIgnoreCase(entry.getKey())) {
+                connection.setRequestProperty(entry.getKey(), String.join("; ", entry.getValue()));
+            } else {
+                boolean first = true;
+                for (String val : entry.getValue()) {
+                    if (first) {
+                        first = false;
+                        //Use the first value to clear all previous values
+                        connection.setRequestProperty(entry.getKey(), val);
+                    } else {
+                        connection.addRequestProperty(entry.getKey(), val);
+                    }
+                }
+            }
         }
     }
 
