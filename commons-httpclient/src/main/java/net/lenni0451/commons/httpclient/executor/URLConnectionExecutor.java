@@ -19,9 +19,9 @@ import java.io.OutputStream;
 import java.net.CookieManager;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class URLConnectionExecutor extends RequestExecutor {
 
@@ -103,12 +103,8 @@ public class URLConnectionExecutor extends RequestExecutor {
                 os.flush();
             }
 
-            Map<String, List<String>> headers = connection
-                    .getHeaderFields()
-                    .entrySet()
-                    .stream()
-                    .filter(e -> e.getKey() != null)
-                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            Map<String, List<String>> headers = new HashMap<>(connection.getHeaderFields());
+            headers.remove(null);
             HttpResponse response;
             if (request.isStreamedResponse()) {
                 InputStream body = HttpRequestUtils.getInputStream(connection);
