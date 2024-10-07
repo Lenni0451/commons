@@ -5,9 +5,8 @@ import lombok.experimental.UtilityClass;
 
 import javax.annotation.WillNotClose;
 import java.io.*;
-import java.nio.file.FileVisitOption;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
@@ -71,6 +70,59 @@ public class FileUtils {
         try (Stream<Path> s = Files.walk(file.toPath(), FileVisitOption.FOLLOW_LINKS)) {
             return s.filter(Files::isRegularFile).map(Path::toFile).filter(filter).collect(Collectors.toList());
         }
+    }
+
+    /**
+     * Recursively delete a file or directory using the Path API.<br>
+     * If the file is a directory all files and directories in it will be deleted as well.
+     *
+     * @param file The file or directory to delete
+     * @throws IOException If an I/O error occurs
+     */
+    @SneakyThrows
+    public static void deletePathTree(final File file) {
+        Files.walkFileTree(file.toPath(), new FileVisitor<Path>() {
+            @Override
+            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
+                return FileVisitResult.CONTINUE;
+            }
+
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                //Delete the file
+                Files.delete(file);
+                return FileVisitResult.CONTINUE;
+            }
+
+            @Override
+            public FileVisitResult visitFileFailed(Path file, IOException exc) {
+                return FileVisitResult.TERMINATE;
+            }
+
+            @Override
+            public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                Files.delete(dir);
+                return FileVisitResult.CONTINUE;
+            }
+        });
+    }
+
+    /**
+     * Recursively delete a file or directory.<br>
+     * If the file is a directory all files and directories in it will be deleted as well.
+     *
+     * @param file The file or directory to delete
+     * @throws IOException If an I/O error occurs
+     */
+    @SneakyThrows
+    public static void recursiveDelete(final File file) {
+        if (file.isDirectory()) {
+            File[] files = file.listFiles();
+            if (files != null) {
+                for (File f : files) recursiveDelete(f);
+            }
+        }
+        if (!file.delete()) throw new IOException("Failed to delete file: " + file);
     }
 
     /**
