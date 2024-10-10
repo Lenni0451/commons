@@ -122,7 +122,7 @@ public class FileUtils {
                 for (File f : files) recursiveDelete(f);
             }
         }
-        if (!file.delete()) throw new IOException("Failed to delete file: " + file);
+        file.delete();
     }
 
     /**
