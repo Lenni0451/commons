@@ -1,9 +1,6 @@
 package net.lenni0451.commons.httpclient.content;
 
-import net.lenni0451.commons.httpclient.content.impl.ByteArrayContent;
-import net.lenni0451.commons.httpclient.content.impl.FileContent;
-import net.lenni0451.commons.httpclient.content.impl.StringContent;
-import net.lenni0451.commons.httpclient.content.impl.URLEncodedFormContent;
+import net.lenni0451.commons.httpclient.content.impl.*;
 import net.lenni0451.commons.httpclient.model.ContentType;
 
 import javax.annotation.Nonnull;
@@ -88,6 +85,15 @@ public abstract class HttpContent {
      */
     public static HttpContent form(final Map<String, String> form) {
         return new URLEncodedFormContent(form);
+    }
+
+    /**
+     * Create a new multipart form content.
+     *
+     * @return The created content
+     */
+    public static MultiPartFormContent multiPartForm() {
+        return new MultiPartFormContent();
     }
 
     /**
