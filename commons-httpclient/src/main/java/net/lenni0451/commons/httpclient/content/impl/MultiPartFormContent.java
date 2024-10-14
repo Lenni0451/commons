@@ -99,7 +99,7 @@ public class MultiPartFormContent extends HttpContent {
 
         public FormPart(final String name, final HttpContent content, @Nullable final String fileName) {
             this.content = content;
-            this.setHeader(Headers.CONTENT_DISPOSITION, "form-data; name=\"" + name + "\"" + (fileName == null ? "" : ("; fileName=\"" + fileName + "\"")));
+            this.setHeader(Headers.CONTENT_DISPOSITION, "form-data; name=\"" + name + "\"" + (fileName == null ? "" : ("; filename=\"" + fileName + "\"")));
             this.setHeader(Headers.CONTENT_TYPE, content.getContentType().toString());
         }
 
