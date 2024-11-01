@@ -5,13 +5,14 @@ import net.lenni0451.commons.asm.info.ClassInfo;
 import net.lenni0451.commons.asm.info.ClassInfoProvider;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.Type;
 
 import java.util.Set;
 
+import static net.lenni0451.commons.asm.Types.internalName;
+
 public class InfoClassWriter extends ClassWriter {
 
-    private static final String OBJECT = Type.getInternalName(Object.class);
+    private static final String OBJECT = internalName(Object.class);
 
     private final ClassInfoProvider classInfoProvider;
 
