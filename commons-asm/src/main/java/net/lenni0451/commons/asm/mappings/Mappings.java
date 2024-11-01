@@ -5,8 +5,10 @@ import org.objectweb.asm.commons.Remapper;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
@@ -35,6 +37,7 @@ public class Mappings extends Remapper {
      * {@code org/example/SomeClass.methodName(I)V} {@literal ->} {@code newMethodName}
      */
     protected final Map<String, String> methodMappings;
+    ReverseCacheMode reverseCacheMode;
     Mappings reverse;
 
     public Mappings() {
@@ -49,6 +52,14 @@ public class Mappings extends Remapper {
         this.methodMappings = mapInitializer.get();
     }
 
+    public Mappings(final Mappings mappings, final Function<Map<String, String>, Map<String, String>> mapCopier) {
+        this.mapInitializer = mappings.mapInitializer;
+        this.packageMappings = mapCopier.apply(mappings.packageMappings);
+        this.classMappings = mapCopier.apply(mappings.classMappings);
+        this.fieldMappings = mapCopier.apply(mappings.fieldMappings);
+        this.methodMappings = mapCopier.apply(mappings.methodMappings);
+    }
+
     public Mappings addPackageMapping(final String from, final String to) {
         return this.addPackageMapping(from, to, false);
     }
@@ -61,8 +72,15 @@ public class Mappings extends Remapper {
         if (skipExisting && this.packageMappings.containsKey(from)) return this;
         this.packageMappings.put(from, to);
         if (this.reverse != null) {
-            this.reverse.packageMappings.put(to, from);
-            Reverser.recalculateClasses(this, this.reverse);
+            if (this.reverseCacheMode.equals(ReverseCacheMode.UPDATE)) {
+                this.reverse.packageMappings.put(to, from);
+                Reverser.recalculateClasses(this, this.reverse);
+            } else if (this.reverseCacheMode.equals(ReverseCacheMode.RECREATE)) {
+                this.reverse.reverseCacheMode = null;
+                this.reverse.reverse = null;
+                this.reverseCacheMode = null;
+                this.reverse = null;
+            }
         }
         return this;
     }
@@ -101,9 +119,16 @@ public class Mappings extends Remapper {
         if (skipExisting && this.classMappings.containsKey(from)) return this;
         this.classMappings.put(from, to);
         if (this.reverse != null) {
-            this.reverse.classMappings.put(this.map(from), from);
-            Reverser.recalculateFields(this, this.reverse);
-            Reverser.recalculateMethods(this, this.reverse);
+            if (this.reverseCacheMode.equals(ReverseCacheMode.UPDATE)) {
+                this.reverse.classMappings.put(this.map(from), from);
+                Reverser.recalculateFields(this, this.reverse);
+                Reverser.recalculateMethods(this, this.reverse);
+            } else if (this.reverseCacheMode.equals(ReverseCacheMode.RECREATE)) {
+                this.reverse.reverseCacheMode = null;
+                this.reverse.reverse = null;
+                this.reverseCacheMode = null;
+                this.reverse = null;
+            }
         }
         return this;
     }
@@ -125,7 +150,16 @@ public class Mappings extends Remapper {
         String key = owner + "." + name + (descriptor != null ? ":" + descriptor : "");
         if (skipExisting && this.fieldMappings.containsKey(key)) return this;
         this.fieldMappings.put(key, newName);
-        if (this.reverse != null) this.reverse.addFieldMapping(this.map(owner), newName, this.mapDesc(descriptor), name);
+        if (this.reverse != null) {
+            if (this.reverseCacheMode.equals(ReverseCacheMode.UPDATE)) {
+                this.reverse.addFieldMapping(this.map(owner), newName, this.mapDesc(descriptor), name);
+            } else if (this.reverse.equals(ReverseCacheMode.RECREATE)) {
+                this.reverse.reverseCacheMode = null;
+                this.reverse.reverse = null;
+                this.reverseCacheMode = null;
+                this.reverse = null;
+            }
+        }
         return this;
     }
 
@@ -145,7 +179,16 @@ public class Mappings extends Remapper {
         String key = owner + "." + name + descriptor;
         if (skipExisting && this.methodMappings.containsKey(key)) return this;
         this.methodMappings.put(key, newName);
-        if (this.reverse != null) this.reverse.addMethodMapping(this.map(owner), newName, this.mapMethodDesc(descriptor), name);
+        if (this.reverse != null) {
+            if (this.reverseCacheMode.equals(ReverseCacheMode.UPDATE)) {
+                this.reverse.addMethodMapping(this.map(owner), newName, this.mapMethodDesc(descriptor), name);
+            } else if (this.reverseCacheMode.equals(ReverseCacheMode.RECREATE)) {
+                this.reverse.reverseCacheMode = null;
+                this.reverse.reverse = null;
+                this.reverseCacheMode = null;
+                this.reverse = null;
+            }
+        }
         return this;
     }
 
@@ -175,27 +218,34 @@ public class Mappings extends Remapper {
         return copy;
     }
 
-    public void isolate() {
+    public Mappings isolate() {
         if (this.reverse != null) {
             this.reverse.reverse = null;
             this.reverse = null;
         }
+        return this;
     }
 
     public Mappings reverse() {
-        if (this.reverse != null) return this.reverse;
-        Reverser.init(this);
+        return this.reverse(ReverseCacheMode.UPDATE);
+    }
+
+    public Mappings reverse(final ReverseCacheMode mode) {
+        if (this.reverse != null && this.reverseCacheMode.equals(mode)) return this.reverse;
+        Mappings reverse = Reverser.init(this);
+        this.reverseCacheMode = mode;
+        this.reverse = reverse;
+        reverse.reverseCacheMode = mode;
+        reverse.reverse = this;
+        if (mode.equals(ReverseCacheMode.IMMUTABLE)) {
+            this.reverse = new Mappings(this.reverse, Collections::unmodifiableMap);
+        }
         return this.reverse;
     }
 
-    @Override
-    public String toString() {
-        return "Mappings{" +
-                "packageMappings=" + this.packageMappings +
-                ", classMappings=" + this.classMappings +
-                ", fieldMappings=" + this.fieldMappings +
-                ", methodMappings=" + this.methodMappings +
-                '}';
+
+    public enum ReverseCacheMode {
+        UPDATE, RECREATE, IMMUTABLE
     }
 
 }

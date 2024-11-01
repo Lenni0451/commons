@@ -4,11 +4,10 @@ import java.util.Map;
 
 class Reverser {
 
-    public static void init(final Mappings mappings) {
+    public static Mappings init(final Mappings mappings) {
         Mappings reversed = mappings.emptyCopy();
         recalculatePackages(mappings, reversed);
-        mappings.reverse = reversed;
-        reversed.reverse = mappings;
+        return reversed;
     }
 
     public static void recalculatePackages(final Mappings from, final Mappings to) {
