@@ -42,7 +42,7 @@ public class ClassInfoProvider {
         for (Class<?> itf : clazz.getInterfaces()) {
             interfaces.add(slash(itf.getName()));
         }
-        ClassInfo classInfo = new ClassInfo(this, slashName, clazz.getModifiers(), superName, interfaces.toArray(new String[0]));
+        ClassInfo classInfo = new ClassInfo(this, null, slashName, clazz.getModifiers(), superName, interfaces.toArray(new String[0]));
         this.classInfoCache.put(slashName, classInfo);
         return classInfo;
     }
@@ -52,7 +52,7 @@ public class ClassInfoProvider {
         String[] interfaces;
         if (classNode.interfaces == null) interfaces = new String[0];
         else interfaces = classNode.interfaces.toArray(new String[0]);
-        ClassInfo classInfo = new ClassInfo(this, classNode.name, classNode.access, classNode.superName, interfaces);
+        ClassInfo classInfo = new ClassInfo(this, classNode, classNode.name, classNode.access, classNode.superName, interfaces);
         this.classInfoCache.put(classNode.name, classInfo);
         return classInfo;
     }

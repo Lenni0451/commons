@@ -1,5 +1,7 @@
 package net.lenni0451.commons.asm.info;
 
+import org.objectweb.asm.tree.ClassNode;
+
 import javax.annotation.Nullable;
 import java.util.*;
 
@@ -7,17 +9,20 @@ public class ClassInfo {
 
     @Nullable
     private final ClassInfoProvider classInfoProvider;
+    @Nullable
+    private ClassNode classNode;
     private final String name;
     private final int modifiers;
     private final String superClass;
     private final String[] interfaces;
 
     public ClassInfo(final String name, final int modifiers, final String superClass, final String[] interfaces) {
-        this(null, name, modifiers, superClass, interfaces);
+        this(null, null, name, modifiers, superClass, interfaces);
     }
 
-    public ClassInfo(@Nullable final ClassInfoProvider classInfoProvider, final String name, final int modifiers, final String superClass, final String[] interfaces) {
+    public ClassInfo(@Nullable final ClassInfoProvider classInfoProvider, @Nullable final ClassNode classNode, final String name, final int modifiers, final String superClass, final String[] interfaces) {
         this.classInfoProvider = classInfoProvider;
+        this.classNode = classNode;
         this.name = name;
         this.modifiers = modifiers;
         this.superClass = superClass;
@@ -30,7 +35,16 @@ public class ClassInfo {
     }
 
     public ClassInfo withProvider(final ClassInfoProvider classInfoProvider) {
-        return new ClassInfo(classInfoProvider, this.name, this.modifiers, this.superClass, this.interfaces);
+        return new ClassInfo(classInfoProvider, this.classNode, this.name, this.modifiers, this.superClass, this.interfaces);
+    }
+
+    @Nullable
+    public ClassNode getClassNode() throws ClassNotFoundException {
+        if (this.classNode == null) {
+            if (this.classInfoProvider == null) return null;
+            this.classNode = this.classInfoProvider.getClassProvider().getClassNode(this.name);
+        }
+        return this.classNode;
     }
 
     public String getName() {
