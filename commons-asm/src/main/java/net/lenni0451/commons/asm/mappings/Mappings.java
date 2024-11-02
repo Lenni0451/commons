@@ -197,6 +197,10 @@ public class Mappings extends Remapper {
         return this.methodMappings.getOrDefault(owner + "." + name + descriptor, name);
     }
 
+    public int size() {
+        return this.packageMappings.size() + this.classMappings.size() + this.fieldMappings.size() + this.methodMappings.size();
+    }
+
     public Mappings emptyCopy() {
         return this.emptyCopy(this.mapInitializer);
     }
@@ -233,6 +237,7 @@ public class Mappings extends Remapper {
     public Mappings reverse(final ReverseCacheMode mode) {
         if (this.reverse != null && this.reverseCacheMode.equals(mode)) return this.reverse;
         Mappings reverse = Reverser.init(this);
+        if (mode.equals(ReverseCacheMode.STANDALONE)) return reverse;
         this.reverseCacheMode = mode;
         this.reverse = reverse;
         reverse.reverseCacheMode = mode;
@@ -245,7 +250,7 @@ public class Mappings extends Remapper {
 
 
     public enum ReverseCacheMode {
-        UPDATE, RECREATE, IMMUTABLE
+        UPDATE, RECREATE, IMMUTABLE, STANDALONE
     }
 
 }
