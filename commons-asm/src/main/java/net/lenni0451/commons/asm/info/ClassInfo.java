@@ -77,7 +77,7 @@ public class ClassInfo {
         return infos;
     }
 
-    public Set<ClassInfo> recursiveResolveSuperClasses() throws ClassNotFoundException {
+    public Set<ClassInfo> recursiveResolveSuperClasses(final boolean includeSelf) throws ClassNotFoundException {
         Set<ClassInfo> superClasses = new LinkedHashSet<>();
         Queue<ClassInfo> queue = new LinkedList<>();
         queue.add(this);
@@ -88,6 +88,7 @@ public class ClassInfo {
             if (superClass != null) queue.add(superClass);
             Collections.addAll(queue, current.resolveInterfaces());
         }
+        if (!includeSelf) superClasses.remove(this);
         return superClasses;
     }
 

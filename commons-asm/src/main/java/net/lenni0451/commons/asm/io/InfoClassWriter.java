@@ -26,9 +26,9 @@ public class InfoClassWriter extends ClassWriter {
         if (type1.equals(OBJECT) || type2.equals(OBJECT)) return OBJECT;
         try {
             ClassInfo class1 = this.classInfoProvider.of(type1);
-            Set<ClassInfo> superClasses1 = class1.recursiveResolveSuperClasses();
+            Set<ClassInfo> superClasses1 = class1.recursiveResolveSuperClasses(false);
             ClassInfo class2 = this.classInfoProvider.of(type2);
-            Set<ClassInfo> superClasses2 = class2.recursiveResolveSuperClasses();
+            Set<ClassInfo> superClasses2 = class2.recursiveResolveSuperClasses(false);
 
             if (superClasses1.contains(class2)) return type2;
             if (superClasses2.contains(class1)) return type1;
