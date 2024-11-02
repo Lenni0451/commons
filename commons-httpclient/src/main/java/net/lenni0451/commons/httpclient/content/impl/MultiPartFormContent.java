@@ -2,7 +2,7 @@ package net.lenni0451.commons.httpclient.content.impl;
 
 import lombok.SneakyThrows;
 import net.lenni0451.commons.httpclient.HeaderStore;
-import net.lenni0451.commons.httpclient.constants.Headers;
+import net.lenni0451.commons.httpclient.constants.HttpHeaders;
 import net.lenni0451.commons.httpclient.content.HttpContent;
 import net.lenni0451.commons.httpclient.model.ContentType;
 
@@ -99,8 +99,8 @@ public class MultiPartFormContent extends HttpContent {
 
         public FormPart(final String name, final HttpContent content, @Nullable final String fileName) {
             this.content = content;
-            this.setHeader(Headers.CONTENT_DISPOSITION, "form-data; name=\"" + name + "\"" + (fileName == null ? "" : ("; filename=\"" + fileName + "\"")));
-            this.setHeader(Headers.CONTENT_TYPE, content.getContentType().toString());
+            this.setHeader(HttpHeaders.CONTENT_DISPOSITION, "form-data; name=\"" + name + "\"" + (fileName == null ? "" : ("; filename=\"" + fileName + "\"")));
+            this.setHeader(HttpHeaders.CONTENT_TYPE, content.getContentType().toString());
         }
 
         public HttpContent getContent() {

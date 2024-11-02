@@ -1,6 +1,6 @@
 package net.lenni0451.commons.httpclient;
 
-import net.lenni0451.commons.httpclient.constants.Headers;
+import net.lenni0451.commons.httpclient.constants.HttpHeaders;
 import net.lenni0451.commons.httpclient.exceptions.RetryExceededException;
 import net.lenni0451.commons.httpclient.executor.ExecutorType;
 import net.lenni0451.commons.httpclient.executor.RequestExecutor;
@@ -232,7 +232,7 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
                 HttpResponse response = null;
                 for (int headers = 0; headers <= retryHandler.getMaxHeaderRetries(); headers++) {
                     response = this.executor.execute(request);
-                    Optional<String> retryAfter = response.getFirstHeader(Headers.RETRY_AFTER);
+                    Optional<String> retryAfter = response.getFirstHeader(HttpHeaders.RETRY_AFTER);
                     if (retryAfter.isPresent()) {
                         if (headers >= retryHandler.getMaxHeaderRetries()) break;
                         Long delay = HttpRequestUtils.parseSecondsOrHttpDate(retryAfter.get());

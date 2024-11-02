@@ -1,7 +1,7 @@
 package net.lenni0451.commons.httpclient.utils;
 
 import lombok.experimental.UtilityClass;
-import net.lenni0451.commons.httpclient.constants.Headers;
+import net.lenni0451.commons.httpclient.constants.HttpHeaders;
 
 import javax.annotation.Nullable;
 import javax.annotation.WillNotClose;
@@ -82,7 +82,7 @@ public class HttpRequestUtils {
      */
     public static void setHeaders(final HttpURLConnection connection, final Map<String, List<String>> headers) {
         for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
-            if (Headers.COOKIE.equalsIgnoreCase(entry.getKey())) {
+            if (HttpHeaders.COOKIE.equalsIgnoreCase(entry.getKey())) {
                 connection.setRequestProperty(entry.getKey(), String.join("; ", entry.getValue()));
             } else {
                 boolean first = true;

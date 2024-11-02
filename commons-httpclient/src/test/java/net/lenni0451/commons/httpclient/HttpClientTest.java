@@ -1,7 +1,7 @@
 package net.lenni0451.commons.httpclient;
 
 import net.lenni0451.commons.httpclient.constants.ContentTypes;
-import net.lenni0451.commons.httpclient.constants.Headers;
+import net.lenni0451.commons.httpclient.constants.HttpHeaders;
 import net.lenni0451.commons.httpclient.constants.StatusCodes;
 import net.lenni0451.commons.httpclient.content.StreamedHttpContent;
 import net.lenni0451.commons.httpclient.content.impl.ByteArrayContent;
@@ -109,7 +109,7 @@ class HttpClientTest {
     void getWithRetry() throws IOException {
         HttpResponse response = this.client.get(baseUrl + "/retryCookie").execute();
         assertEquals(StatusCodes.SERVICE_UNAVAILABLE, response.getStatusCode());
-        assertTrue(response.hasHeader(Headers.RETRY_AFTER));
+        assertTrue(response.hasHeader(HttpHeaders.RETRY_AFTER));
     }
 
     @Test

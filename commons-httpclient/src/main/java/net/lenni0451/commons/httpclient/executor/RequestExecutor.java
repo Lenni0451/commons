@@ -2,7 +2,7 @@ package net.lenni0451.commons.httpclient.executor;
 
 import net.lenni0451.commons.httpclient.HttpClient;
 import net.lenni0451.commons.httpclient.HttpResponse;
-import net.lenni0451.commons.httpclient.constants.Headers;
+import net.lenni0451.commons.httpclient.constants.HttpHeaders;
 import net.lenni0451.commons.httpclient.content.HttpContent;
 import net.lenni0451.commons.httpclient.requests.HttpContentRequest;
 import net.lenni0451.commons.httpclient.requests.HttpRequest;
@@ -43,8 +43,8 @@ public abstract class RequestExecutor {
         if (request instanceof HttpContentRequest) {
             HttpContent content = ((HttpContentRequest) request).getContent();
             if (content != null) {
-                headers.put(Headers.CONTENT_TYPE, Collections.singletonList(content.getContentType().toString()));
-                headers.put(Headers.CONTENT_LENGTH, Collections.singletonList(String.valueOf(content.getContentLength())));
+                headers.put(HttpHeaders.CONTENT_TYPE, Collections.singletonList(content.getContentType().toString()));
+                headers.put(HttpHeaders.CONTENT_LENGTH, Collections.singletonList(String.valueOf(content.getContentLength())));
             }
         }
         return HttpRequestUtils.mergeHeaders(

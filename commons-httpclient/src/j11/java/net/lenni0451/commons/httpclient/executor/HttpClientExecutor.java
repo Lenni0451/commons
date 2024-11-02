@@ -2,7 +2,7 @@ package net.lenni0451.commons.httpclient.executor;
 
 import net.lenni0451.commons.httpclient.HttpClient;
 import net.lenni0451.commons.httpclient.HttpResponse;
-import net.lenni0451.commons.httpclient.constants.Headers;
+import net.lenni0451.commons.httpclient.constants.HttpHeaders;
 import net.lenni0451.commons.httpclient.content.HttpContent;
 import net.lenni0451.commons.httpclient.content.StreamedHttpContent;
 import net.lenni0451.commons.httpclient.proxy.ProxyType;
@@ -106,7 +106,7 @@ public class HttpClientExecutor extends RequestExecutor {
             builder.method(request.getMethod(), BodyPublishers.noBody());
         }
         for (Map.Entry<String, List<String>> entry : this.getHeaders(request, null).entrySet()) {
-            if (entry.getKey().equalsIgnoreCase(Headers.CONTENT_LENGTH)) continue; //Java 11 HttpClient does not allow manually setting the content length
+            if (entry.getKey().equalsIgnoreCase(HttpHeaders.CONTENT_LENGTH)) continue; //Java 11 HttpClient does not allow manually setting the content length
             for (String value : entry.getValue()) builder.header(entry.getKey(), value);
         }
         return builder.build();

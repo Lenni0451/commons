@@ -1,6 +1,6 @@
 package net.lenni0451.commons.httpclient;
 
-import net.lenni0451.commons.httpclient.constants.Headers;
+import net.lenni0451.commons.httpclient.constants.HttpHeaders;
 
 public class RetryHandler {
 
@@ -39,7 +39,7 @@ public class RetryHandler {
 
     /**
      * Get the maximum amount of header retries.<br>
-     * A header retry is counted when the {@link Headers#RETRY_AFTER} header is present.
+     * A header retry is counted when the {@link HttpHeaders#RETRY_AFTER} header is present.
      *
      * @return The maximum amount of header retries
      */
