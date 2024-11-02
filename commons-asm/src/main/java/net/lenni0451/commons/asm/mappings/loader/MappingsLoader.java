@@ -31,17 +31,19 @@ public abstract class MappingsLoader {
     }
 
     public Mappings getMappings() {
-        if (this.mappings == null) this.load();
+        if (this.mappings == null) {
+            try {
+                this.load();
+            } catch (Throwable t) {
+                throw new RuntimeException("Failed to load mappings", t);
+            }
+        }
         return this.mappings;
     }
 
-    public synchronized final void load() {
+    public synchronized final void load() throws Throwable {
         if (this.mappings != null) return;
-        try {
-            this.mappings = this.load(this.readLines());
-        } catch (Throwable t) {
-            throw new RuntimeException("Failed to load mappings", t);
-        }
+        this.mappings = this.load(this.readLines());
     }
 
     protected abstract Mappings load(final List<String> lines) throws Throwable;
