@@ -14,4 +14,8 @@ public interface ClassProvider {
         return ClassIO.fromBytes(this.getClass(name));
     }
 
+    default ClassProvider then(final ClassProvider classProvider) {
+        return new DelegatingClassProvider(this, classProvider);
+    }
+
 }
