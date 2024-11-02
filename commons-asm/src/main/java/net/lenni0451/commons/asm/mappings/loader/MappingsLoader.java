@@ -43,7 +43,8 @@ public abstract class MappingsLoader {
 
     public synchronized final void load() throws Throwable {
         if (this.mappings != null) return;
-        this.mappings = this.load(this.readLines());
+        List<String> lines = this.readLines();
+        this.mappings = this.load(lines);
     }
 
     protected abstract Mappings load(final List<String> lines) throws Throwable;
