@@ -1,9 +1,9 @@
 package net.lenni0451.commons.asm.mappings;
 
-import net.lenni0451.commons.asm.MemberDeclaration;
 import net.lenni0451.commons.asm.Modifiers;
 import net.lenni0451.commons.asm.info.ClassInfo;
 import net.lenni0451.commons.asm.info.ClassInfoProvider;
+import net.lenni0451.commons.asm.info.MemberDeclaration;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.ClassNode;

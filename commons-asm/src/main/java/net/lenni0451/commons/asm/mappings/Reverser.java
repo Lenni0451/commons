@@ -1,6 +1,6 @@
 package net.lenni0451.commons.asm.mappings;
 
-import net.lenni0451.commons.asm.MemberDeclaration;
+import net.lenni0451.commons.asm.info.MemberDeclaration;
 
 import java.util.Map;
 

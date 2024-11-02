@@ -1,4 +1,4 @@
-package net.lenni0451.commons.asm;
+package net.lenni0451.commons.asm.info;
 
 public class MemberDeclaration {
 
