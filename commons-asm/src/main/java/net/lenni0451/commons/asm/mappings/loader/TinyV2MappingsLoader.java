@@ -58,7 +58,7 @@ public class TinyV2MappingsLoader extends MappingsLoader {
     }
 
     @Override
-    protected Mappings load(List<String> lines) throws Throwable {
+    protected Mappings load(List<String> lines) {
         Mappings mappings = new Mappings();
         Mappings baseToSource = new Mappings();
         Mappings baseToTarget = new Mappings();
@@ -74,6 +74,7 @@ public class TinyV2MappingsLoader extends MappingsLoader {
             if (fromIndex == -1) { //Header
                 if (!parts[0].equals("tiny")) throw new IllegalStateException("Invalid tiny header (expected 'tiny', got '" + parts[0] + "')");
                 if (!parts[1].equals("2")) throw new IllegalStateException("Invalid tiny major version (expected '2', got '" + parts[1] + "')");
+                if (!parts[2].equals("0")) throw new IllegalStateException("Invalid tiny minor version (expected '0', got '" + parts[2] + "')");
                 if (parts.length < 5) throw new IllegalStateException("Invalid tiny header (missing namespaces)");
 
                 List<String> namespaces = Arrays.asList(Arrays.copyOfRange(parts, 3, parts.length));
