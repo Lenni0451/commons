@@ -1,9 +1,14 @@
 package net.lenni0451.commons.asm;
 
+import org.objectweb.asm.Attribute;
+import org.objectweb.asm.commons.ModuleHashesAttribute;
+import org.objectweb.asm.commons.ModuleResolutionAttribute;
+import org.objectweb.asm.commons.ModuleTargetAttribute;
 import org.objectweb.asm.tree.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Cloner {
@@ -31,6 +36,10 @@ public class Cloner {
         if (fieldNode.invisibleTypeAnnotations != null) {
             clone.invisibleTypeAnnotations = new ArrayList<>();
             fieldNode.invisibleTypeAnnotations.forEach(typeAnnotationNode -> clone.invisibleTypeAnnotations.add(clone(typeAnnotationNode)));
+        }
+        if (fieldNode.attrs != null) {
+            clone.attrs = new ArrayList<>();
+            fieldNode.attrs.forEach(attribute -> clone.attrs.add(clone(attribute)));
         }
         return clone;
     }
@@ -68,6 +77,25 @@ public class Cloner {
         TypeAnnotationNode clone = new TypeAnnotationNode(typeAnnotationNode.typeRef, typeAnnotationNode.typePath, typeAnnotationNode.desc);
         typeAnnotationNode.accept(clone);
         return clone;
+    }
+
+    public static Attribute clone(final Attribute attribute) {
+        if (attribute instanceof ModuleHashesAttribute) {
+            ModuleHashesAttribute moduleHashesAttribute = (ModuleHashesAttribute) attribute;
+            List<String> modules = null;
+            List<byte[]> hashes = null;
+            if (moduleHashesAttribute.modules != null) modules = new ArrayList<>(moduleHashesAttribute.modules);
+            if (moduleHashesAttribute.hashes != null) hashes = new ArrayList<>(moduleHashesAttribute.hashes);
+            return new ModuleHashesAttribute(moduleHashesAttribute.algorithm, modules, hashes);
+        } else if (attribute instanceof ModuleResolutionAttribute) {
+            ModuleResolutionAttribute moduleResolutionAttribute = (ModuleResolutionAttribute) attribute;
+            return new ModuleResolutionAttribute(moduleResolutionAttribute.resolution);
+        } else if (attribute instanceof ModuleTargetAttribute) {
+            ModuleTargetAttribute moduleTargetAttribute = (ModuleTargetAttribute) attribute;
+            return new ModuleTargetAttribute(moduleTargetAttribute.platform);
+        } else {
+            return attribute; //This is probably better than throwing an exception
+        }
     }
 
 }
