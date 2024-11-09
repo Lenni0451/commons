@@ -60,6 +60,10 @@ public class Mappings extends Remapper {
         this.methodMappings = mapCopier.apply(mappings.methodMappings);
     }
 
+    public Map<String, String> getPackageMappings() {
+        return Collections.unmodifiableMap(this.packageMappings);
+    }
+
     public Mappings addPackageMapping(final String from, final String to) {
         return this.addPackageMapping(from, to, false);
     }
@@ -109,6 +113,10 @@ public class Mappings extends Remapper {
         return this.mapPackageName(packageName).replace('.', '/') + className;
     }
 
+    public Map<String, String> getClassMappings() {
+        return Collections.unmodifiableMap(this.classMappings);
+    }
+
     public Mappings addClassMapping(final String from, final String to) {
         return this.addClassMapping(from, to, false);
     }
@@ -141,6 +149,10 @@ public class Mappings extends Remapper {
         return this.mapClassPackage(mapped);
     }
 
+    public Map<String, String> getFieldMappings() {
+        return Collections.unmodifiableMap(this.fieldMappings);
+    }
+
     public Mappings addFieldMapping(final String owner, final String name, @Nullable final String descriptor, final String newName) {
         return this.addFieldMapping(owner, name, descriptor, newName, false);
     }
@@ -168,6 +180,10 @@ public class Mappings extends Remapper {
         String mappedName = this.fieldMappings.get(owner + "." + name + ":" + descriptor);
         if (mappedName != null) return mappedName;
         return this.fieldMappings.getOrDefault(owner + "." + name, name);
+    }
+
+    public Map<String, String> getMethodMappings() {
+        return Collections.unmodifiableMap(this.methodMappings);
     }
 
     public Mappings addMethodMapping(final String owner, final String name, final String descriptor, final String newName) {
