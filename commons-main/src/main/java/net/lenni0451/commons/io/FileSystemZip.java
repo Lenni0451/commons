@@ -44,6 +44,13 @@ public class FileSystemZip implements AutoCloseable {
     }
 
     /**
+     * @return The root path of the zip file
+     */
+    public Path getRootPath() {
+        return this.rootPath;
+    }
+
+    /**
      * Add an entry to the zip file.<br>
      * If {@code bytes} is {@code null} a directory will be created.
      *
