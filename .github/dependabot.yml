@@ -5,15 +5,11 @@ updates:
     schedule:
       interval: "weekly"
   - package-ecosystem: "gradle"
-    directory: "/commons-debugging"
+    directory: "/commons-asm"
     schedule:
       interval: "daily"
   - package-ecosystem: "gradle"
-    directory: "/commons-functional"
-    schedule:
-      interval: "daily"
-  - package-ecosystem: "gradle"
-    directory: "/commons-main"
+    directory: "/commons-brigadier"
     schedule:
       interval: "daily"
   - package-ecosystem: "gradle"
