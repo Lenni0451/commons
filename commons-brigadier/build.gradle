@@ -9,5 +9,5 @@ configurations {
 }
 
 dependencies {
-    compileOnly "com.mojang:brigadier:1.0.18"
+    compileOnly "com.mojang:brigadier:1.0.500"
 }
