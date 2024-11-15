@@ -20,6 +20,24 @@ class ASMUtilsTest {
     }
 
     @Test
+    void getMethod() {
+        ClassNode classNode = new ClassNode();
+        classNode.methods.add(new MethodNode(Opcodes.ACC_PUBLIC, "test", methodDescriptor(void.class), null, null));
+
+        assertNotNull(ASMUtils.getMethod(classNode, "test", methodDescriptor(void.class)));
+        assertNull(ASMUtils.getMethod(classNode, "test", methodDescriptor(int.class)));
+    }
+
+    @Test
+    void getField() {
+        ClassNode classNode = new ClassNode();
+        classNode.fields.add(new FieldNode(Opcodes.ACC_PUBLIC, "test", "I", null, null));
+
+        assertNotNull(ASMUtils.getField(classNode, "test", "I"));
+        assertNull(ASMUtils.getField(classNode, "test", "J"));
+    }
+
+    @Test
     void freeVarIndex() {
         MethodNode method = new MethodNode(0, "test", methodDescriptor(void.class, double.class, int.class), null, null);
         method.instructions.add(new InsnNode(Opcodes.NOP));
