@@ -18,6 +18,24 @@ public class ASMUtils {
         return s.replace('.', '/');
     }
 
+    public static FieldNode getField(final ClassNode classNode, final String name, final String desc) {
+        for (FieldNode fieldNode : classNode.fields) {
+            if (fieldNode.name.equals(name) && fieldNode.desc.equals(desc)) {
+                return fieldNode;
+            }
+        }
+        return null;
+    }
+
+    public static MethodNode getMethod(final ClassNode classNode, final String name, final String desc) {
+        for (MethodNode methodNode : classNode.methods) {
+            if (methodNode.name.equals(name) && methodNode.desc.equals(desc)) {
+                return methodNode;
+            }
+        }
+        return null;
+    }
+
     public static int freeVarIndex(final MethodNode methodNode) {
         int index = Modifiers.has(methodNode.access, Opcodes.ACC_STATIC) ? 0 : 1;
         for (Type type : argumentTypes(methodNode)) index += type.getSize();
