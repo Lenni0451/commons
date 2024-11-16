@@ -49,16 +49,19 @@ public interface ClassProvider {
     }
 
     /**
-     * Delegate all missing classes to the given class provider.<br>
-     * If this provider does not have a class it will ask the given provider for it.<br>
-     * This also delegates the {@link #getAllClasses()} method and mixes the results/ignores them if unsupported.
+     * Delegate all missing classes to the given class providers.<br>
+     * The class providers are checked in the order they are given.<br>
+     * See {@link DelegatingClassProvider#getAllClasses()} for more information on the behavior of this method.
      *
-     * @param classProvider The class provider to delegate to
+     * @param classProviders The class providers to delegate to
      * @return A new class provider that delegates to the given provider
      * @see DelegatingClassProvider
      */
-    default ClassProvider then(final ClassProvider classProvider) {
-        return new DelegatingClassProvider(this, classProvider);
+    default ClassProvider then(final ClassProvider... classProviders) {
+        ClassProvider[] providers = new ClassProvider[classProviders.length + 1];
+        providers[0] = this;
+        System.arraycopy(classProviders, 0, providers, 1, classProviders.length);
+        return new DelegatingClassProvider(providers);
     }
 
 
