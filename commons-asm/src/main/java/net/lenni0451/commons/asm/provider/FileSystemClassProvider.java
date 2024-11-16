@@ -2,6 +2,10 @@ package net.lenni0451.commons.asm.provider;
 
 import java.nio.file.FileSystem;
 
+/**
+ * A class provider that uses a {@link FileSystem} to provide classes.<br>
+ * The main implementation is done by {@link PathClassProvider}.
+ */
 public class FileSystemClassProvider extends PathClassProvider {
 
     private final FileSystem fileSystem;

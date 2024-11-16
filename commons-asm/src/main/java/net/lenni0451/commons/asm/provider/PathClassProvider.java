@@ -13,6 +13,9 @@ import java.util.stream.Stream;
 
 import static net.lenni0451.commons.asm.ASMUtils.slash;
 
+/**
+ * A class provider that searches for classes in a path.
+ */
 public class PathClassProvider implements ClassProvider {
 
     private final Path path;

@@ -4,6 +4,9 @@ import javax.annotation.Nonnull;
 import java.util.Map;
 import java.util.function.Supplier;
 
+/**
+ * A class provider that delegates to another class provider which is only initialized when it is needed.
+ */
 public class LazyClassProvider implements ClassProvider {
 
     private final Supplier<ClassProvider> supplier;
