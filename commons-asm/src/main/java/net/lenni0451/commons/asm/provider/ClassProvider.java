@@ -60,13 +60,15 @@ public interface ClassProvider extends AutoCloseable {
     /**
      * Delegate all missing classes to the given class providers.<br>
      * The class providers are checked in the order they are given.<br>
-     * See {@link DelegatingClassProvider#getAllClasses()} for more information on the behavior of this method.
+     * See {@link DelegatingClassProvider#getAllClasses()} for more information on the behavior of this method.<br>
+     * If no class providers are given, the current class provider is returned.
      *
      * @param classProviders The class providers to delegate to
      * @return A new class provider that delegates to the given provider
      * @see DelegatingClassProvider
      */
     default ClassProvider then(final ClassProvider... classProviders) {
+        if (classProviders.length == 0) return this;
         ClassProvider[] providers = new ClassProvider[classProviders.length + 1];
         providers[0] = this;
         System.arraycopy(classProviders, 0, providers, 1, classProviders.length);
