@@ -7,6 +7,9 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.List;
 
+/**
+ * A loader for SRG and XSRG mappings.
+ */
 public class SrgMappingsLoader extends MappingsLoader {
 
     public SrgMappingsLoader(final InputStream inputStream) {

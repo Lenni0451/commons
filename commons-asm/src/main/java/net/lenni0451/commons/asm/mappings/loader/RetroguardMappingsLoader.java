@@ -7,6 +7,10 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.List;
 
+/**
+ * A loader for Retroguard mappings.<br>
+ * Not all Retroguard operations are supported, only the most commonly used ones.
+ */
 public class RetroguardMappingsLoader extends MappingsLoader {
 
     public RetroguardMappingsLoader(final InputStream inputStream) {

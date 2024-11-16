@@ -13,12 +13,24 @@ import java.util.Map;
 
 public class Cloner {
 
+    /**
+     * Clone a {@link ClassNode} and all its children.
+     *
+     * @param classNode The class node to clone
+     * @return The cloned class node
+     */
     public static ClassNode clone(final ClassNode classNode) {
         ClassNode clone = new ClassNode();
         classNode.accept(clone);
         return clone;
     }
 
+    /**
+     * Clone a {@link FieldNode} and all its children.
+     *
+     * @param fieldNode The field node to clone
+     * @return The cloned field node
+     */
     public static FieldNode clone(final FieldNode fieldNode) {
         FieldNode clone = new FieldNode(fieldNode.access, fieldNode.name, fieldNode.desc, fieldNode.signature, fieldNode.value);
         if (fieldNode.visibleAnnotations != null) {
@@ -44,12 +56,24 @@ public class Cloner {
         return clone;
     }
 
+    /**
+     * Clone a {@link MethodNode} and all its children.
+     *
+     * @param methodNode The method node to clone
+     * @return The cloned method node
+     */
     public static MethodNode clone(final MethodNode methodNode) {
         MethodNode clone = new MethodNode(methodNode.access, methodNode.name, methodNode.desc, methodNode.signature, methodNode.exceptions == null ? new String[0] : methodNode.exceptions.toArray(new String[0]));
         methodNode.accept(clone);
         return clone;
     }
 
+    /**
+     * Clone a {@link InsnList} and all its instructions.
+     *
+     * @param insnList The instruction list to clone
+     * @return The cloned instruction list
+     */
     public static InsnList clone(final InsnList insnList) {
         InsnList clone = new InsnList();
         Map<LabelNode, LabelNode> labels = cloneLabels(insnList);
@@ -59,6 +83,13 @@ public class Cloner {
         return clone;
     }
 
+    /**
+     * Clone all labels in the given instruction list.<br>
+     * The returned map contains the original label as key and the cloned label as value.
+     *
+     * @param insnList The instruction list to clone the labels from
+     * @return The cloned labels
+     */
     public static Map<LabelNode, LabelNode> cloneLabels(final InsnList insnList) {
         Map<LabelNode, LabelNode> clone = new HashMap<>();
         for (AbstractInsnNode insnNode : insnList) {
@@ -67,18 +98,38 @@ public class Cloner {
         return clone;
     }
 
+    /**
+     * Clone a  {@link AnnotationNode} and all its children.
+     *
+     * @param annotationNode The annotation node to clone
+     * @return The cloned annotation node
+     */
     public static AnnotationNode clone(final AnnotationNode annotationNode) {
         AnnotationNode clone = new AnnotationNode(annotationNode.desc);
         annotationNode.accept(clone);
         return clone;
     }
 
+    /**
+     * Clone a {@link TypeAnnotationNode} and all its children.
+     *
+     * @param typeAnnotationNode The type annotation node to clone
+     * @return The cloned type annotation node
+     */
     public static TypeAnnotationNode clone(final TypeAnnotationNode typeAnnotationNode) {
         TypeAnnotationNode clone = new TypeAnnotationNode(typeAnnotationNode.typeRef, typeAnnotationNode.typePath, typeAnnotationNode.desc);
         typeAnnotationNode.accept(clone);
         return clone;
     }
 
+    /**
+     * Clone a {@link Attribute}.<br>
+     * Only {@link ModuleHashesAttribute}, {@link ModuleResolutionAttribute} and {@link ModuleTargetAttribute} are supported.<br>
+     * All other attributes will be returned as is.
+     *
+     * @param attribute The attribute to clone
+     * @return The cloned attribute
+     */
     public static Attribute clone(final Attribute attribute) {
         if (attribute instanceof ModuleHashesAttribute) {
             ModuleHashesAttribute moduleHashesAttribute = (ModuleHashesAttribute) attribute;

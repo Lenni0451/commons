@@ -10,6 +10,9 @@ import java.util.Set;
 
 import static net.lenni0451.commons.asm.Types.internalName;
 
+/**
+ * A class writer which uses a {@link ClassInfoProvider} to calculate the common super class of two classes.
+ */
 public class InfoClassWriter extends ClassWriter {
 
     private static final String OBJECT = internalName(Object.class);

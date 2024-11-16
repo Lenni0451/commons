@@ -10,14 +10,35 @@ import static net.lenni0451.commons.asm.Types.*;
 
 public class ASMUtils {
 
+    /**
+     * Replace all slashes with dots.
+     *
+     * @param s The string to replace
+     * @return The replaced string
+     */
     public static String dot(final String s) {
         return s.replace('/', '.');
     }
 
+    /**
+     * Replace all dots with slashes.
+     *
+     * @param s The string to replace
+     * @return The replaced string
+     */
     public static String slash(final String s) {
         return s.replace('.', '/');
     }
 
+    /**
+     * Get a field from a class node.<br>
+     * The field is searched by its name and descriptor.
+     *
+     * @param classNode The class node to search in
+     * @param name      The name of the field
+     * @param desc      The descriptor of the field
+     * @return The field node or null if no field was found
+     */
     public static FieldNode getField(final ClassNode classNode, final String name, final String desc) {
         for (FieldNode fieldNode : classNode.fields) {
             if (fieldNode.name.equals(name) && fieldNode.desc.equals(desc)) {
@@ -27,6 +48,15 @@ public class ASMUtils {
         return null;
     }
 
+    /**
+     * Get a method from a class node.<br>
+     * The method is searched by its name and descriptor.
+     *
+     * @param classNode The class node to search in
+     * @param name      The name of the method
+     * @param desc      The descriptor of the method
+     * @return The method node or null if no method was found
+     */
     public static MethodNode getMethod(final ClassNode classNode, final String name, final String desc) {
         for (MethodNode methodNode : classNode.methods) {
             if (methodNode.name.equals(name) && methodNode.desc.equals(desc)) {
@@ -36,6 +66,12 @@ public class ASMUtils {
         return null;
     }
 
+    /**
+     * Calculate the variable index of the first free variable in a method.
+     *
+     * @param methodNode The method to calculate the free variable index for
+     * @return The free variable index
+     */
     public static int freeVarIndex(final MethodNode methodNode) {
         int index = Modifiers.has(methodNode.access, Opcodes.ACC_STATIC) ? 0 : 1;
         for (Type type : argumentTypes(methodNode)) index += type.getSize();
@@ -56,6 +92,13 @@ public class ASMUtils {
         return index;
     }
 
+    /**
+     * Get the instructions to cast an object to a specific type.<br>
+     * Boxed types will be unboxed.
+     *
+     * @param targetType The target type
+     * @return The instructions to cast the object
+     */
     public static InsnList castObjectTo(final Type targetType) {
         InsnList list = new InsnList();
         if (targetType.equals(Type.BOOLEAN_TYPE)) {
@@ -88,6 +131,12 @@ public class ASMUtils {
         return list;
     }
 
+    /**
+     * Get the instruction to box a primitive type.
+     *
+     * @param primitive The primitive type to box
+     * @return The instruction or null if the type is not a primitive type
+     */
     @Nullable
     public static AbstractInsnNode boxPrimitive(final Type primitive) {
         if (primitive.equals(Type.BOOLEAN_TYPE)) {
@@ -111,6 +160,12 @@ public class ASMUtils {
         }
     }
 
+    /**
+     * Get the number the given instruction pushes onto the stack.
+     *
+     * @param instruction The instruction to get the number from
+     * @return The number or null if the instruction does not push a number onto the stack
+     */
     @Nullable
     public static Number toNumber(@Nullable final AbstractInsnNode instruction) {
         if (instruction == null) return null;
@@ -124,6 +179,12 @@ public class ASMUtils {
         return null;
     }
 
+    /**
+     * Get the most optimal instruction to push the given integer onto the stack.
+     *
+     * @param i The integer to push
+     * @return The instruction to push the integer
+     */
     public static AbstractInsnNode intPush(final int i) {
         if (i >= -1 && i <= 5) return new InsnNode(Opcodes.ICONST_0 + i);
         else if (i >= Byte.MIN_VALUE && i <= Byte.MAX_VALUE) return new IntInsnNode(Opcodes.BIPUSH, i);
@@ -131,6 +192,13 @@ public class ASMUtils {
         else return new LdcInsnNode(i);
     }
 
+    /**
+     * Create a new empty class node.<br>
+     * An empty constructor will be added to the class.
+     *
+     * @param name The name of the class
+     * @return The created class node
+     */
     public static ClassNode createEmptyClass(final String name) {
         ClassNode classNode = new ClassNode();
         classNode.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC, slash(name), null, internalName(Object.class), null);
@@ -144,6 +212,12 @@ public class ASMUtils {
         return classNode;
     }
 
+    /**
+     * Calculate the indices of the parameters of a method.
+     *
+     * @param methodNode The method to calculate the indices for
+     * @return The indices of the parameters
+     */
     public static int[] parameterIndices(final MethodNode methodNode) {
         Type[] types = argumentTypes(methodNode);
         int[] indices = new int[types.length];
@@ -156,6 +230,13 @@ public class ASMUtils {
         return indices;
     }
 
+    /**
+     * Get the instructions to swap the first two elements on the stack.
+     *
+     * @param top    The type of the top element
+     * @param bottom The type of the bottom element
+     * @return The instructions to swap the elements
+     */
     public static InsnList swap(final Type top, final Type bottom) {
         InsnList insns = new InsnList();
         if (top.getSize() == 1 && bottom.getSize() == 1) {

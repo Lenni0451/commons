@@ -7,10 +7,16 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * A comparator for {@link AbstractInsnNode} which can be used to compare two instruction lists.
+ */
 public class InstructionComparator {
 
     private final List<Integer> ignoredInstructionTypes;
 
+    /**
+     * Creates a new instruction comparator which ignores frames and line numbers.
+     */
     public InstructionComparator() {
         //Frames and line numbers are not important for the actual code flow
         //Line numbers especially can be different with exactly the same code
@@ -21,14 +27,35 @@ public class InstructionComparator {
         this.ignoredInstructionTypes = Arrays.stream(ignoredInstructionTypes).boxed().collect(Collectors.toList());
     }
 
+    /**
+     * Check if two {@link InsnList} are equal.
+     *
+     * @param insnList1 The first instruction list
+     * @param insnList2 The second instruction list
+     * @return If the two instruction lists are equal
+     */
     public boolean equals(final InsnList insnList1, final InsnList insnList2) {
         return this.equals(insnList1.toArray(), insnList2.toArray());
     }
 
+    /**
+     * Check if two lists of {@link AbstractInsnNode} are equal.
+     *
+     * @param insnList1 The first list of instructions
+     * @param insnList2 The second list of instructions
+     * @return If the two lists are equal
+     */
     public boolean equals(final List<? extends AbstractInsnNode> insnList1, final List<? extends AbstractInsnNode> insnList2) {
         return this.equals(insnList1.toArray(new AbstractInsnNode[0]), insnList2.toArray(new AbstractInsnNode[0]));
     }
 
+    /**
+     * Compare two arrays of {@link AbstractInsnNode}.
+     *
+     * @param insns1 The first array of instructions
+     * @param insns2 The second array of instructions
+     * @return If the two arrays are equal
+     */
     public boolean equals(AbstractInsnNode[] insns1, AbstractInsnNode[] insns2) {
         if (insns1 == insns2) return true;
         if (insns1 == null || insns2 == null) return false;
@@ -42,6 +69,14 @@ public class InstructionComparator {
         return true;
     }
 
+    /**
+     * Compare two {@link AbstractInsnNode}.<br>
+     * This method ignores the {@link AbstractInsnNode#getNext()} and {@link AbstractInsnNode#getPrevious()} instructions.
+     *
+     * @param insn1 The first instruction
+     * @param insn2 The second instruction
+     * @return If the two instructions are equal
+     */
     public boolean equals(final AbstractInsnNode insn1, final AbstractInsnNode insn2) {
         if (insn1 == insn2) return true;
         if (insn1 == null || insn2 == null) return false;

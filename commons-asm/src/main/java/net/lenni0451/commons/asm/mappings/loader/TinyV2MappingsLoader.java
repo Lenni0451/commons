@@ -15,6 +15,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
+/**
+ * A loader for TinyV2 mappings.<br>
+ * This loader supports extra metadata for classes, fields, methods and parameters.
+ */
 public class TinyV2MappingsLoader extends MappingsLoader {
 
     private static final String[] EMPTY_JAVADOC = new String[0];
@@ -46,11 +50,25 @@ public class TinyV2MappingsLoader extends MappingsLoader {
         this.toNamespace = toNamespace;
     }
 
+    /**
+     * Enable parsing of metadata for classes, fields, methods and parameters.<br>
+     * Disabled by default.
+     *
+     * @return This loader
+     */
     public TinyV2MappingsLoader enableMetaParsing() {
         this.parseMeta = true;
         return this;
     }
 
+    /**
+     * Get the parsed metadata mappings.<br>
+     * Make sure to enable parsing of metadata before calling this method.<br>
+     * <b>This loader will be initialized if this method is called. See {@link #getMappings()} for more information.</b>
+     *
+     * @return The parsed metadata mappings
+     * @throws IllegalStateException If metadata parsing is disabled
+     */
     public List<ClassMetaMapping> getMetaMappings() {
         if (!this.parseMeta) throw new IllegalStateException("Meta parsing is disabled");
         this.getMappings(); //Ensure mappings are loaded

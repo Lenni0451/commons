@@ -16,20 +16,58 @@ import static net.lenni0451.commons.asm.Types.type;
 
 public class AnnotationParser {
 
+    /**
+     * Parse an annotation from an {@link AnnotationNode}.<br>
+     * This will create a proxy instance of the annotation with the values from the annotation node.
+     *
+     * @param annotationNode The annotation node
+     * @param <T>            The type of the annotation
+     * @return The parsed annotation
+     * @throws ClassNotFoundException If the annotation class could not be found
+     */
     public static <T extends Annotation> T parse(final AnnotationNode annotationNode) throws ClassNotFoundException {
         return parse(AnnotationParser.class.getClassLoader(), annotationNode);
     }
 
+    /**
+     * Parse an annotation from an {@link AnnotationNode}.<br>
+     * This will create a proxy instance of the annotation with the values from the annotation node.
+     *
+     * @param loader         The class loader to use for loading classes
+     * @param annotationNode The annotation node
+     * @param <T>            The type of the annotation
+     * @return The parsed annotation
+     * @throws ClassNotFoundException If the annotation class could not be found
+     */
     public static <T extends Annotation> T parse(final ClassLoader loader, final AnnotationNode annotationNode) throws ClassNotFoundException {
         Type type = type(annotationNode.desc);
         Class<?> clazz = loader.loadClass(type.getClassName());
         return parse(loader, (Class<T>) clazz, annotationNode);
     }
 
+    /**
+     * Parse an annotation from an {@link AnnotationNode}.<br>
+     * This will create a proxy instance of the annotation with the values from the annotation node.
+     *
+     * @param type           The type of the annotation
+     * @param annotationNode The annotation node
+     * @param <T>            The type of the annotation
+     * @return The parsed annotation
+     */
     public static <T extends Annotation> T parse(final Class<T> type, final AnnotationNode annotationNode) {
         return parse(type.getClassLoader(), type, annotationNode);
     }
 
+    /**
+     * Parse an annotation from an {@link AnnotationNode}.<br>
+     * This will create a proxy instance of the annotation with the values from the annotation node.
+     *
+     * @param loader         The class loader to use for loading classes
+     * @param type           The type of the annotation
+     * @param annotationNode The annotation node
+     * @param <T>            The type of the annotation
+     * @return The parsed annotation
+     */
     public static <T extends Annotation> T parse(final ClassLoader loader, final Class<T> type, final AnnotationNode annotationNode) {
         Map<String, Object> values = AnnotationUtils.listToMap(annotationNode.values);
         InvocationHandler invocationHandler = (proxy, method, args) -> {

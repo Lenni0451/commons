@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * A loader for TinyV1 mappings.
+ */
 public class TinyV1MappingsLoader extends MappingsLoader {
 
     private final String fromNamespace;

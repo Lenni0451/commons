@@ -14,6 +14,23 @@ import java.util.*;
 
 public class MethodInliner {
 
+    /**
+     * Inline a method into all methods of a class.<br>
+     * The inlined method does not need to be in the class in which it is inlined, but it will be removed from the class if it is.<br>
+     * <br>
+     * All return instructions in the method are replaced with a jump to the end of the inlined method.<br>
+     * The ASM analyzer is used to store the stack in local variables to avoid any stack issues.<br>
+     * All parameters of the inlined method are stored in local variables and then used in the inlined method.<br>
+     * The return type will be loaded onto the stack once the old stack (minus the parameters and owner) is restored.<br>
+     * Because of this, direct modifications of the parameters are not supported (the behavior of the inlined method will not change).<br>
+     * <br>
+     * The try-catch blocks, local variables and exceptions of the inlined method are merged with the method in which it is inlined.<br>
+     * It is required to recalculate all stack map frames after inlining a method.
+     *
+     * @param classNode          The class with the methods to inline into
+     * @param inlinedMethod      The method to inline
+     * @param inlinedMethodOwner The owner of the method to inline
+     */
     public static void wrappedInline(final ClassNode classNode, final MethodNode inlinedMethod, final String inlinedMethodOwner) {
         for (MethodNode method : classNode.methods) {
             AbstractInsnNode[] inlinedInstructions = instructionCalling(method, Modifier.isStatic(inlinedMethod.access) ? Opcodes.INVOKESTATIC : Opcodes.INVOKEVIRTUAL, inlinedMethodOwner, inlinedMethod.name, inlinedMethod.desc);

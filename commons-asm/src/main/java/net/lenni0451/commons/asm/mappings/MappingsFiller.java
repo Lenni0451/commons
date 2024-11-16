@@ -16,6 +16,13 @@ import static net.lenni0451.commons.asm.Types.*;
 
 public class MappingsFiller {
 
+    /**
+     * Fill all super members of all classes in the mappings.
+     *
+     * @param mappings          The mappings
+     * @param classInfoProvider The class info provider
+     * @see #fillSuperMembers(ClassNode, Set, Mappings)
+     */
     public static void fillAllSuperMembers(final Mappings mappings, final ClassInfoProvider classInfoProvider) {
         for (String clazz : getAllMentionedClasses(mappings)) {
             try {
@@ -30,6 +37,18 @@ public class MappingsFiller {
         }
     }
 
+    /**
+     * Copy the field and method mappings of the super classes to the given class.<br>
+     * This is required for the correct remapping of fields and methods.<br>
+     * <br>
+     * When invoking methods of super classes, the method owner of the instruction is the class where the method is invoked on and not the owner of the method itself.<br>
+     * This means during the remapping process the method owner is wrong and the method will not be found in the mappings.<br>
+     * To fix this, the method mappings of the super classes are copied to the class where the method could be invoked on.
+     *
+     * @param node         The class node
+     * @param superClasses The super classes of the class
+     * @param mappings     The mappings
+     */
     public static void fillSuperMembers(final ClassNode node, final Set<ClassNode> superClasses, final Mappings mappings) {
         Set<String> mappedFields = new HashSet<>();
         Set<String> mappedMethods = new HashSet<>();

@@ -10,6 +10,13 @@ import java.lang.reflect.Method;
 
 public class Types {
 
+    /**
+     * Check if the given type is a primitive type.<br>
+     * Primitive types are: {@code void}, {@code boolean}, {@code byte}, {@code short}, {@code char}, {@code int}, {@code long}, {@code float}, {@code double}
+     *
+     * @param type The type to check
+     * @return If the given type is a primitive type
+     */
     public static boolean isPrimitive(final Type type) {
         if (type.equals(Type.VOID_TYPE)) return true;
         else if (type.equals(Type.BOOLEAN_TYPE)) return true;
@@ -23,6 +30,19 @@ public class Types {
         else return false;
     }
 
+    /**
+     * Parse the given object into a {@link Type}.<br>
+     * Supported types:<br>
+     * - {@link String} (Will be parsed as a type or object type)<br>
+     * - {@link Class}<br>
+     * - {@link Field} (The type of the field will be used)<br>
+     * - {@link Method}<br>
+     * - {@link Constructor}<br>
+     * - {@link Type} (Will be returned as is)
+     *
+     * @param ob The object to parse
+     * @return The parsed type
+     */
     public static Type type(final Object ob) {
         if (ob instanceof String) {
             String s = (String) ob;
@@ -45,6 +65,18 @@ public class Types {
         throw new IllegalArgumentException("Unable to convert " + ob + " into a type");
     }
 
+    /**
+     * Get the return type of the given object.<br>
+     * Supported types:<br>
+     * - {@link String} (Will be parsed as a method descriptor)<br>
+     * - {@link Method}<br>
+     * - {@link MethodNode}<br>
+     * - {@link MethodInsnNode}<br>
+     * - {@link Type} (Will be returned as is)
+     *
+     * @param ob The object to get the return type from
+     * @return The return type
+     */
     public static Type returnType(final Object ob) {
         if (ob instanceof String) return Type.getReturnType((String) ob);
         else if (ob instanceof Method) return Type.getReturnType((Method) ob);
@@ -54,6 +86,17 @@ public class Types {
         throw new IllegalArgumentException("Unable to get return type of " + ob);
     }
 
+    /**
+     * Get the argument types of the given object.<br>
+     * Supported types:<br>
+     * - {@link String} (Will be parsed as a method descriptor)<br>
+     * - {@link Method}<br>
+     * - {@link MethodNode}<br>
+     * - {@link MethodInsnNode}
+     *
+     * @param ob The object to get the argument types from
+     * @return The argument types
+     */
     public static Type[] argumentTypes(final Object ob) {
         if (ob instanceof String) return Type.getArgumentTypes((String) ob);
         else if (ob instanceof Method) return Type.getArgumentTypes((Method) ob);
@@ -62,6 +105,13 @@ public class Types {
         throw new IllegalArgumentException("Unable to get argument types of " + ob);
     }
 
+    /**
+     * Get the internal name of the given object.<br>
+     * See {@link #type(Object)} for supported types.
+     *
+     * @param ob The object to get the internal name from
+     * @return The internal name
+     */
     public static String internalName(final Object ob) {
         try {
             return type(ob).getInternalName();
@@ -70,6 +120,13 @@ public class Types {
         }
     }
 
+    /**
+     * Get the descriptor of the given object.<br>
+     * See {@link #type(Object)} for supported types.
+     *
+     * @param ob The object to get the descriptor from
+     * @return The descriptor
+     */
     public static String typeDescriptor(final Object ob) {
         try {
             return type(ob).getDescriptor();
@@ -78,6 +135,16 @@ public class Types {
         }
     }
 
+    /**
+     * Get the descriptor of the given method.<br>
+     * If {@code returnType} is a {@link Method} or {@link Constructor} the descriptor will be generated from the method/constructor.<br>
+     * Otherwise the descriptor will be generated from the given arguments.<br>
+     * See {@link #type(Object)} for supported types.
+     *
+     * @param returnType The return type of the method
+     * @param arguments  The arguments of the method
+     * @return The descriptor of the method
+     */
     public static String methodDescriptor(final Object returnType, final Object... arguments) {
         if (returnType instanceof Method) {
             if (arguments.length != 0) throw new IllegalArgumentException("Expected arguments to be empty");

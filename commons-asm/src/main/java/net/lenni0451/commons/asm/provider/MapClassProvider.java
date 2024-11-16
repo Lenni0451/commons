@@ -10,6 +10,10 @@ import java.util.function.Function;
 import static net.lenni0451.commons.asm.ASMUtils.dot;
 import static net.lenni0451.commons.asm.ASMUtils.slash;
 
+/**
+ * A class provider that loads classes from a map.<br>
+ * The name format can be {@link NameFormat#SLASH}, {@link NameFormat#DOT}, {@link NameFormat#SLASH_CLASS} or {@link NameFormat#DOT_CLASS}.
+ */
 public class MapClassProvider implements ClassProvider {
 
     private final Map<String, byte[]> classes;
@@ -34,7 +38,7 @@ public class MapClassProvider implements ClassProvider {
     public Map<String, ClassSupplier> getAllClasses() {
         Map<String, ClassSupplier> classes = new HashMap<>();
         for (Map.Entry<String, byte[]> entry : this.classes.entrySet()) {
-            classes.put(this.nameFormat.toDot(entry.getKey()), entry::getValue);
+            classes.put(this.nameFormat.toSlash(entry.getKey()), entry::getValue);
         }
         return classes;
     }
@@ -47,19 +51,19 @@ public class MapClassProvider implements ClassProvider {
         DOT_CLASS(name -> dot(name) + ".class", name -> name.substring(0, name.length() - 6));
 
         private final Function<String, String> formatter;
-        private final Function<String, String> toDot;
+        private final Function<String, String> toSlash;
 
-        NameFormat(final Function<String, String> formatter, final Function<String, String> toDot) {
+        NameFormat(final Function<String, String> formatter, final Function<String, String> toSlash) {
             this.formatter = formatter;
-            this.toDot = toDot;
+            this.toSlash = toSlash;
         }
 
         public String format(final String name) {
             return this.formatter.apply(name);
         }
 
-        public String toDot(final String name) {
-            return this.toDot.apply(name);
+        public String toSlash(final String name) {
+            return this.toSlash.apply(name);
         }
     }
 

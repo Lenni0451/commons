@@ -25,6 +25,15 @@ public class ClassInfoProvider {
         return this.classProvider;
     }
 
+    /**
+     * Get the {@link ClassInfo} of a class by its name.<br>
+     * The class will be loaded from the {@link ClassProvider} if it is not already cached.
+     *
+     * @param className The name of the class
+     * @return The class info
+     * @throws ClassNotFoundException If the class could not be found
+     * @see #of(ClassNode)
+     */
     public synchronized ClassInfo of(String className) throws ClassNotFoundException {
         className = slash(className);
         if (this.classInfoCache.containsKey(className)) return this.classInfoCache.get(className);
@@ -32,6 +41,12 @@ public class ClassInfoProvider {
         return this.of(ClassIO.fromBytes(bytecode));
     }
 
+    /**
+     * Get the {@link ClassInfo} of a class.
+     *
+     * @param clazz The class
+     * @return The class info
+     */
     public synchronized ClassInfo of(final Class<?> clazz) {
         String slashName = slash(clazz.getName());
         if (this.classInfoCache.containsKey(slashName)) return this.classInfoCache.get(slashName);
@@ -47,6 +62,12 @@ public class ClassInfoProvider {
         return classInfo;
     }
 
+    /**
+     * Get the {@link ClassInfo} of a class node.
+     *
+     * @param classNode The class node
+     * @return The class info
+     */
     public synchronized ClassInfo of(final ClassNode classNode) {
         if (this.classInfoCache.containsKey(classNode.name)) return this.classInfoCache.get(classNode.name);
         String[] interfaces;

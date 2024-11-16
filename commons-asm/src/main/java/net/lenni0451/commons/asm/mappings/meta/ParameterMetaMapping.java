@@ -5,6 +5,10 @@ import lombok.With;
 
 import javax.annotation.Nonnull;
 
+/**
+ * Metadata mappings for a parameter.<br>
+ * Some mappings formats may support additional information like javadoc.
+ */
 @Data
 @With
 public class ParameterMetaMapping {
@@ -15,6 +19,9 @@ public class ParameterMetaMapping {
     @Nonnull
     private final String[] javadoc;
 
+    /**
+     * @return If the parameter has javadoc
+     */
     public boolean hasJavadoc() {
         for (String line : this.javadoc) {
             if (!line.trim().isEmpty()) return true;

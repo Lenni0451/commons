@@ -9,6 +9,9 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * An abstract class for various mappings loaders.
+ */
 public abstract class MappingsLoader {
 
     private final MappingsProvider mappingsProvider;
@@ -30,6 +33,12 @@ public abstract class MappingsLoader {
         this.mappingsProvider = mappingsProvider;
     }
 
+    /**
+     * Get and load the mappings if they are not loaded yet.<br>
+     * All exceptions that might occur when loading the mappings are rethrown using a {@link RuntimeException}.
+     *
+     * @return The loaded mappings
+     */
     public Mappings getMappings() {
         if (this.mappings == null) {
             try {
@@ -41,12 +50,24 @@ public abstract class MappingsLoader {
         return this.mappings;
     }
 
+    /**
+     * Load the mappings from the provided source if not already loaded.
+     *
+     * @throws Throwable If an error occurs while loading the mappings
+     */
     public synchronized final void load() throws Throwable {
         if (this.mappings != null) return;
         List<String> lines = this.readLines();
         this.mappings = this.load(lines);
     }
 
+    /**
+     * Load the mappings from the provided lines.
+     *
+     * @param lines The mappings lines
+     * @return The loaded mappings
+     * @throws Throwable If an error occurs while loading the mappings
+     */
     protected abstract Mappings load(final List<String> lines) throws Throwable;
 
     private List<String> readLines() throws IOException {

@@ -6,6 +6,9 @@ import java.io.InputStream;
 
 import static net.lenni0451.commons.asm.ASMUtils.slash;
 
+/**
+ * A class provider that loads classes from a specific class loader.
+ */
 public class LoaderClassProvider implements ClassProvider {
 
     private ClassLoader classLoader;

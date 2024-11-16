@@ -11,6 +11,9 @@ import java.util.regex.Pattern;
 
 import static net.lenni0451.commons.asm.ASMUtils.slash;
 
+/**
+ * A loader for Proguard mappings.
+ */
 public class ProguardMappingsLoader extends MappingsLoader {
 
     private static final Pattern CLASS = Pattern.compile("^([^ ]+) ?-> ?([^ ]+):$");
