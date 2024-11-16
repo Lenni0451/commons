@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * A provider for class bytecode.
  */
-public interface ClassProvider {
+public interface ClassProvider extends AutoCloseable {
 
     /**
      * Get the bytecode of a class by its name.<br>
@@ -34,6 +34,15 @@ public interface ClassProvider {
     @Nonnull
     default Map<String, ClassSupplier> getAllClasses() throws UnsupportedOperationException {
         throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Close the class provider and free all resources.
+     *
+     * @throws Exception If an error occurred while closing the class provider
+     */
+    @Override
+    default void close() throws Exception {
     }
 
     /**

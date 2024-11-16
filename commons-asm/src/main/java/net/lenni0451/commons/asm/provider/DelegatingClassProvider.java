@@ -47,4 +47,18 @@ public class DelegatingClassProvider implements ClassProvider {
         return classes;
     }
 
+    @Override
+    public void close() throws Exception {
+        Exception exception = null;
+        for (ClassProvider delegate : this.delegates) {
+            try {
+                delegate.close();
+            } catch (Exception e) {
+                if (exception == null) exception = e;
+                else exception.addSuppressed(e);
+            }
+        }
+        if (exception != null) throw exception;
+    }
+
 }
