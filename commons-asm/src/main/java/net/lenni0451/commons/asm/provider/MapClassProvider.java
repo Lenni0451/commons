@@ -24,6 +24,10 @@ public class MapClassProvider implements ClassProvider {
         this.nameFormat = nameFormat;
     }
 
+    public Map<String, byte[]> getClasses() {
+        return this.classes;
+    }
+
     @Nonnull
     @Override
     public byte[] getClass(String name) throws ClassNotFoundException {
