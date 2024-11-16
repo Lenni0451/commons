@@ -3,6 +3,7 @@ package net.lenni0451.commons.asm.provider;
 import net.lenni0451.commons.asm.ASMUtils;
 
 import javax.annotation.Nonnull;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -28,21 +29,37 @@ public class MapClassProvider implements ClassProvider {
         throw new ClassNotFoundException(name);
     }
 
+    @Nonnull
+    @Override
+    public Map<String, ClassSupplier> getAllClasses() {
+        Map<String, ClassSupplier> classes = new HashMap<>();
+        for (Map.Entry<String, byte[]> entry : this.classes.entrySet()) {
+            classes.put(this.nameFormat.toDot(entry.getKey()), entry::getValue);
+        }
+        return classes;
+    }
+
 
     public enum NameFormat {
-        SLASH(ASMUtils::slash),
-        DOT(ASMUtils::dot),
-        SLASH_CLASS(name -> slash(name) + ".class"),
-        DOT_CLASS(name -> dot(name) + ".class");
+        SLASH(ASMUtils::slash, ASMUtils::dot),
+        DOT(ASMUtils::dot, Function.identity()),
+        SLASH_CLASS(name -> slash(name) + ".class", name -> dot(name).substring(0, name.length() - 6)),
+        DOT_CLASS(name -> dot(name) + ".class", name -> name.substring(0, name.length() - 6));
 
         private final Function<String, String> formatter;
+        private final Function<String, String> toDot;
 
-        NameFormat(final Function<String, String> formatter) {
+        NameFormat(final Function<String, String> formatter, final Function<String, String> toDot) {
             this.formatter = formatter;
+            this.toDot = toDot;
         }
 
         public String format(final String name) {
             return this.formatter.apply(name);
+        }
+
+        public String toDot(final String name) {
+            return this.toDot.apply(name);
         }
     }
 
