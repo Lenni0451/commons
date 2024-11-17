@@ -29,8 +29,7 @@ public class InstrumentationLoaderClassProvider implements ClassProvider, ClassF
         this.classLoaders = new ConcurrentHashMap<>();
 
         this.classLoaders.put(ClassLoader.getSystemClassLoader(), new LoaderClassProvider(ClassLoader.getSystemClassLoader()));
-        this.setupInstrumentation(instrumentation);
-        this.updateClassProvider();
+        this.setupInstrumentation();
     }
 
     @Nonnull
@@ -52,13 +51,14 @@ public class InstrumentationLoaderClassProvider implements ClassProvider, ClassF
         this.classProvider.close();
     }
 
-    private void setupInstrumentation(final Instrumentation instrumentation) {
-        instrumentation.addTransformer(this, true);
-        for (Class<?> clazz : instrumentation.getAllLoadedClasses()) {
+    private void setupInstrumentation() {
+        this.instrumentation.addTransformer(this, true);
+        for (Class<?> clazz : this.instrumentation.getAllLoadedClasses()) {
             if (clazz == null) continue;
             if (clazz.getClassLoader() == null) continue;
             this.classLoaders.computeIfAbsent(clazz.getClassLoader(), LoaderClassProvider::new);
         }
+        this.updateClassProvider();
     }
 
     private synchronized void updateClassProvider() {
