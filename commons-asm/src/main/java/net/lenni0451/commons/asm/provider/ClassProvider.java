@@ -14,7 +14,8 @@ public interface ClassProvider extends AutoCloseable {
 
     /**
      * Get the bytecode of a class by its name.<br>
-     * The name should be in the format of {@code "package/Name"} but it is advised that every implementation should support both formats.
+     * The name should be in the format of {@code "package/Name"}.<br>
+     * If the class could not be found, a {@link ClassNotFoundException} is thrown.
      *
      * @param name The name of the class
      * @return The bytecode of the class
