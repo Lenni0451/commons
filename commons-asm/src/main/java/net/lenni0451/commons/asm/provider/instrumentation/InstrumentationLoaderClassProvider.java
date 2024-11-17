@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * A class provider that uses a {@link Instrumentation} instance to collect all class loaders to provide classes.<br>
+ * A class provider that uses an {@link Instrumentation} instance to collect all class loaders to provide classes.<br>
  * This provider delegates to {@link LoaderClassProvider} instances for each found class loader.<br>
  * If a class loader has not been used before yet, this provider will not be able to provide classes from it until the class loader is used at least once.
  *
@@ -49,6 +49,7 @@ public class InstrumentationLoaderClassProvider implements ClassProvider, ClassF
         this.instrumentation.removeTransformer(this);
         this.classLoaders.clear();
         this.classProvider.close();
+        this.classProvider = null;
     }
 
     private void setupInstrumentation() {
