@@ -7,7 +7,8 @@ import java.io.InputStream;
 import static net.lenni0451.commons.asm.ASMUtils.slash;
 
 /**
- * A class provider that loads classes from a specific class loader.
+ * A class provider that loads classes from a specific class loader.<br>
+ * This provider is unable to find classes which are defined at runtime, since they are not available as resources.
  */
 public class LoaderClassProvider implements ClassProvider {
 
