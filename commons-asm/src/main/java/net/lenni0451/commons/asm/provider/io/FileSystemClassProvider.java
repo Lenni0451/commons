@@ -1,4 +1,4 @@
-package net.lenni0451.commons.asm.provider;
+package net.lenni0451.commons.asm.provider.io;
 
 import java.nio.file.FileSystem;
 

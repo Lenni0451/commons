@@ -1,6 +1,9 @@
-package net.lenni0451.commons.asm.provider;
+package net.lenni0451.commons.asm.provider.io;
 
 import lombok.SneakyThrows;
+import net.lenni0451.commons.asm.provider.ClassProvider;
+import net.lenni0451.commons.asm.provider.DelegatingClassProvider;
+import net.lenni0451.commons.asm.provider.LazyClassProvider;
 
 import java.io.File;
 import java.net.URI;

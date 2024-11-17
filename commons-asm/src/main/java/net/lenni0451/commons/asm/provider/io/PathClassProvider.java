@@ -1,6 +1,7 @@
-package net.lenni0451.commons.asm.provider;
+package net.lenni0451.commons.asm.provider.io;
 
 import lombok.SneakyThrows;
+import net.lenni0451.commons.asm.provider.ClassProvider;
 
 import javax.annotation.Nonnull;
 import java.nio.file.Files;
