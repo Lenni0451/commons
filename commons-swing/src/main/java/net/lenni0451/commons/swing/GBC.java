@@ -67,22 +67,70 @@ public class GBC {
     }
 
     /**
-     * Add a filler component that will fill the remaining horizontal space.<br>
-     * This will align all components to the top of the container.<br>
-     * The required {@code gridy} will be calculated automatically.
+     * Get the current {@code gridx} value for the specified container.<br>
+     * This will return the highest {@code gridx} for the last {@code gridy}.
      *
-     * @param parent The parent container
-     * @return The next {@code gridy} value
+     * @param container The container
+     * @return The current {@code gridx} value
      */
-    public static int fillVerticalSpace(final Container parent) {
-        GridBagLayout layout = (GridBagLayout) parent.getLayout();
+    public static int currentGridX(final Container container) {
+        GridBagLayout layout = (GridBagLayout) container.getLayout();
+        int gridx = 0;
         int gridy = 0;
-        for (Component component : parent.getComponents()) {
+        for (Component component : container.getComponents()) {
+            GridBagConstraints gbc = layout.getConstraints(component);
+            if (gbc.gridy > gridy) {
+                gridx = 0;
+                gridy = gbc.gridy;
+            } else if (gbc.gridy == gridy && gbc.gridx > gridx) {
+                gridx = gbc.gridx;
+            }
+        }
+        return gridx;
+    }
+
+    /**
+     * Get the current {@code gridy} value for the specified container.
+     *
+     * @param container The container
+     * @return The current {@code gridy} value
+     */
+    public static int currentGridY(final Container container) {
+        GridBagLayout layout = (GridBagLayout) container.getLayout();
+        int gridy = 0;
+        for (Component component : container.getComponents()) {
             GridBagConstraints gbc = layout.getConstraints(component);
             if (gbc.gridy > gridy) gridy = gbc.gridy;
         }
-        GBC.create(parent).gridy(++gridy).anchor(GridBagConstraints.WEST).weighty(1).fill(GridBagConstraints.HORIZONTAL).add(Box.createHorizontalGlue());
-        return ++gridy;
+        return gridy;
+    }
+
+    /**
+     * Add a filler component that will fill the remaining horizontal space.<br>
+     * This will align all components to the top of the container.<br>
+     * This will return the new {@code gridy} value.
+     *
+     * @param parent The parent container
+     * @see #currentGridY(Container)
+     * @see Box#createHorizontalGlue()
+     */
+    public static int fillVerticalSpace(final Container parent) {
+        int gridy = currentGridY(parent);
+        if (parent.getComponents().length != 0) gridy++;
+        fillVerticalSpace(parent, gridy);
+        return gridy + 1;
+    }
+
+    /**
+     * Add a filler component that will fill the remaining horizontal space.<br>
+     * This will align all components to the top of the container.
+     *
+     * @param parent The parent container
+     * @see #currentGridY(Container)
+     * @see Box#createHorizontalGlue()
+     */
+    public static void fillVerticalSpace(final Container parent, final int gridy) {
+        GBC.create(parent).gridy(gridy).anchor(GridBagConstraints.WEST).weighty(1).fill(GridBagConstraints.HORIZONTAL).add(Box.createVerticalGlue());
     }
 
 
