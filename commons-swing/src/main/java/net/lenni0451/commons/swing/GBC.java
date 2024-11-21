@@ -114,6 +114,7 @@ public class GBC {
      * This will return the new {@code gridy} value.
      *
      * @param parent The parent container
+     * @return The new {@code gridy} value
      * @see #currentGridY(Container)
      * @see Box#createHorizontalGlue()
      */
@@ -128,6 +129,7 @@ public class GBC {
      * This will align all components to the top of the container.
      *
      * @param parent The parent container
+     * @param gridy  The {@code gridy} value
      * @see #currentGridY(Container)
      * @see Box#createHorizontalGlue()
      */
