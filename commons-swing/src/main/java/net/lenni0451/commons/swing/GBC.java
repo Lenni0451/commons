@@ -145,6 +145,28 @@ public class GBC {
     }
 
     /**
+     * Set the {@code gridx} and {@code gridy} of the constraints to the next column.
+     *
+     * @return This GBC
+     */
+    public GBC nextColumn() {
+        this.constraints.gridx = currentGridX(this.parent).orElse(-1) + 1;
+        this.constraints.gridy = currentGridY(this.parent).orElse(0);
+        return this;
+    }
+
+    /**
+     * Set the {@code gridx} and {@code gridy} of the constraints to the next row.
+     *
+     * @return This GBC
+     */
+    public GBC nextRow() {
+        this.constraints.gridx = 0;
+        this.constraints.gridy = currentGridY(this.parent).orElse(-1) + 1;
+        return this;
+    }
+
+    /**
      * Set the {@code gridx} of the constraints.
      *
      * @param gridx The gridx
