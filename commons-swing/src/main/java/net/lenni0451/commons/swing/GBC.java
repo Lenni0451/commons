@@ -2,6 +2,7 @@ package net.lenni0451.commons.swing;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.OptionalInt;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -71,38 +72,40 @@ public class GBC {
      * This will return the highest {@code gridx} for the last {@code gridy}.
      *
      * @param container The container
-     * @return The current {@code gridx} value
+     * @return The current {@code gridx} value or empty if there are no components
      */
-    public static int currentGridX(final Container container) {
+    public static OptionalInt currentGridX(final Container container) {
         GridBagLayout layout = (GridBagLayout) container.getLayout();
-        int gridx = 0;
-        int gridy = 0;
+        Integer gridx = null;
+        Integer gridy = null;
         for (Component component : container.getComponents()) {
             GridBagConstraints gbc = layout.getConstraints(component);
-            if (gbc.gridy > gridy) {
-                gridx = 0;
+            if (gridy == null || gbc.gridy > gridy) {
+                gridx = gbc.gridx;
                 gridy = gbc.gridy;
             } else if (gbc.gridy == gridy && gbc.gridx > gridx) {
                 gridx = gbc.gridx;
             }
         }
-        return gridx;
+        if (gridx == null) return OptionalInt.empty();
+        return OptionalInt.of(gridx);
     }
 
     /**
      * Get the current {@code gridy} value for the specified container.
      *
      * @param container The container
-     * @return The current {@code gridy} value
+     * @return The current {@code gridy} value or empty if there are no components
      */
-    public static int currentGridY(final Container container) {
+    public static OptionalInt currentGridY(final Container container) {
         GridBagLayout layout = (GridBagLayout) container.getLayout();
-        int gridy = 0;
+        Integer gridy = null;
         for (Component component : container.getComponents()) {
             GridBagConstraints gbc = layout.getConstraints(component);
-            if (gbc.gridy > gridy) gridy = gbc.gridy;
+            if (gridy == null || gbc.gridy > gridy) gridy = gbc.gridy;
         }
-        return gridy;
+        if (gridy == null) return OptionalInt.empty();
+        return OptionalInt.of(gridy);
     }
 
     /**
@@ -115,9 +118,8 @@ public class GBC {
      * @see Box#createHorizontalGlue()
      */
     public static int fillVerticalSpace(final Container parent) {
-        int gridy = currentGridY(parent);
-        if (parent.getComponents().length != 0) gridy++;
-        fillVerticalSpace(parent, gridy);
+        int gridy = currentGridY(parent).orElse(-1);
+        fillVerticalSpace(parent, ++gridy);
         return gridy + 1;
     }
 
