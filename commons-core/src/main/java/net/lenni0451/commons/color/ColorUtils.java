@@ -140,11 +140,6 @@ public class ColorUtils {
         );
     }
 
-    @Deprecated
-    public static Color interpolate(final Color color1, final Color color2, final float progress) {
-        return interpolate(progress, color1, color2);
-    }
-
     /**
      * Interpolate between two colors with a progress.<br>
      * The progress is a value between 0 and 1.
