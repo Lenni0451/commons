@@ -5,6 +5,7 @@ dependencies {
     api project(":commons-collections")
     api project(":commons-debugging")
     api project(":commons-functional")
+    api project(":commons-gson")
     api project(":commons-httpclient")
     api project(":commons-main")
     api project(":commons-netty")

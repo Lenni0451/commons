@@ -41,6 +41,7 @@ This is done to allow you to choose the version of the library you want to use (
 | `core`        | The core module with many useful classes and utilities.                         | `collections`    |
 | `debugging`   | Basics for debugging and profiling.                                             | -                |
 | `functional`  | Functional interfaces for common use cases.                                     | -                |
+| `gson`        | A wrapper for gson to make working with json elements easier.                   | Gson             |
 | `httpclient`  | A http client which wraps around other client apis.                             | -                |
 | `netty`       | Handlers and client/server implementations using netty.                         | Netty            |
 | `swing`       | Utilities making creating UIs with swing easier.                                | -                |
