@@ -94,7 +94,35 @@ class GsonObjectTest {
         assertFalse(OBJECT.getBoolean("unknown"));
         assertTrue(OBJECT.getBoolean("unknown", true));
 
-        //TODO: Primitive getter methods
+        assertEquals(123, OBJECT.getByte("key3"));
+        assertEquals(123, OBJECT.getByte("key3", (byte) 0));
+        assertEquals(0, OBJECT.getByte("unknown"));
+        assertEquals(0, OBJECT.getByte("unknown", (byte) 0));
+
+        assertEquals(123, OBJECT.getShort("key3"));
+        assertEquals(123, OBJECT.getShort("key3", (short) 0));
+        assertEquals(0, OBJECT.getShort("unknown"));
+        assertEquals(0, OBJECT.getShort("unknown", (short) 0));
+
+        assertEquals(123, OBJECT.getInt("key3"));
+        assertEquals(123, OBJECT.getInt("key3", 0));
+        assertEquals(0, OBJECT.getInt("unknown"));
+        assertEquals(0, OBJECT.getInt("unknown", 0));
+
+        assertEquals(123, OBJECT.getLong("key3"));
+        assertEquals(123, OBJECT.getLong("key3", 0));
+        assertEquals(0, OBJECT.getLong("unknown"));
+        assertEquals(0, OBJECT.getLong("unknown", 0));
+
+        assertEquals(123, OBJECT.getFloat("key3"));
+        assertEquals(123, OBJECT.getFloat("key3", 0));
+        assertEquals(0, OBJECT.getFloat("unknown"));
+        assertEquals(0, OBJECT.getFloat("unknown", 0));
+
+        assertEquals(123, OBJECT.getDouble("key3"));
+        assertEquals(123, OBJECT.getDouble("key3", 0));
+        assertEquals(0, OBJECT.getDouble("unknown"));
+        assertEquals(0, OBJECT.getDouble("unknown", 0));
 
         assertNotNull(OBJECT.getNumber("key3"));
         assertNotNull(OBJECT.getNumber("key3", 0));
