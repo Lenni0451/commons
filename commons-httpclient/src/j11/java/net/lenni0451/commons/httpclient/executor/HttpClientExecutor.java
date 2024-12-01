@@ -50,7 +50,7 @@ public class HttpClientExecutor extends RequestExecutor {
             if (request.isStreamedResponse()) {
                 java.net.http.HttpResponse<InputStream> response = this.executeRequest(httpClient, httpRequest, BodyHandlers.ofInputStream());
                 InputStream inputStream = new CloseListenerInputStream(response.body(), this.closeListener(executor, httpClient));
-                close = false;
+                close = false; //Closing the http client would also close the input stream
                 return new HttpResponse(new URLWrapper(response.uri()).toURL(), response.statusCode(), inputStream, response.headers().map());
             } else {
                 java.net.http.HttpResponse<byte[]> response = this.executeRequest(httpClient, httpRequest, BodyHandlers.ofByteArray());
