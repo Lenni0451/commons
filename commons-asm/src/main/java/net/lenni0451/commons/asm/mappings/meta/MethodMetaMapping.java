@@ -37,7 +37,7 @@ public class MethodMetaMapping {
      * @return If there are no javadoc lines
      */
     public boolean isEmpty() {
-        return this.javadoc.length == 0;
+        return this.javadoc.length == 0 && this.parameters.isEmpty();
     }
 
 }
