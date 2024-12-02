@@ -1,24 +1,15 @@
 package net.lenni0451.commons;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import javax.annotation.concurrent.ThreadSafe;
 import java.util.function.Supplier;
 
-/**
- * An object to store a value that is only initialized when required.<br>
- * Useful for objects that are expensive to create and are not always needed.
- *
- * @param <T> The type of the object
- */
 @ThreadSafe
+@Deprecated
+@ApiStatus.ScheduledForRemoval //01.06.2025
 public class Lazy<T> {
 
-    /**
-     * Create a new lazy object.
-     *
-     * @param supplier The supplier to create the object
-     * @param <T>      The type of the object
-     * @return The lazy object
-     */
     public static <T> Lazy<T> of(final Supplier<T> supplier) {
         return new Lazy<>(supplier);
     }
@@ -33,9 +24,6 @@ public class Lazy<T> {
         this.supplier = supplier;
     }
 
-    /**
-     * @return The value of the object
-     */
     public T get() {
         if (!this.initialized) {
             synchronized (this.lock) {

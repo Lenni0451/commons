@@ -1,4 +1,4 @@
-package net.lenni0451.commons;
+package net.lenni0451.commons.lazy;
 
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
@@ -11,12 +11,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
-class LazyTest {
+class ExpiringLazyTest {
 
     @Test
     void testInitialize() {
         int[] i = {0};
-        Lazy<int[]> lazy = new Lazy<>(() -> {
+        Lazy<int[]> lazy = Lazy.of(() -> {
             i[0] = 1;
             return i;
         });
@@ -29,7 +29,7 @@ class LazyTest {
     void testThreadSafety() throws InterruptedException {
         AtomicInteger initCount = new AtomicInteger(0);
         AtomicInteger runCount = new AtomicInteger(0);
-        Lazy<int[]> lazy = new Lazy<>(() -> {
+        Lazy<int[]> lazy = Lazy.of(() -> {
             initCount.incrementAndGet();
             return new int[]{1};
         });
@@ -62,6 +62,57 @@ class LazyTest {
         //Make sure only one thread initialized the object
         assertEquals(1, initCount.get());
         assertEquals(threadCount, runCount.get());
+    }
+
+    @Test
+    void testWriteExpiration() throws InterruptedException {
+        AtomicInteger initCount = new AtomicInteger(0);
+        ExpiringLazy<int[]> lazy = ExpiringLazy.of(ExpiringLazy.ExpirationType.WRITE, 1000, () -> {
+            initCount.incrementAndGet();
+            return new int[]{1};
+        });
+
+        assertEquals(0, initCount.get());
+        assertEquals(1, lazy.get()[0]);
+        assertEquals(1, initCount.get());
+
+        Thread.sleep(500); //The value should not have expired yet
+        assertEquals(1, initCount.get());
+        assertEquals(1, lazy.get()[0]);
+        assertEquals(1, initCount.get());
+
+        Thread.sleep(600); //Now it should have expired
+        assertEquals(1, initCount.get());
+        assertEquals(1, lazy.get()[0]);
+        assertEquals(2, initCount.get());
+    }
+
+    @Test
+    void testReadExpiration() throws InterruptedException {
+        AtomicInteger initCount = new AtomicInteger(0);
+        ExpiringLazy<int[]> lazy = ExpiringLazy.of(ExpiringLazy.ExpirationType.READ, 1000, () -> {
+            initCount.incrementAndGet();
+            return new int[]{1};
+        });
+
+        assertEquals(0, initCount.get());
+        assertEquals(1, lazy.get()[0]);
+        assertEquals(1, initCount.get());
+
+        Thread.sleep(500); //The value should not have expired yet
+        assertEquals(1, initCount.get());
+        assertEquals(1, lazy.get()[0]);
+        assertEquals(1, initCount.get());
+
+        Thread.sleep(600); //The value should not have expired yet
+        assertEquals(1, initCount.get());
+        assertEquals(1, lazy.get()[0]);
+        assertEquals(1, initCount.get());
+
+        Thread.sleep(1100); //Now it should have expired
+        assertEquals(1, initCount.get());
+        assertEquals(1, lazy.get()[0]);
+        assertEquals(2, initCount.get());
     }
 
 }
