@@ -70,24 +70,32 @@ class GsonObjectTest {
         assertNull(OBJECT.get("unknown"));
         assertNull(OBJECT.get("unknown", null));
         assertNotNull(OBJECT.get("unknown", new GsonObject()));
+        assertFalse(OBJECT.opt("unknown").isPresent());
+        assertTrue(OBJECT.opt("key0").isPresent());
 
         assertNotNull(OBJECT.getObject("key0"));
         assertNotNull(OBJECT.getObject("key0", null));
         assertNull(OBJECT.getObject("unknown"));
         assertNull(OBJECT.getObject("unknown", null));
         assertNotNull(OBJECT.getObject("unknown", new GsonObject()));
+        assertFalse(OBJECT.optObject("unknown").isPresent());
+        assertTrue(OBJECT.optObject("key0").isPresent());
 
         assertNotNull(OBJECT.getArray("key1"));
         assertNotNull(OBJECT.getArray("key1", null));
         assertNull(OBJECT.getArray("unknown"));
         assertNull(OBJECT.getArray("unknown", null));
         assertNotNull(OBJECT.getArray("unknown", new GsonArray()));
+        assertFalse(OBJECT.optArray("unknown").isPresent());
+        assertTrue(OBJECT.optArray("key1").isPresent());
 
         assertNotNull(OBJECT.getPrimitive("key2"));
         assertNotNull(OBJECT.getPrimitive("key2", null));
         assertNull(OBJECT.getPrimitive("unknown"));
         assertNull(OBJECT.getPrimitive("unknown", null));
         assertNotNull(OBJECT.getPrimitive("unknown", new GsonPrimitive(true)));
+        assertFalse(OBJECT.optPrimitive("unknown").isPresent());
+        assertTrue(OBJECT.optPrimitive("key2").isPresent());
 
         assertTrue(OBJECT.getBoolean("key2"));
         assertTrue(OBJECT.getBoolean("key2", false));
@@ -108,6 +116,8 @@ class GsonObjectTest {
         assertEquals(123, OBJECT.getInt("key3", 0));
         assertEquals(0, OBJECT.getInt("unknown"));
         assertEquals(0, OBJECT.getInt("unknown", 0));
+        assertFalse(OBJECT.optInt("unknown").isPresent());
+        assertTrue(OBJECT.optInt("key3").isPresent());
 
         assertEquals(123, OBJECT.getLong("key3"));
         assertEquals(123, OBJECT.getLong("key3", 0));
@@ -123,16 +133,22 @@ class GsonObjectTest {
         assertEquals(123, OBJECT.getDouble("key3", 0));
         assertEquals(0, OBJECT.getDouble("unknown"));
         assertEquals(0, OBJECT.getDouble("unknown", 0));
+        assertFalse(OBJECT.optDouble("unknown").isPresent());
+        assertTrue(OBJECT.optDouble("key3").isPresent());
 
         assertNotNull(OBJECT.getNumber("key3"));
         assertNotNull(OBJECT.getNumber("key3", 0));
         assertNull(OBJECT.getNumber("unknown"));
         assertNotNull(OBJECT.getNumber("unknown", 0));
+        assertFalse(OBJECT.optNumber("unknown").isPresent());
+        assertTrue(OBJECT.optNumber("key3").isPresent());
 
         assertNotNull(OBJECT.getString("key4"));
         assertNotNull(OBJECT.getString("key4", ""));
         assertNull(OBJECT.getString("unknown"));
         assertNotNull(OBJECT.getString("unknown", ""));
+        assertFalse(OBJECT.optString("unknown").isPresent());
+        assertTrue(OBJECT.optString("key4").isPresent());
     }
 
     @Test

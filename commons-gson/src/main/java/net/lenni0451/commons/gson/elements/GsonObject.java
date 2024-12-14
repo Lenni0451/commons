@@ -5,10 +5,7 @@ import com.google.gson.JsonObject;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -102,12 +99,20 @@ public class GsonObject extends GsonElement implements Iterable<Map.Entry<String
         return this.has(key) ? GsonElement.wrap(this.object.get(key)) : defaultValue;
     }
 
+    public Optional<GsonElement> opt(final String key) {
+        return Optional.ofNullable(this.get(key, null));
+    }
+
     public GsonObject getObject(final String key) {
         return this.getObject(key, null);
     }
 
     public GsonObject getObject(final String key, @Nullable final GsonObject defaultValue) {
         return this.hasObject(key) ? this.get(key, defaultValue).asObject() : defaultValue;
+    }
+
+    public Optional<GsonObject> optObject(final String key) {
+        return Optional.ofNullable(this.getObject(key, null));
     }
 
     public GsonArray getArray(final String key) {
@@ -118,12 +123,20 @@ public class GsonObject extends GsonElement implements Iterable<Map.Entry<String
         return this.hasArray(key) ? this.get(key, defaultValue).asArray() : defaultValue;
     }
 
+    public Optional<GsonArray> optArray(final String key) {
+        return Optional.ofNullable(this.getArray(key, null));
+    }
+
     public GsonPrimitive getPrimitive(final String key) {
         return this.getPrimitive(key, null);
     }
 
     public GsonPrimitive getPrimitive(final String key, @Nullable final GsonPrimitive defaultValue) {
         return this.hasPrimitive(key) ? this.get(key, defaultValue).asPrimitive() : defaultValue;
+    }
+
+    public Optional<GsonPrimitive> optPrimitive(final String key) {
+        return Optional.ofNullable(this.getPrimitive(key, null));
     }
 
     public boolean getBoolean(final String key) {
@@ -158,6 +171,10 @@ public class GsonObject extends GsonElement implements Iterable<Map.Entry<String
         return this.hasNumber(key) ? this.object.get(key).getAsInt() : defaultValue;
     }
 
+    public OptionalInt optInt(final String key) {
+        return this.hasNumber(key) ? OptionalInt.of(this.object.get(key).getAsInt()) : OptionalInt.empty();
+    }
+
     public long getLong(final String key) {
         return this.getLong(key, 0);
     }
@@ -182,6 +199,10 @@ public class GsonObject extends GsonElement implements Iterable<Map.Entry<String
         return this.hasNumber(key) ? this.object.get(key).getAsDouble() : defaultValue;
     }
 
+    public OptionalDouble optDouble(final String key) {
+        return this.hasNumber(key) ? OptionalDouble.of(this.object.get(key).getAsDouble()) : OptionalDouble.empty();
+    }
+
     public Number getNumber(final String key) {
         return this.getNumber(key, null);
     }
@@ -190,12 +211,20 @@ public class GsonObject extends GsonElement implements Iterable<Map.Entry<String
         return this.hasNumber(key) ? this.object.get(key).getAsNumber() : defaultValue;
     }
 
+    public Optional<Number> optNumber(final String key) {
+        return Optional.ofNullable(this.getNumber(key, null));
+    }
+
     public String getString(final String key) {
         return this.getString(key, null);
     }
 
     public String getString(final String key, @Nullable final String defaultValue) {
         return this.hasString(key) ? this.object.get(key).getAsString() : defaultValue;
+    }
+
+    public Optional<String> optString(final String key) {
+        return Optional.ofNullable(this.getString(key, null));
     }
 
     public int size() {
