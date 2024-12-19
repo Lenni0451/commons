@@ -193,6 +193,43 @@ public class ASMUtils {
     }
 
     /**
+     * Get the most optimal instruction to push the given long onto the stack.
+     *
+     * @param l The long to push
+     * @return The instruction to push the long
+     */
+    public static AbstractInsnNode longPush(final long l) {
+        if (l == 0) return new InsnNode(Opcodes.LCONST_0);
+        else if (l == 1) return new InsnNode(Opcodes.LCONST_1);
+        else return new LdcInsnNode(l);
+    }
+
+    /**
+     * Get the most optimal instruction to push the given float onto the stack.
+     *
+     * @param f The float to push
+     * @return The instruction to push the float
+     */
+    public static AbstractInsnNode floatPush(final float f) {
+        if (f == 0) return new InsnNode(Opcodes.FCONST_0);
+        else if (f == 1) return new InsnNode(Opcodes.FCONST_1);
+        else if (f == 2) return new InsnNode(Opcodes.FCONST_2);
+        else return new LdcInsnNode(f);
+    }
+
+    /**
+     * Get the most optimal instruction to push the given double onto the stack.
+     *
+     * @param d The double to push
+     * @return The instruction to push the double
+     */
+    public static AbstractInsnNode doublePush(final double d) {
+        if (d == 0) return new InsnNode(Opcodes.DCONST_0);
+        else if (d == 1) return new InsnNode(Opcodes.DCONST_1);
+        else return new LdcInsnNode(d);
+    }
+
+    /**
      * Create a new empty class node.<br>
      * An empty constructor will be added to the class.
      *

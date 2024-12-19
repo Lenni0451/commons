@@ -1,5 +1,8 @@
 package net.lenni0451.commons.asm.info;
 
+import org.objectweb.asm.tree.FieldInsnNode;
+import org.objectweb.asm.tree.MethodInsnNode;
+
 /**
  * Represents a member declaration of a class.
  */
@@ -70,6 +73,13 @@ public class MemberDeclaration {
     }
 
     /**
+     * @return If this member is a field
+     */
+    public boolean isField() {
+        return this.descriptor == null || !this.descriptor.startsWith("(");
+    }
+
+    /**
      * @return If this member is a method
      */
     public boolean isMethod() {
@@ -77,10 +87,25 @@ public class MemberDeclaration {
     }
 
     /**
-     * @return If this member is a field
+     * Check if this member declaration is equal to the given {@link FieldInsnNode}.
+     *
+     * @param fieldInsnNode The field insn node
+     * @return If the members are equal
      */
-    public boolean isField() {
-        return this.descriptor == null || !this.descriptor.startsWith("(");
+    public boolean is(final FieldInsnNode fieldInsnNode) {
+        if (!this.isField()) return false;
+        return this.owner.equals(fieldInsnNode.owner) && this.name.equals(fieldInsnNode.name) && (this.descriptor == null || this.descriptor.equals(fieldInsnNode.desc));
+    }
+
+    /**
+     * Check if this member declaration is equal to the given {@link MethodInsnNode}.
+     *
+     * @param methodInsnNode The method insn node
+     * @return If the members are equal
+     */
+    public boolean is(final MethodInsnNode methodInsnNode) {
+        if (!this.isMethod()) return false;
+        return this.owner.equals(methodInsnNode.owner) && this.name.equals(methodInsnNode.name) && this.descriptor.equals(methodInsnNode.desc);
     }
 
 }
