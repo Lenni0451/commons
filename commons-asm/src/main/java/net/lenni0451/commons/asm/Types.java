@@ -1,6 +1,7 @@
 package net.lenni0451.commons.asm;
 
 import org.objectweb.asm.Type;
+import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
@@ -55,8 +56,12 @@ public class Types {
             return Type.getType((Class<?>) ob);
         } else if (ob instanceof Field) {
             return Type.getType(((Field) ob).getType());
+        } else if (ob instanceof FieldNode) {
+            return Type.getType(((FieldNode) ob).desc);
         } else if (ob instanceof Method) {
             return Type.getType((Method) ob);
+        } else if (ob instanceof MethodNode) {
+            return Type.getType(((MethodNode) ob).desc);
         } else if (ob instanceof Constructor) {
             return Type.getType((Constructor<?>) ob);
         } else if (ob instanceof Type) {
