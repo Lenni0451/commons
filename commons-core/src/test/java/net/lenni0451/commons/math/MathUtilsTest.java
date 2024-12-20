@@ -129,10 +129,10 @@ class MathUtilsTest {
     @Test
     void formatBytes() {
         assertEquals("0 B", MathUtils.formatBytes(0));
-        assertEquals("1,0 KiB", MathUtils.formatBytes(1024));
-        assertEquals("1,0 GiB", MathUtils.formatBytes(1024 * 1024 * 1024));
-        assertEquals("8,0 EiB", MathUtils.formatBytes(Long.MAX_VALUE));
-        assertEquals("-8,0 EiB", MathUtils.formatBytes(Long.MIN_VALUE + 1));
+        assertEquals(String.format("%.1f KiB", 1D), MathUtils.formatBytes(1024));
+        assertEquals(String.format("%.1f GiB", 1D), MathUtils.formatBytes(1024 * 1024 * 1024));
+        assertEquals(String.format("%.1f EiB", 8D), MathUtils.formatBytes(Long.MAX_VALUE));
+        assertEquals(String.format("%.1f EiB", -8D), MathUtils.formatBytes(Long.MIN_VALUE + 1));
     }
 
     @Test
