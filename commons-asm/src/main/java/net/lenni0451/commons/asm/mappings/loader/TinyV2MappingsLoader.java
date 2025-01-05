@@ -87,7 +87,7 @@ public class TinyV2MappingsLoader extends MappingsLoader {
 
         String currentClass = null;
         for (String line : lines) {
-            String[] parts = line.replaceAll("\\s{2,}", "\t").replaceAll("^\\s+","").split("\t", -1);
+            String[] parts = line.replaceAll("\\s{2,}", "\t").replaceAll("^\\s+", "").split("\t", -1);
             if (fromIndex == -1) { //Header
                 if (!parts[0].equals("tiny")) throw new IllegalStateException("Invalid tiny header (expected 'tiny', got '" + parts[0] + "')");
                 if (!parts[1].equals("2")) throw new IllegalStateException("Invalid tiny major version (expected '2', got '" + parts[1] + "')");
