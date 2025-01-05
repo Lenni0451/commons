@@ -87,8 +87,7 @@ public class TinyV2MappingsLoader extends MappingsLoader {
 
         String currentClass = null;
         for (String line : lines) {
-            String trimmedLine = line.trim().replaceAll("\\s{2,}", "\t");
-            String[] parts = trimmedLine.split("\t");
+            String[] parts = line.replaceAll("\\s{2,}", "\t").replaceAll("^\\s+","").split("\t", -1);
             if (fromIndex == -1) { //Header
                 if (!parts[0].equals("tiny")) throw new IllegalStateException("Invalid tiny header (expected 'tiny', got '" + parts[0] + "')");
                 if (!parts[1].equals("2")) throw new IllegalStateException("Invalid tiny major version (expected '2', got '" + parts[1] + "')");
@@ -104,6 +103,7 @@ public class TinyV2MappingsLoader extends MappingsLoader {
                 String baseName = parts[1];
                 currentClass = parts[1 + fromIndex];
                 String toName = parts[1 + toIndex];
+                if (toName.isEmpty()) toName = currentClass;
 
                 baseToSource.addClassMapping(baseName, currentClass);
                 baseToTarget.addClassMapping(baseName, toName);
@@ -117,6 +117,7 @@ public class TinyV2MappingsLoader extends MappingsLoader {
                 String descriptor = parts[1];
                 String fromName = parts[2 + fromIndex];
                 String toName = parts[2 + toIndex];
+                if (toName.isEmpty()) toName = fromName;
 
                 unmappedMembers.add(new UnmappedMember(false, currentClass, fromName, descriptor, toName));
                 if (this.parseMeta) {
@@ -128,6 +129,7 @@ public class TinyV2MappingsLoader extends MappingsLoader {
                 String descriptor = parts[1];
                 String fromName = parts[2 + fromIndex];
                 String toName = parts[2 + toIndex];
+                if (toName.isEmpty()) toName = fromName;
 
                 unmappedMembers.add(new UnmappedMember(true, currentClass, fromName, descriptor, toName));
                 if (this.parseMeta) {
