@@ -3,10 +3,12 @@ package net.lenni0451.commons.threading;
 import lombok.experimental.UtilityClass;
 
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @UtilityClass
 public class ThreadUtils {
 
+    private static final AtomicBoolean TIMER_HACK_THREAD_STARTED = new AtomicBoolean(false);
     private static final long SLEEP_PRECISION = TimeUnit.MILLISECONDS.toNanos(2);
     private static final long SPIN_YIELD_PRECISION = TimeUnit.MICROSECONDS.toNanos(2);
 
@@ -15,14 +17,16 @@ public class ThreadUtils {
      * This increases the precision of {@link Thread#sleep(long)}.
      */
     public static void startTimerHackThread() {
-        Thread thread = new Thread(() -> {
-            try {
-                while (true) Thread.sleep(Long.MAX_VALUE);
-            } catch (InterruptedException ignored) {
-            }
-        }, "TimerHackThread");
-        thread.setDaemon(true);
-        thread.start();
+        if (TIMER_HACK_THREAD_STARTED.compareAndSet(false, true)) {
+            Thread thread = new Thread(() -> {
+                try {
+                    while (true) Thread.sleep(Long.MAX_VALUE);
+                } catch (InterruptedException ignored) {
+                }
+            }, "TimerHackThread");
+            thread.setDaemon(true);
+            thread.start();
+        }
     }
 
     /**
