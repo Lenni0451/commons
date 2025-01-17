@@ -3,11 +3,12 @@ dependencies {
     api project(":commons-asm")
     api project(":commons-brigadier")
     api project(":commons-collections")
+    api project(":commons-core")
     api project(":commons-debugging")
     api project(":commons-functional")
     api project(":commons-gson")
     api project(":commons-httpclient")
-    api project(":commons-main")
+    api project(":commons-logging")
     api project(":commons-netty")
     api project(":commons-swing")
 }
