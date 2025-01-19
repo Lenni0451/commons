@@ -3,10 +3,10 @@ package net.lenni0451.commons.logging;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 
-public interface LoggerFormat {
+public interface MessageFormat {
 
-    LoggerFormat CURLY_BRACKETS = (message, args) -> {
-        LoggerArgs loggerArgs = split(args);
+    MessageFormat CURLY_BRACKETS = (message, args) -> {
+        MessageArgs messageArgs = split(args);
         StringBuilder builder = new StringBuilder();
 
         String left = message;
@@ -14,35 +14,35 @@ public interface LoggerFormat {
         while (left.contains("{}")) {
             int i = left.indexOf("{}");
             builder.append(left, 0, i);
-            builder.append(loggerArgs.getArg(index++, "{}"));
+            builder.append(messageArgs.getArg(index++, "{}"));
             left = left.substring(i + 2);
         }
         builder.append(left);
 
-        return new Result(builder.toString(), loggerArgs.getThrowable());
+        return new Result(builder.toString(), messageArgs.getThrowable());
     };
-    LoggerFormat STRING_FORMAT = (message, args) -> {
-        LoggerArgs loggerArgs = split(args);
-        return new Result(String.format(message, loggerArgs.getArgs()), loggerArgs.getThrowable());
+    MessageFormat STRING_FORMAT = (message, args) -> {
+        MessageArgs messageArgs = split(args);
+        return new Result(String.format(message, messageArgs.getArgs()), messageArgs.getThrowable());
     };
 
-    static LoggerArgs split(final Object[] args) {
+    static MessageArgs split(final Object[] args) {
         if (args.length > 0 && args[args.length - 1] instanceof Throwable) {
-            return new LoggerArgs(Arrays.copyOfRange(args, 0, args.length - 1), (Throwable) args[args.length - 1]);
+            return new MessageArgs(Arrays.copyOfRange(args, 0, args.length - 1), (Throwable) args[args.length - 1]);
         } else {
-            return new LoggerArgs(args, null);
+            return new MessageArgs(args, null);
         }
     }
 
     Result format(final String message, final Object... args);
 
 
-    class LoggerArgs {
+    class MessageArgs {
         private final Object[] args;
         @Nullable
         private final Throwable throwable;
 
-        public LoggerArgs(final Object[] args, @Nullable final Throwable throwable) {
+        public MessageArgs(final Object[] args, @Nullable final Throwable throwable) {
             this.args = args;
             this.throwable = throwable;
         }

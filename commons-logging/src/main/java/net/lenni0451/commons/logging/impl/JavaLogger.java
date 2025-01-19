@@ -1,30 +1,30 @@
 package net.lenni0451.commons.logging.impl;
 
 import net.lenni0451.commons.logging.Logger;
-import net.lenni0451.commons.logging.LoggerFormat;
+import net.lenni0451.commons.logging.MessageFormat;
 
 import java.util.logging.Level;
 
 public class JavaLogger implements Logger {
 
     private final java.util.logging.Logger logger;
-    private final LoggerFormat format;
+    private final MessageFormat messageFormat;
 
     public JavaLogger(final String name) {
-        this(name, LoggerFormat.CURLY_BRACKETS);
+        this(name, MessageFormat.CURLY_BRACKETS);
     }
 
-    public JavaLogger(final String name, final LoggerFormat format) {
-        this(java.util.logging.Logger.getLogger(name), format);
+    public JavaLogger(final String name, final MessageFormat messageFormat) {
+        this(java.util.logging.Logger.getLogger(name), messageFormat);
     }
 
     public JavaLogger(final java.util.logging.Logger logger) {
-        this(logger, LoggerFormat.CURLY_BRACKETS);
+        this(logger, MessageFormat.CURLY_BRACKETS);
     }
 
-    public JavaLogger(final java.util.logging.Logger logger, final LoggerFormat format) {
+    public JavaLogger(final java.util.logging.Logger logger, final MessageFormat messageFormat) {
         this.logger = logger;
-        this.format = format;
+        this.messageFormat = messageFormat;
     }
 
 
@@ -44,7 +44,7 @@ public class JavaLogger implements Logger {
     }
 
     private void log(final Level level, final String message, final Object[] args) {
-        LoggerFormat.Result result = this.format.format(message, args);
+        MessageFormat.Result result = this.messageFormat.format(message, args);
         this.logger.log(level, result.getMessage(), result.getThrowable());
     }
 

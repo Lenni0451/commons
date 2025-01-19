@@ -1,51 +1,31 @@
 package net.lenni0451.commons.logging.impl;
 
-import net.lenni0451.commons.logging.Logger;
-import net.lenni0451.commons.logging.LoggerFormat;
+import net.lenni0451.commons.logging.MessageFormat;
 
-import javax.annotation.WillNotClose;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.PrintWriter;
+import java.io.PrintStream;
 
-public class FileLogger implements Logger, AutoCloseable {
+public class FileLogger extends PrintStreamLogger implements AutoCloseable {
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
 
     private final FileOutputStream fileOutputStream;
-    private final PrintWriter printWriter;
-    private final LoggerFormat format;
 
-    public FileLogger(@WillNotClose final File file) throws FileNotFoundException {
-        this(new FileOutputStream(file), LoggerFormat.CURLY_BRACKETS);
-    }
-
-    public FileLogger(@WillNotClose final File file, final LoggerFormat format) throws FileNotFoundException {
-        this(new FileOutputStream(file), format);
-    }
-
-    public FileLogger(@WillNotClose final FileOutputStream fileOutputStream) {
-        this(fileOutputStream, LoggerFormat.CURLY_BRACKETS);
-    }
-
-    public FileLogger(@WillNotClose final FileOutputStream fileOutputStream, final LoggerFormat format) {
-        this.fileOutputStream = fileOutputStream;
-        this.printWriter = new PrintWriter(fileOutputStream);
-        this.format = format;
+    public FileLogger(final FileOutputStream fos, final String prefix, final MessageFormat messageFormat) {
+        super(new PrintStream(fos), prefix, messageFormat);
+        this.fileOutputStream = fos;
     }
 
     @Override
-    public void info(String message, Object... args) {
-        this.log("INFO", message, args);
-    }
-
-    @Override
-    public void warn(String message, Object... args) {
-        this.log("WARN", message, args);
-    }
-
-    @Override
-    public void error(String message, Object... args) {
-        this.log("ERROR", message, args);
+    protected void log(PrintStream stream, String level, String message, Object[] args) {
+        synchronized (this.fileOutputStream) {
+            super.log(stream, level, message, args);
+        }
     }
 
     @Override
@@ -53,12 +33,33 @@ public class FileLogger implements Logger, AutoCloseable {
         this.fileOutputStream.close();
     }
 
-    private void log(final String level, final String message, final Object[] args) {
-        synchronized (this.printWriter) {
-            LoggerFormat.Result result = this.format.format(message, args);
-            this.printWriter.println("[" + level + "] " + result.getMessage());
-            if (result.getThrowable() != null) result.getThrowable().printStackTrace(this.printWriter);
-            this.printWriter.flush();
+
+    public static class Builder {
+        private FileOutputStream fos;
+        private String prefix = "";
+        private MessageFormat messageFormat = MessageFormat.CURLY_BRACKETS;
+
+        public Builder file(final File file) throws FileNotFoundException {
+            return this.fileOutputStream(new FileOutputStream(file));
+        }
+
+        public Builder fileOutputStream(final FileOutputStream fos) {
+            this.fos = fos;
+            return this;
+        }
+
+        public Builder prefix(final String prefix) {
+            this.prefix = prefix;
+            return this;
+        }
+
+        public Builder messageFormat(final MessageFormat messageFormat) {
+            this.messageFormat = messageFormat;
+            return this;
+        }
+
+        public FileLogger build() {
+            return new FileLogger(this.fos, this.prefix, this.messageFormat);
         }
     }
 
