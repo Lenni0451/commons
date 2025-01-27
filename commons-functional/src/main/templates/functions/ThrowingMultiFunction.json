@@ -1,7 +1,0 @@
-{
-    "parent": "MultiFunction.json",
-    "target": "net/lenni0451/commons/functional/functions/throwing/Throwing{{prefix}}Function.java",
-    "globals": {
-        "throwing": true
-    }
-}

@@ -1,38 +1,14 @@
-package net.lenni0451.commons.functional.consumer{{#throwing}}.throwing{{/throwing}};
+package net.lenni0451.commons.functional.consumer;
 
-{{#var "methodArgs"}}{{#typeArgs}}{{lower .}}{{#iterHasNext}}, {{/iterHasNext}}{{/typeArgs}}{{/var}}
-{{#var "className"}}{{#throwing}}Throwing{{/throwing}}{{prefix}}Consumer{{/var}}
-{{#var "joinedTypeArgs"}}{{join typeArgs delimiter=", "}}{{#throwing}}, T{{/throwing}}{{/var}}
 @FunctionalInterface
-public interface {{var "className"}}<{{join typeArgs delimiter=", "}}{{#throwing}}, T extends Throwable{{/throwing}}> {
+public interface {{prefix}}Consumer {
 
-    void accept({{#typeArgs}}final {{.}} {{lower .}}{{#iterHasNext}}, {{/iterHasNext}}{{/typeArgs}}){{#throwing}} throws T{{/throwing}};
+    void accept(final {{type}} value);
 
-    /**
-     * Executes the other consumer after this one.<br>
-     * {@code a.before(b);} <i>{@code //a is executed before b}</i>
-     *
-     * @param other The other consumer to execute
-     * @return The wrapper consumer
-     */
-    default {{var "className"}}<{{var "joinedTypeArgs"}}> before(final {{var "className"}}<{{var "joinedTypeArgs"}}> other) {
-        return ({{var "methodArgs"}}) -> {
-            this.accept({{var "methodArgs"}});
-            other.accept({{var "methodArgs"}});
-        };
-    }
-
-    /**
-     * Executes the other consumer before this one.<br>
-     * {@code a.after(b);} <i>{@code //b is executed before a}</i>
-     *
-     * @param other The other consumer to execute
-     * @return The wrapper consumer
-     */
-    default {{var "className"}}<{{var "joinedTypeArgs"}}> after(final {{var "className"}}<{{var "joinedTypeArgs"}}> other) {
-        return ({{var "methodArgs"}}) -> {
-            other.accept({{var "methodArgs"}});
-            this.accept({{var "methodArgs"}});
+    default {{prefix}}Consumer andThen(final {{prefix}}Consumer after) {
+        return value -> {
+            this.accept(value);
+            after.accept(value);
         };
     }
 

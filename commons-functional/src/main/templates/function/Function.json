@@ -1,6 +1,6 @@
 {
-    "template": "Consumer.mustache",
-    "target": "net/lenni0451/commons/functional/consumer/{{prefix}}Consumer.java",
+    "template": "Function.mustache",
+    "target": "net/lenni0451/commons/functional/function/{{prefix}}Function.java",
     "variants": [
         {
             "prefix": "Boolean",
