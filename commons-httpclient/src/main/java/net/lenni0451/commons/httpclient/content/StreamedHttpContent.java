@@ -4,6 +4,7 @@ import net.lenni0451.commons.httpclient.model.ContentType;
 import net.lenni0451.commons.httpclient.utils.HttpRequestUtils;
 
 import javax.annotation.Nonnull;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -14,6 +15,21 @@ import java.io.InputStream;
  * All built-in executors support this type of content.
  */
 public class StreamedHttpContent extends HttpContent {
+
+    /**
+     * Wrap the given http content into a streamed content.<br>
+     * This will read the entire content into memory.
+     *
+     * @param other The content to wrap
+     * @return The wrapped content
+     * @throws IOException If an error occurs reading the content
+     * @see HttpRequestUtils#readFromStream(InputStream)
+     */
+    public static StreamedHttpContent wrap(final HttpContent other) throws IOException {
+        byte[] content = other.getAsBytes();
+        return new StreamedHttpContent(other.getContentType(), new ByteArrayInputStream(content), content.length);
+    }
+
 
     private final InputStream inputStream;
     private final int contentLength;
@@ -59,6 +75,7 @@ public class StreamedHttpContent extends HttpContent {
     @Nonnull
     @Override
     protected byte[] compute() throws IOException {
+        //Calling this method 100% defeats the purpose of a streamed content
         return HttpRequestUtils.readFromStream(this.inputStream);
     }
 
