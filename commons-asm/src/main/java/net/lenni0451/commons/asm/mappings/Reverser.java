@@ -1,9 +1,11 @@
 package net.lenni0451.commons.asm.mappings;
 
+import lombok.experimental.UtilityClass;
 import net.lenni0451.commons.asm.info.MemberDeclaration;
 
 import java.util.Map;
 
+@UtilityClass
 class Reverser {
 
     public static Mappings init(final Mappings mappings) {

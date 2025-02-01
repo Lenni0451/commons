@@ -1,5 +1,6 @@
 package net.lenni0451.commons.asm.mappings;
 
+import lombok.experimental.UtilityClass;
 import net.lenni0451.commons.asm.io.ClassIO;
 import org.objectweb.asm.commons.ClassRemapper;
 import org.objectweb.asm.tree.ClassNode;
@@ -8,6 +9,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+@UtilityClass
 public class Remapper {
 
     /**

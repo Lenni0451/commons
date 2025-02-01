@@ -1,5 +1,6 @@
 package net.lenni0451.commons.asm;
 
+import lombok.experimental.UtilityClass;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.MethodInsnNode;
@@ -9,6 +10,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+@UtilityClass
 public class Types {
 
     /**

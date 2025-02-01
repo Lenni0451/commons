@@ -1,5 +1,6 @@
 package net.lenni0451.commons.asm.annotations.parser;
 
+import lombok.experimental.UtilityClass;
 import net.lenni0451.commons.asm.annotations.AnnotationUtils;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.AnnotationNode;
@@ -14,6 +15,7 @@ import java.util.Map;
 
 import static net.lenni0451.commons.asm.Types.type;
 
+@UtilityClass
 public class AnnotationParser {
 
     /**

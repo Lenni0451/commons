@@ -1,7 +1,9 @@
 package net.lenni0451.commons.asm;
 
+import lombok.experimental.UtilityClass;
 import org.objectweb.asm.Opcodes;
 
+@UtilityClass
 public class Modifiers {
 
     /**

@@ -1,5 +1,6 @@
 package net.lenni0451.commons.asm;
 
+import lombok.experimental.UtilityClass;
 import org.objectweb.asm.Attribute;
 import org.objectweb.asm.commons.ModuleHashesAttribute;
 import org.objectweb.asm.commons.ModuleResolutionAttribute;
@@ -11,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@UtilityClass
 public class Cloner {
 
     /**

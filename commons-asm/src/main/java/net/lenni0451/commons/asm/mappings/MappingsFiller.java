@@ -1,5 +1,6 @@
 package net.lenni0451.commons.asm.mappings;
 
+import lombok.experimental.UtilityClass;
 import net.lenni0451.commons.asm.Modifiers;
 import net.lenni0451.commons.asm.info.ClassInfo;
 import net.lenni0451.commons.asm.info.ClassInfoProvider;
@@ -14,6 +15,7 @@ import java.util.*;
 
 import static net.lenni0451.commons.asm.Types.*;
 
+@UtilityClass
 public class MappingsFiller {
 
     /**

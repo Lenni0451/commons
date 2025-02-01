@@ -1,5 +1,6 @@
 package net.lenni0451.commons.asm;
 
+import lombok.experimental.UtilityClass;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.*;
@@ -8,6 +9,7 @@ import javax.annotation.Nullable;
 
 import static net.lenni0451.commons.asm.Types.*;
 
+@UtilityClass
 public class ASMUtils {
 
     /**

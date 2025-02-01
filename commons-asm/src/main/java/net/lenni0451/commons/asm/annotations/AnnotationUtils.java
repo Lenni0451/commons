@@ -1,5 +1,6 @@
 package net.lenni0451.commons.asm.annotations;
 
+import lombok.experimental.UtilityClass;
 import org.objectweb.asm.tree.AnnotationNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
@@ -11,6 +12,7 @@ import java.util.function.Consumer;
 
 import static net.lenni0451.commons.asm.Types.typeDescriptor;
 
+@UtilityClass
 public class AnnotationUtils {
 
     /**

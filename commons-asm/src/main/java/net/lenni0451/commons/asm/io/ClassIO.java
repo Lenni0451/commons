@@ -1,10 +1,12 @@
 package net.lenni0451.commons.asm.io;
 
+import lombok.experimental.UtilityClass;
 import net.lenni0451.commons.asm.info.ClassInfoProvider;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.ClassNode;
 
+@UtilityClass
 public class ClassIO {
 
     /**
