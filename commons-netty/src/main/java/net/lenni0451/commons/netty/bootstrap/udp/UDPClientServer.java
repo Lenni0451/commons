@@ -58,7 +58,6 @@ public class UDPClientServer {
         this.bootstrap
                 .group(this.channelType.getClientLoopGroup())
                 .channel(this.channelType.getChannelClass())
-
                 .attr(ATTRIBUTE_CLIENT_SERVER, this)
                 .handler(this.channelInitializer);
     }

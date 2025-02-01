@@ -5,13 +5,13 @@ import io.jpower.kcp.netty.UkcpServerChannel;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import net.lenni0451.commons.netty.LazyGroups;
-import net.lenni0451.commons.netty.bootstrap.types.AReliableServer;
+import net.lenni0451.commons.netty.bootstrap.types.ReliableServer;
 
 /**
  * A simple KCP server implementation.<br>
  * * Requires {@code io.jpower.kcp:kcp-netty} as dependency.
  */
-public class KCPServer extends AReliableServer {
+public class KCPServer extends ReliableServer {
 
     /**
      * Create a new KCP server.
@@ -27,7 +27,6 @@ public class KCPServer extends AReliableServer {
         this.bootstrap
                 .group(LazyGroups.NIO_SERVER_PARENT_LOOP_GROUP.get(), LazyGroups.NIO_SERVER_CHILD_LOOP_GROUP.get())
                 .channel(UkcpServerChannel.class)
-
                 .childOption(UkcpChannelOption.UKCP_NODELAY, true)
                 .childOption(UkcpChannelOption.UKCP_INTERVAL, 20)
                 .childOption(UkcpChannelOption.UKCP_FAST_RESEND, 2)

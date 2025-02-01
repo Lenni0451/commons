@@ -6,13 +6,13 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import net.lenni0451.commons.netty.LazyGroups;
-import net.lenni0451.commons.netty.bootstrap.types.AReliableClient;
+import net.lenni0451.commons.netty.bootstrap.types.ReliableClient;
 
 /**
  * A simple KCP client implementation.<br>
  * Requires {@code io.jpower.kcp:kcp-netty} as dependency.
  */
-public class KCPClient extends AReliableClient {
+public class KCPClient extends ReliableClient {
 
     private int connectTimeout = 5_000;
 
@@ -46,7 +46,6 @@ public class KCPClient extends AReliableClient {
         this.bootstrap
                 .group(LazyGroups.NIO_CLIENT_LOOP_GROUP.get())
                 .channel(UkcpClientChannel.class)
-
                 .option(UkcpChannelOption.UKCP_NODELAY, true)
                 .option(UkcpChannelOption.UKCP_INTERVAL, 20)
                 .option(UkcpChannelOption.UKCP_FAST_RESEND, 2)

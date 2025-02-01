@@ -4,12 +4,12 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import net.lenni0451.commons.netty.TCPChannelType;
-import net.lenni0451.commons.netty.bootstrap.types.AReliableClient;
+import net.lenni0451.commons.netty.bootstrap.types.ReliableClient;
 
 /**
  * A simple TCP client implementation.
  */
-public class TCPClient extends AReliableClient {
+public class TCPClient extends ReliableClient {
 
     private final TCPChannelType channelType;
     private int connectTimeout = 5_000;
@@ -62,7 +62,6 @@ public class TCPClient extends AReliableClient {
         this.bootstrap
                 .group(this.channelType.getClientLoopGroup())
                 .channel(this.channelType.getClientChannel())
-
                 .option(ChannelOption.TCP_NODELAY, true)
                 .option(ChannelOption.SO_KEEPALIVE, true)
                 .option(ChannelOption.IP_TOS, 0x18)

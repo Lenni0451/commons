@@ -5,7 +5,7 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.socket.DatagramChannel;
 import net.lenni0451.commons.netty.UDPChannelType;
-import net.lenni0451.commons.netty.bootstrap.types.AReliableClient;
+import net.lenni0451.commons.netty.bootstrap.types.ReliableClient;
 import org.cloudburstmc.netty.channel.raknet.RakChannelFactory;
 import org.cloudburstmc.netty.channel.raknet.config.RakChannelOption;
 
@@ -15,7 +15,7 @@ import java.util.Random;
  * A simple RakNet client implementation.<br>
  * Requires {@code org.cloudburstmc.netty:netty-transport-raknet} as dependency.
  */
-public class RaknetClient extends AReliableClient {
+public class RaknetClient extends ReliableClient {
 
     public static final int MAX_ORDERING_CHANNELS = 16;
     private static final Random RND = new Random();
@@ -43,7 +43,9 @@ public class RaknetClient extends AReliableClient {
         super(channelInitializer);
         this.channelType = channelType;
 
-        if (!DatagramChannel.class.isAssignableFrom(this.channelType.getChannelClass())) throw new IllegalArgumentException("RakNet does not support Unix Domain Sockets");
+        if (!DatagramChannel.class.isAssignableFrom(this.channelType.getChannelClass())) {
+            throw new IllegalArgumentException("RakNet does not support Unix Domain Sockets");
+        }
     }
 
     /**
@@ -90,7 +92,6 @@ public class RaknetClient extends AReliableClient {
         this.bootstrap
                 .group(this.channelType.getClientLoopGroup())
                 .channelFactory(RakChannelFactory.client((Class<? extends DatagramChannel>) this.channelType.getChannelClass()))
-
                 .option(ChannelOption.IP_TOS, 0x18)
                 .option(RakChannelOption.RAK_CONNECT_TIMEOUT, this.connectTimeout)
                 .option(RakChannelOption.RAK_SESSION_TIMEOUT, this.sessionTimeout)

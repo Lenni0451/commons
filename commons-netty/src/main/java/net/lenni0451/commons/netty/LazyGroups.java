@@ -4,7 +4,7 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.kqueue.KQueueEventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
-import net.lenni0451.commons.Lazy;
+import net.lenni0451.commons.lazy.Lazy;
 import net.lenni0451.commons.threading.ThreadFactoryImpl;
 
 public class LazyGroups {

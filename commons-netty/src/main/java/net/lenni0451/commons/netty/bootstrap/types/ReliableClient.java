@@ -11,14 +11,14 @@ import java.net.SocketAddress;
 /**
  * An abstract client implementation for reliable protocols.
  */
-public abstract class AReliableClient {
+public abstract class ReliableClient {
 
     protected final ChannelInitializer<Channel> channelInitializer;
     protected final Bootstrap bootstrap;
 
     protected ChannelFuture channelFuture;
 
-    public AReliableClient(final ChannelInitializer<Channel> channelInitializer) {
+    public ReliableClient(final ChannelInitializer<Channel> channelInitializer) {
         this.channelInitializer = channelInitializer;
         this.bootstrap = new Bootstrap();
     }

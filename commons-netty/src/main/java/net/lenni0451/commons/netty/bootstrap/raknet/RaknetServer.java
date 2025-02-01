@@ -5,7 +5,7 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.socket.DatagramChannel;
 import net.lenni0451.commons.netty.UDPChannelType;
-import net.lenni0451.commons.netty.bootstrap.types.AReliableServer;
+import net.lenni0451.commons.netty.bootstrap.types.ReliableServer;
 import org.cloudburstmc.netty.channel.raknet.RakChannelFactory;
 import org.cloudburstmc.netty.channel.raknet.config.RakChannelOption;
 
@@ -15,7 +15,7 @@ import java.util.Random;
  * A simple RakNet server implementation.<br>
  * * Requires {@code org.cloudburstmc.netty:netty-transport-raknet} as dependency.
  */
-public class RaknetServer extends AReliableServer {
+public class RaknetServer extends ReliableServer {
 
     public static final int MAX_ORDERING_CHANNELS = 16;
     private static final Random RND = new Random();
@@ -73,7 +73,6 @@ public class RaknetServer extends AReliableServer {
         this.bootstrap
                 .group(this.channelType.getServerParentLoopGroup(), this.channelType.getServerChildLoopGroup())
                 .channelFactory(RakChannelFactory.server((Class<? extends DatagramChannel>) this.channelType.getChannelClass()))
-
                 .childOption(ChannelOption.IP_TOS, 0x18)
                 .childOption(RakChannelOption.RAK_SESSION_TIMEOUT, this.sessionTimeout)
                 .childOption(RakChannelOption.RAK_ORDERING_CHANNELS, MAX_ORDERING_CHANNELS)

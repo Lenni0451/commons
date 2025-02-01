@@ -4,12 +4,12 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import net.lenni0451.commons.netty.TCPChannelType;
-import net.lenni0451.commons.netty.bootstrap.types.AReliableServer;
+import net.lenni0451.commons.netty.bootstrap.types.ReliableServer;
 
 /**
  * A simple TCP server implementation.
  */
-public class TCPServer extends AReliableServer {
+public class TCPServer extends ReliableServer {
 
     private final TCPChannelType channelType;
 
@@ -45,7 +45,6 @@ public class TCPServer extends AReliableServer {
         this.bootstrap
                 .group(this.channelType.getServerParentLoopGroup(), this.channelType.getServerChildLoopGroup())
                 .channel(this.channelType.getServerChannel())
-
                 .option(ChannelOption.SO_BACKLOG, 128)
                 .childOption(ChannelOption.TCP_NODELAY, true)
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
