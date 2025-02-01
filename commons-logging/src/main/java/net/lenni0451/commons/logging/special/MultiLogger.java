@@ -2,6 +2,10 @@ package net.lenni0451.commons.logging.special;
 
 import net.lenni0451.commons.logging.Logger;
 
+/**
+ * A Logger implementation that logs to multiple loggers at once.<br>
+ * e.g. stdout and a file
+ */
 public class MultiLogger implements Logger {
 
     private final Logger[] loggers;

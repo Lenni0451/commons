@@ -5,6 +5,9 @@ import net.lenni0451.commons.logging.Logger;
 
 import java.util.function.Supplier;
 
+/**
+ * A Logger implementation that initializes the actual Logger only when it is needed.
+ */
 public class LazyInitLogger implements Logger {
 
     private final Supplier<Logger> loggerSupplier;

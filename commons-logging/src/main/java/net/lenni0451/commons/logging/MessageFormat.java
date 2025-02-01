@@ -1,5 +1,7 @@
 package net.lenni0451.commons.logging;
 
+import lombok.Value;
+
 import javax.annotation.Nullable;
 import java.util.Arrays;
 
@@ -26,6 +28,12 @@ public interface MessageFormat {
         return new Result(String.format(message, messageArgs.getArgs()), messageArgs.getThrowable());
     };
 
+    /**
+     * Split logging arguments into message arguments and throwable.
+     *
+     * @param args The logging arguments
+     * @return The message arguments and throwable
+     */
     static MessageArgs split(final Object[] args) {
         if (args.length > 0 && args[args.length - 1] instanceof Throwable) {
             return new MessageArgs(Arrays.copyOfRange(args, 0, args.length - 1), (Throwable) args[args.length - 1]);
@@ -34,52 +42,36 @@ public interface MessageFormat {
         }
     }
 
+    /**
+     * Format a message with argument placeholders.
+     *
+     * @param message The message to format
+     * @param args    The arguments for the message
+     * @return The formatted message
+     */
     Result format(final String message, final Object... args);
 
 
+    @Value
     class MessageArgs {
         private final Object[] args;
         @Nullable
         private final Throwable throwable;
 
-        public MessageArgs(final Object[] args, @Nullable final Throwable throwable) {
-            this.args = args;
-            this.throwable = throwable;
-        }
-
-        public Object[] getArgs() {
-            return this.args;
-        }
-
         public Object getArg(final int index, final String def) {
             if (index < 0 || index >= this.args.length) return def;
             return this.args[index];
         }
-
-        @Nullable
-        public Throwable getThrowable() {
-            return this.throwable;
-        }
     }
 
+    /**
+     * A formatted message with an optional throwable.
+     */
+    @Value
     class Result {
         private final String message;
         @Nullable
         private final Throwable throwable;
-
-        public Result(final String message, @Nullable final Throwable throwable) {
-            this.message = message;
-            this.throwable = throwable;
-        }
-
-        public String getMessage() {
-            return this.message;
-        }
-
-        @Nullable
-        public Throwable getThrowable() {
-            return this.throwable;
-        }
     }
 
 }

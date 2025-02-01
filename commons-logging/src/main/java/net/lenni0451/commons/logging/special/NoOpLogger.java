@@ -2,6 +2,9 @@ package net.lenni0451.commons.logging.special;
 
 import net.lenni0451.commons.logging.Logger;
 
+/**
+ * A Logger implementation that does nothing.
+ */
 public class NoOpLogger implements Logger {
 
     @Override
