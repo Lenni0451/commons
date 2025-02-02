@@ -407,6 +407,16 @@ public class Mappings extends Remapper {
         return this.reverse;
     }
 
+    @Override
+    public String toString() {
+        return "Mappings{" +
+                "packageMappings=" + this.packageMappings +
+                ", classMappings=" + this.classMappings +
+                ", fieldMappings=" + this.fieldMappings +
+                ", methodMappings=" + this.methodMappings +
+                ", reverseCacheMode=" + this.reverseCacheMode +
+                '}';
+    }
 
     public enum ReverseCacheMode {
         /**
