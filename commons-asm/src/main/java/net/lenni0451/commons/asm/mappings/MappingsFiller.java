@@ -20,14 +20,27 @@ import static net.lenni0451.commons.asm.Types.*;
 public class MappingsFiller {
 
     /**
-     * Fill all super members of all classes in the mappings.
+     * Fill all super members of all classes in the mappings.<br>
+     * It will fill the super members for all classes that are mentioned in the mappings.
      *
      * @param mappings          The mappings
      * @param classInfoProvider The class info provider
      * @see #fillSuperMembers(ClassNode, Set, Mappings)
      */
     public static void fillAllSuperMembers(final Mappings mappings, final ClassInfoProvider classInfoProvider) {
-        for (String clazz : getAllMentionedClasses(mappings)) {
+        fillAllSuperMembers(mappings, classInfoProvider, getAllMentionedClasses(mappings));
+    }
+
+    /**
+     * Fill all super members of all classes in the mappings.
+     *
+     * @param mappings          The mappings
+     * @param classInfoProvider The class info provider
+     * @param classes           The classes to fill the super members for
+     * @see #fillSuperMembers(ClassNode, Set, Mappings)
+     */
+    public static void fillAllSuperMembers(final Mappings mappings, final ClassInfoProvider classInfoProvider, final Set<String> classes) {
+        for (String clazz : classes) {
             try {
                 ClassInfo classInfo = classInfoProvider.of(clazz);
                 Set<ClassInfo> resolvedSuperClasses = classInfo.getRecursiveSuperClasses();
