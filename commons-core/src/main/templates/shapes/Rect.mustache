@@ -1,0 +1,137 @@
+package net.lenni0451.commons.math.shapes.rect;
+
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
+@ToString
+@EqualsAndHashCode
+public class {{name}} {
+
+    public static final {{name}} ZERO = new {{name}}(0, 0, 0, 0);
+
+    private final {{type}} x;
+    private final {{type}} y;
+    private final {{type}} width;
+    private final {{type}} height;
+
+    public {{name}}(final {{type}} width, final {{type}} height) {
+        this(0, 0, width, height);
+    }
+
+    public {{name}}(final {{type}} x, final {{type}} y, final {{type}} width, final {{type}} height) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+    }
+
+    /**
+     * @return The x coordinate of the top left corner
+     */
+    public {{type}} getX() {
+        return this.x;
+    }
+
+    /**
+     * @return The y coordinate of the top left corner
+     */
+    public {{type}} getY() {
+        return this.y;
+    }
+
+    /**
+     * @return The width of the rectangle
+     */
+    public {{type}} getWidth() {
+        return this.width;
+    }
+
+    /**
+     * @return The height of the rectangle
+     */
+    public {{type}} getHeight() {
+        return this.height;
+    }
+
+    /**
+     * Translate the rectangle by the given values.
+     *
+     * @param x The x translation
+     * @param y The y translation
+     * @return The translated rectangle
+     */
+    public {{name}} translate(final {{type}} x, final {{type}} y) {
+        return new {{name}}(this.x + x, this.y + y, this.width, this.height);
+    }
+
+    /**
+     * @return The area of the rectangle
+     */
+    public {{type}} getArea() {
+        return this.width * this.height;
+    }
+
+    /**
+     * @return If the rectangle is a square
+     */
+    public boolean isSquare() {
+        return this.width == this.height;
+    }
+
+    /**
+     * Scale the rectangle by the same factor in both directions.
+     *
+     * @param scale The scale factor
+     * @return The scaled rectangle
+     */
+    public {{name}} scale(final {{type}} scale) {
+        return this.scale(scale, scale);
+    }
+
+    /**
+     * Scale the rectangle by different factors in both directions.
+     *
+     * @param scaleX The scale factor for the x direction
+     * @param scaleY The scale factor for the y direction
+     * @return The scaled rectangle
+     */
+    public {{name}} scale(final {{type}} scaleX, final {{type}} scaleY) {
+        return new {{name}}(this.width * scaleX, this.height * scaleY);
+    }
+
+    /**
+     * Check if this rectangle intersects with another rectangle.
+     *
+     * @param rect The other rectangle
+     * @return If the rectangles intersect
+     */
+    public boolean intersects(final {{name}} rect) {
+        return this.x < rect.x + rect.width && this.x + this.width > rect.x && this.y < rect.y + rect.height && this.y + this.height > rect.y;
+    }
+
+    /**
+     * Check if this rectangle contains another rectangle.
+     *
+     * @param rect The other rectangle
+     * @return If this rectangle contains the other rectangle
+     */
+    public boolean contains(final {{name}} rect) {
+        return this.x <= rect.x && this.x + this.width >= rect.x + rect.width && this.y <= rect.y && this.y + this.height >= rect.y + rect.height;
+    }
+
+    /**
+     * Get the intersection of this rectangle with another rectangle.
+     *
+     * @param rect The other rectangle
+     * @return The intersection rectangle
+     */
+    public {{name}} intersection(final {{name}} rect) {
+        if (!this.intersects(rect)) return ZERO;
+        {{type}} x = Math.max(this.x, rect.x);
+        {{type}} y = Math.max(this.y, rect.y);
+        {{type}} width = Math.min(this.x + this.width, rect.x + rect.width) - x;
+        {{type}} height = Math.min(this.y + this.height, rect.y + rect.height) - y;
+        return new {{name}}(x, y, width, height);
+    }
+
+}

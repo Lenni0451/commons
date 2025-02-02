@@ -1,0 +1,18 @@
+{
+    "template": "Rect.mustache",
+    "target": "net/lenni0451/commons/math/shapes/rect/{{name}}.java",
+    "variants": [
+        {
+            "name": "RectI",
+            "type": "int"
+        },
+        {
+            "name": "RectF",
+            "type": "float"
+        },
+        {
+            "name": "RectD",
+            "type": "double"
+        }
+    ]
+}
