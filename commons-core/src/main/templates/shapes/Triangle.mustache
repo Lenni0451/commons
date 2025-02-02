@@ -1,0 +1,125 @@
+package net.lenni0451.commons.math.shapes.triangle;
+
+public class {{name}} {
+
+    private final {{type}} x1;
+    private final {{type}} y1;
+    private final {{type}} x2;
+    private final {{type}} y2;
+    private final {{type}} x3;
+    private final {{type}} y3;
+
+    public {{name}}(final {{type}} x1, final {{type}} y1, final {{type}} x2, final {{type}} y2, final {{type}} x3, final {{type}} y3) {
+        this.x1 = x1;
+        this.y1 = y1;
+        this.x2 = x2;
+        this.y2 = y2;
+        this.x3 = x3;
+        this.y3 = y3;
+    }
+
+    /**
+     * @return The x coordinate of the first point
+     */
+    public {{type}} getX1() {
+        return this.x1;
+    }
+
+    /**
+     * @return The y coordinate of the first point
+     */
+    public {{type}} getY1() {
+        return this.y1;
+    }
+
+    /**
+     * @return The x coordinate of the second point
+     */
+    public {{type}} getX2() {
+        return this.x2;
+    }
+
+    /**
+     * @return The y coordinate of the second point
+     */
+    public {{type}} getY2() {
+        return this.y2;
+    }
+
+    /**
+     * @return The x coordinate of the third point
+     */
+    public {{type}} getX3() {
+        return this.x3;
+    }
+
+    /**
+     * @return The y coordinate of the third point
+     */
+    public {{type}} getY3() {
+        return this.y3;
+    }
+
+    /**
+     * Translate the triangle by the given values.
+     *
+     * @param x The x value to translate
+     * @param y The y value to translate
+     * @return The translated triangle
+     */
+    public {{name}} translate(final {{type}} x, final {{type}} y) {
+        return new {{name}}(this.x1 + x, this.y1 + y, this.x2 + x, this.y2 + y, this.x3 + x, this.y3 + y);
+    }
+
+    /**
+     * @return The area of the triangle
+     */
+    public double getArea() {
+        return Math.abs((this.x1 * (this.y2 - this.y3) + this.x2 * (this.y3 - this.y1) + this.x3 * (this.y1 - this.y2)) / 2D);
+    }
+
+    /**
+     * @return The perimeter of the triangle
+     */
+    public double getPerimeter() {
+        double side1 = Math.hypot(this.x2 - this.x1, this.y2 - this.y1);
+        double side2 = Math.hypot(this.x3 - this.x2, this.y3 - this.y2);
+        double side3 = Math.hypot(this.x1 - this.x3, this.y1 - this.y3);
+        return side1 + side2 + side3;
+    }
+
+    /**
+     * @return The centroid of the triangle as an array [x, y]
+     */
+    public {{type}}[] getCentroid() {
+        {{type}} centroidX = (this.x1 + this.x2 + this.x3) / 3;
+        {{type}} centroidY = (this.y1 + this.y2 + this.y3) / 3;
+        return new {{type}}[]{centroidX, centroidY};
+    }
+
+    /**
+     * Check if a point is inside the triangle.
+     *
+     * @param px The x coordinate of the point
+     * @param py The y coordinate of the point
+     * @return If the point is inside the triangle
+     */
+    public boolean isPointInside(final {{type}} px, final {{type}} py) {
+        double areaOrig = this.getArea();
+        double area1 = Math.abs((px * (this.y2 - this.y3) + this.x2 * (this.y3 - py) + this.x3 * (py - this.y2)) / 2D);
+        double area2 = Math.abs((this.x1 * (py - this.y3) + px * (this.y3 - this.y1) + this.x3 * (this.y1 - py)) / 2D);
+        double area3 = Math.abs((this.x1 * (this.y2 - py) + this.x2 * (py - this.y1) + px * (this.y1 - this.y2)) / 2D);
+        return (area1 + area2 + area3) == areaOrig;
+    }
+
+    /**
+     * @return If the triangle is equilateral
+     */
+    public boolean isEquilateral() {
+        double side1 = Math.hypot(this.x2 - this.x1, this.y2 - this.y1);
+        double side2 = Math.hypot(this.x3 - this.x2, this.y3 - this.y2);
+        double side3 = Math.hypot(this.x1 - this.x3, this.y1 - this.y3);
+        return side1 == side2 && side2 == side3;
+    }
+
+}

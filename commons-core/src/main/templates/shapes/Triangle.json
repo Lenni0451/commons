@@ -1,0 +1,18 @@
+{
+    "template": "Triangle.mustache",
+    "target": "net/lenni0451/commons/math/shapes/triangle/{{name}}.java",
+    "variants": [
+        {
+            "name": "TriangleI",
+            "type": "int"
+        },
+        {
+            "name": "TriangleF",
+            "type": "float"
+        },
+        {
+            "name": "TriangleD",
+            "type": "double"
+        }
+    ]
+}
