@@ -1,8 +1,8 @@
 package net.lenni0451.commons.asm.info.impl.jvm;
 
-import jdk.internal.org.objectweb.asm.Type;
 import lombok.RequiredArgsConstructor;
 import net.lenni0451.commons.asm.info.FieldInfo;
+import org.objectweb.asm.Type;
 
 import java.lang.reflect.Field;
 
