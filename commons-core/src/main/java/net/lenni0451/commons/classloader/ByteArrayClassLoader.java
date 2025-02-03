@@ -1,10 +1,9 @@
-package net.lenni0451.commons;
+package net.lenni0451.commons.classloader;
 
 import lombok.SneakyThrows;
 import net.lenni0451.commons.collections.enumerations.SingletonEnumeration;
 import net.lenni0451.commons.io.ByteArrayURLStreamHandler;
 import net.lenni0451.commons.io.IOUtils;
-import org.jetbrains.annotations.ApiStatus;
 
 import javax.annotation.Nullable;
 import java.io.ByteArrayInputStream;
@@ -18,10 +17,8 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
 /**
- * Deprecated. Use {@link net.lenni0451.commons.classloader.ByteArrayClassLoader} instead.
+ * A class loader with the ability to load classes from a byte array.
  */
-@Deprecated
-@ApiStatus.ScheduledForRemoval //03.08.2025
 public class ByteArrayClassLoader extends ClassLoader {
 
     private final Map<String, byte[]> content = new HashMap<>();
@@ -31,6 +28,13 @@ public class ByteArrayClassLoader extends ClassLoader {
         super(parent);
     }
 
+    /**
+     * Add a jar to the class loader.<br>
+     * All entries will be iterated and added.
+     *
+     * @param data The jar file as byte array
+     * @throws IOException If an I/O error occurs
+     */
     public void addJar(final byte[] data) throws IOException {
         final JarInputStream jis = new JarInputStream(new ByteArrayInputStream(data));
         JarEntry entry;
@@ -40,6 +44,14 @@ public class ByteArrayClassLoader extends ClassLoader {
         }
     }
 
+    /**
+     * Add an entry to the class loader.<br>
+     * The name is the full path to the class file:<br>
+     * e.g. {@code net/lenni0451/commons/ByteArrayClassLoader.class}
+     *
+     * @param name The name of the entry
+     * @param data The data of the entry
+     */
     public void addEntry(final String name, final byte[] data) {
         this.content.put(name, data);
     }
