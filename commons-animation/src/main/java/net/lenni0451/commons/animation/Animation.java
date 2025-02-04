@@ -283,9 +283,22 @@ public class Animation {
 
     /**
      * @return The current value of the animation
+     * @see #getValue(int)
+     * @see #getValues()
      */
     public float getValue() {
-        return this.getValues()[0];
+        return this.getValue(0);
+    }
+
+    /**
+     * Get the current value of the animation at the given index.
+     *
+     * @param index The index of the value to get
+     * @return The value at the given index
+     * @see #getValues()
+     */
+    public float getValue(final int index) {
+        return this.getValues()[index];
     }
 
     /**
