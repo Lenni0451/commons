@@ -31,7 +31,16 @@ class AnimationFrame {
     }
 
     public float[] getValue(final long startTime) {
-        float progress = this.getProgress(startTime);
+        return this.getValue(this.easingMode, false, startTime);
+    }
+
+    public float[] getInvertedValue(final long startTime) {
+        return this.getValue(this.easingBehavior.equals(EasingBehavior.KEEP) ? this.easingMode : this.easingMode.invert(), true, startTime);
+    }
+
+    public float[] getValue(final EasingMode easingMode, final boolean reverseProgress, final long startTime) {
+        float progress = this.getProgress(easingMode, startTime);
+        if (reverseProgress) progress = 1 - progress;
         float[] result = new float[this.startValue.length];
         for (int i = 0; i < result.length; i++) {
             result[i] = this.startValue[i] + (this.endValue[i] - this.startValue[i]) * progress;
@@ -39,24 +48,10 @@ class AnimationFrame {
         return result;
     }
 
-    public float[] getInvertedValue(long startTime) {
-        if (this.easingBehavior.equals(EasingBehavior.REVERSE)) {
-            startTime = System.currentTimeMillis() - (this.duration - (System.currentTimeMillis() - startTime));
-            return this.getValue(startTime);
-        } else {
-            float progress = this.getProgress(startTime);
-            float[] result = new float[this.startValue.length];
-            for (int i = 0; i < result.length; i++) {
-                result[i] = this.endValue[i] + (this.startValue[i] - this.endValue[i]) * progress;
-            }
-            return result;
-        }
-    }
-
-    public float getProgress(final long startTime) {
+    public float getProgress(final EasingMode easingMode, final long startTime) {
         float progress = (float) (System.currentTimeMillis() - startTime) / this.duration;
         if (progress > 1) return 1;
-        return this.easingMode.call(this.easingFunction, progress);
+        return easingMode.call(this.easingFunction, progress);
     }
 
 }
