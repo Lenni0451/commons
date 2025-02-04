@@ -39,7 +39,7 @@ class AnimationFrame {
     }
 
     public float[] getValue(final EasingMode easingMode, final boolean reverseProgress, final long startTime) {
-        float progress = this.getProgress(easingMode, startTime);
+        float progress = this.getEasingProgress(easingMode, startTime);
         if (reverseProgress) progress = 1 - progress;
         float[] result = new float[this.startValue.length];
         for (int i = 0; i < result.length; i++) {
@@ -48,7 +48,7 @@ class AnimationFrame {
         return result;
     }
 
-    public float getProgress(final EasingMode easingMode, final long startTime) {
+    public float getEasingProgress(final EasingMode easingMode, final long startTime) {
         float progress = (float) (System.currentTimeMillis() - startTime) / this.duration;
         if (progress > 1) return 1;
         return easingMode.call(this.easingFunction, progress);

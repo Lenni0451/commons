@@ -13,6 +13,8 @@ import java.util.function.Consumer;
  */
 public class Animation {
 
+    private static final float APPROXIMATION_PRECISION = 0.00001F;
+
     private final List<AnimationFrame> frames;
     private AnimationMode mode;
     private boolean frameByFrame;
@@ -189,14 +191,39 @@ public class Animation {
         if (this.isRunning()) {
             AnimationFrame frame = this.frames.get(this.currentFrame);
             if (frame.getEasingBehavior().equals(EasingBehavior.KEEP)) {
-                float progress = frame.getProgress(this.startTime);
-                progress = 1 - frame.getEasingMode().call(frame.getEasingFunction(), progress);
-                this.startTime = System.currentTimeMillis() - (long) (progress * frame.getDuration());
+                float easingProgress = frame.getEasingProgress(frame.getEasingMode(), this.startTime);
+                float inverseTimeProgress = this.approximateTimeProgress(frame.getEasingMode(), frame.getEasingFunction(), 1 - easingProgress);
+                this.startTime = System.currentTimeMillis() - (long) (inverseTimeProgress * frame.getDuration());
             } else {
                 this.startTime = System.currentTimeMillis() - frame.getTimeLeft(this.startTime);
             }
         }
         return this;
+    }
+
+    /**
+     * Approximate the time progress for the given wanted easing output.<br>
+     * This is required to reverse the animation in keep mode.
+     *
+     * @param easingMode     The easing mode
+     * @param easingFunction The easing function
+     * @param wantedOutput   The wanted output
+     * @return The approximated time progress
+     */
+    private float approximateTimeProgress(final EasingMode easingMode, final EasingFunction easingFunction, final float wantedOutput) {
+        float low = 0;
+        float high = 1;
+        float mid;
+        while (high - low > APPROXIMATION_PRECISION) {
+            mid = (low + high) / 2;
+            float output = easingMode.call(easingFunction, mid);
+            if (output < wantedOutput) {
+                low = mid;
+            } else {
+                high = mid;
+            }
+        }
+        return (low + high) / 2;
     }
 
     /**
