@@ -227,6 +227,21 @@ public class Animation {
     }
 
     /**
+     * Run the animation in the given direction.<br>
+     * If the current direction is the same as the given direction, this method will do nothing.<br>
+     * If the animation is not running, this method will start the animation into the given direction.<br>
+     * If already running, the direction will be reversed.
+     *
+     * @param direction The direction to run the animation in
+     * @return The current animation instance
+     */
+    public Animation runInDirection(final AnimationDirection direction) {
+        this.start(direction); //Start the animation in case it's not running
+        this.setDirection(direction); //Set the direction if it's running in the opposite direction
+        return this;
+    }
+
+    /**
      * Start the animation in the given direction.<br>
      * If the given direction is already set, this method will do nothing.
      *
