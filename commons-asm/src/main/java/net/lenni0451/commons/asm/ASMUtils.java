@@ -6,6 +6,9 @@ import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.*;
 
 import javax.annotation.Nullable;
+import javax.lang.model.SourceVersion;
+import java.util.Locale;
+import java.util.function.Predicate;
 
 import static net.lenni0451.commons.asm.Types.*;
 
@@ -38,12 +41,12 @@ public class ASMUtils {
      *
      * @param classNode The class node to search in
      * @param name      The name of the field
-     * @param desc      The descriptor of the field
+     * @param desc      The descriptor of the field (null for any descriptor)
      * @return The field node or null if no field was found
      */
-    public static FieldNode getField(final ClassNode classNode, final String name, final String desc) {
+    public static FieldNode getField(final ClassNode classNode, final String name, @Nullable final String desc) {
         for (FieldNode fieldNode : classNode.fields) {
-            if (fieldNode.name.equals(name) && fieldNode.desc.equals(desc)) {
+            if (fieldNode.name.equals(name) && (desc == null || fieldNode.desc.equals(desc))) {
                 return fieldNode;
             }
         }
@@ -291,6 +294,64 @@ public class ASMUtils {
             insns.add(new InsnNode(Opcodes.POP2));
         }
         return insns;
+    }
+
+    /**
+     * Get the instructions to load the arguments of a method onto the stack.
+     *
+     * @param method The method to load the arguments from
+     * @return The instructions to load the arguments
+     */
+    public static InsnList loadMethodArgs(final MethodNode method) {
+        Type[] args = Type.getArgumentTypes(method.desc);
+        InsnList insns = new InsnList();
+        int index = Modifiers.has(method.access, Opcodes.ACC_STATIC) ? 0 : 1;
+        for (Type arg : args) {
+            insns.add(new VarInsnNode(arg.getOpcode(Opcodes.ILOAD), index));
+            index += arg.getSize();
+        }
+        return insns;
+    }
+
+    /**
+     * Generate a variable name for a type that does not exist yet.
+     *
+     * @param type      The type to generate the name for
+     * @param doesExist A predicate that checks if a name already exists (true if it exists)
+     * @return The generated name
+     */
+    public static String generateVariableName(final Type type, final Predicate<String> doesExist) {
+        String newName;
+        if (type.getSort() == Type.ARRAY) {
+            //Generate a name for an array type
+            //[[Ljava/lang/Object; -> objectArrayArray
+            newName = type.getElementType().getClassName();
+            for (int j = 0; j < type.getDimensions(); j++) newName += "Array";
+        } else {
+            newName = type.getClassName();
+        }
+        if (type.getDescriptor().length() == 1) {
+            //Primitive types are just lowercased
+            newName = type.getDescriptor().toLowerCase(Locale.ROOT);
+        } else {
+            newName = newName.substring(newName.lastIndexOf('.') + 1); //Strip the package name
+            newName = newName.substring(newName.lastIndexOf('$') + 1); //Strip the outer class name
+            if (newName.toUpperCase(Locale.ROOT).equals(newName)) {
+                //If the name is all uppercase, just lowercase it
+                //e.g. UUID -> uuid
+                newName = newName.toLowerCase(Locale.ROOT);
+            } else {
+                //Camel case the name
+                //e.g. ClassInfoProvider -> classInfoProvider
+                newName = newName.substring(0, 1).toLowerCase(Locale.ROOT) + newName.substring(1);
+            }
+        }
+        if (SourceVersion.isKeyword(newName)) newName = "_" + newName; //Prepend an underscore if the name is a keyword
+
+        int index = 2; //Start at 2. The first variable does not have a number
+        String name = newName;
+        while (doesExist.test(name)) name = newName + index++; //Append a number if the name already exists
+        return name;
     }
 
 }

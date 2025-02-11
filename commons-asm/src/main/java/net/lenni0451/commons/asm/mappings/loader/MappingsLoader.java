@@ -53,12 +53,14 @@ public abstract class MappingsLoader {
     /**
      * Load the mappings from the provided source if not already loaded.
      *
+     * @return The loaded mappings
      * @throws Throwable If an error occurs while loading the mappings
      */
-    public synchronized final void load() throws Throwable {
-        if (this.mappings != null) return;
+    public synchronized final Mappings load() throws Throwable {
+        if (this.mappings != null) return this.mappings;
         List<String> lines = this.readLines();
         this.mappings = this.load(lines);
+        return this.mappings;
     }
 
     /**

@@ -3,6 +3,7 @@ package net.lenni0451.commons.asm.info;
 import net.lenni0451.commons.asm.info.impl.asm.ASMClassInfoProvider;
 import net.lenni0451.commons.asm.info.impl.jvm.JVMClassInfoProvider;
 import net.lenni0451.commons.asm.provider.ClassProvider;
+import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.ClassNode;
 
 import javax.annotation.Nonnull;
@@ -30,6 +31,19 @@ public interface ClassInfoProvider {
      */
     @Nonnull
     ClassInfo of(final String className);
+
+    /**
+     * Get the {@link ClassInfo} of a class by its type.<br>
+     * Throws an exception if the class does not exist.
+     *
+     * @param type The type of the class
+     * @return The class info
+     */
+    @Nonnull
+    default ClassInfo of(final Type type) {
+        if (type.getSort() != Type.OBJECT) throw new IllegalArgumentException("Type must be an object type");
+        return this.of(type.getInternalName());
+    }
 
     /**
      * Get the {@link ClassInfo} of a class.<br>

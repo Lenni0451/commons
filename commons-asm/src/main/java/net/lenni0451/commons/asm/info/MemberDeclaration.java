@@ -10,7 +10,7 @@ public class MemberDeclaration {
 
     /**
      * Parse a field mapping to a {@link MemberDeclaration}.<br>
-     * Format: {@code owner.name[:descriptor]}
+     * Format: {@code owner.name[:descriptor]} e.g. {@code java/lang/System.out:Ljava/io/PrintStream;}
      *
      * @param mapping The mapping
      * @return The member declaration
@@ -28,7 +28,7 @@ public class MemberDeclaration {
 
     /**
      * Parse a method mapping to a {@link MemberDeclaration}.<br>
-     * Format: {@code owner.name(descriptor)}
+     * Format: {@code owner.name(descriptor)} e.g. {@code java/lang/String.valueOf(I)Ljava/lang/String;}
      *
      * @param mapping The mapping
      * @return The member declaration
@@ -84,6 +84,18 @@ public class MemberDeclaration {
      */
     public boolean isMethod() {
         return this.descriptor != null && this.descriptor.startsWith("(");
+    }
+
+    /**
+     * Check if this member declaration is equal to the given owner, name and descriptor.
+     *
+     * @param owner      The owner
+     * @param name       The name
+     * @param descriptor The descriptor
+     * @return If the members are equal
+     */
+    public boolean is(final String owner, final String name, final String descriptor) {
+        return this.owner.equals(owner) && this.name.equals(name) && (this.descriptor == null || this.descriptor.equals(descriptor));
     }
 
     /**

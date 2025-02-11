@@ -322,6 +322,13 @@ public class Mappings extends Remapper {
     }
 
     /**
+     * @return If all mappings are empty
+     */
+    public boolean isEmpty() {
+        return this.packageMappings.isEmpty() && this.classMappings.isEmpty() && this.fieldMappings.isEmpty() && this.methodMappings.isEmpty();
+    }
+
+    /**
      * @return An empty copy of these mappings
      */
     public Mappings emptyCopy() {
