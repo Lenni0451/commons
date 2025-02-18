@@ -1,0 +1,18 @@
+{
+    "template": "Point3.mustache",
+    "target": "net/lenni0451/commons/math/shapes/point/{{name}}.java",
+    "variants": [
+        {
+            "name": "Point3I",
+            "type": "int"
+        },
+        {
+            "name": "Point3F",
+            "type": "float"
+        },
+        {
+            "name": "Point3D",
+            "type": "double"
+        }
+    ]
+}

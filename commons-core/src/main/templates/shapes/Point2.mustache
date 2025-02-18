@@ -1,0 +1,198 @@
+package net.lenni0451.commons.math.shapes.point;
+
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
+@ToString
+@EqualsAndHashCode
+public class {{name}} {
+
+    private final {{type}} x;
+    private final {{type}} y;
+
+    public {{name}}(final {{type}} x, final {{type}} y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    /**
+     * @return The x coordinate of the point.
+     */
+    public {{type}} getX() {
+        return this.x;
+    }
+
+    /**
+     * @return The y coordinate of the point.
+     */
+    public {{type}} getY() {
+        return this.y;
+    }
+
+    /**
+     * Add the given value to the point.
+     *
+     * @param value The value to add
+     * @return The new point with the added value
+     */
+    public {{name}} add(final {{type}} value) {
+        return this.add(value, value);
+    }
+
+    /**
+     * Add the given values to the point.
+     *
+     * @param x The x value to add
+     * @param y The y value to add
+     * @return The new point with the added values
+     */
+    public {{name}} add(final {{type}} x, final {{type}} y) {
+        return new {{name}}(this.x + x, this.y + y);
+    }
+
+    /**
+     * Add the values of the given point to this point.
+     *
+     * @param point The point to add
+     * @return The new point with the added values
+     */
+    public {{name}} add(final {{name}} point) {
+        return this.add(point.getX(), point.getY());
+    }
+
+    /**
+     * Subtract the given value from the point.
+     *
+     * @param value The value to subtract
+     * @return The new point with the subtracted value
+     */
+    public {{name}} subtract(final {{type}} value) {
+        return this.subtract(value, value);
+    }
+
+    /**
+     * Subtract the given values from the point.
+     *
+     * @param x The x value to subtract
+     * @param y The y value to subtract
+     * @return The new point with the subtracted values
+     */
+    public {{name}} subtract(final {{type}} x, final {{type}} y) {
+        return new {{name}}(this.x - x, this.y - y);
+    }
+
+    /**
+     * Subtract the values of the given point from this point.
+     *
+     * @param point The point to subtract
+     * @return The new point with the subtracted values
+     */
+    public {{name}} subtract(final {{name}} point) {
+        return this.subtract(point.getX(), point.getY());
+    }
+
+    /**
+     * Multiply the point with the given value.
+     *
+     * @param value The value to multiply
+     * @return The new point with the multiplied value
+     */
+    public {{name}} multiply(final {{type}} value) {
+        return this.multiply(value, value);
+    }
+
+    /**
+     * Multiply the point with the given values.
+     *
+     * @param x The x value to multiply
+     * @param y The y value to multiply
+     * @return The new point with the multiplied values
+     */
+    public {{name}} multiply(final {{type}} x, final {{type}} y) {
+        return new {{name}}(this.x * x, this.y * y);
+    }
+
+    /**
+     * Multiply the values of the given point with this point.
+     *
+     * @param point The point to multiply
+     * @return The new point with the multiplied values
+     */
+    public {{name}} multiply(final {{name}} point) {
+        return this.multiply(point.getX(), point.getY());
+    }
+
+    /**
+     * Divide the point by the given value.
+     *
+     * @param value The value to divide
+     * @return The new point with the divided value
+     */
+    public {{name}} divide(final {{type}} value) {
+        return this.divide(value, value);
+    }
+
+    /**
+     * Divide the point by the given values.
+     *
+     * @param x The x value to divide
+     * @param y The y value to divide
+     * @return The new point with the divided values
+     */
+    public {{name}} divide(final {{type}} x, final {{type}} y) {
+        return new {{name}}(this.x / x, this.y / y);
+    }
+
+    /**
+     * Divide this point by the values of the given point.
+     *
+     * @param point The point to divide
+     * @return The new point with the divided values
+     */
+    public {{name}} divide(final {{name}} point) {
+        return this.divide(point.getX(), point.getY());
+    }
+
+    /**
+     * Calculate the square distance between this point and the given point.
+     *
+     * @param x The x coordinate of the point
+     * @param y The y coordinate of the point
+     * @return The distance between the two points
+     */
+    public double distanceSquared(final {{type}} x, final {{type}} y) {
+        return Math.pow(this.x - x, 2) + Math.pow(this.y - y, 2);
+    }
+
+    /**
+     * Calculate the square distance between this point and the given point.
+     *
+     * @param point The point to calculate the distance to
+     * @return The distance between the two points
+     */
+    public double distanceSquared(final {{name}} point) {
+        return this.distanceSquared(point.getX(), point.getY());
+    }
+
+    /**
+     * Calculate the distance between this point and the given point.
+     *
+     * @param x The x coordinate of the point
+     * @param y The y coordinate of the point
+     * @return The distance between the two points
+     */
+    public double distance(final {{type}} x, final {{type}} y) {
+        return Math.sqrt(this.distanceSquared(x, y));
+    }
+
+    /**
+     * Calculate the distance between this point and the given point.
+     *
+     * @param point The point to calculate the distance to
+     * @return The distance between the two points
+     */
+    public double distance(final {{name}} point) {
+        return this.distance(point.getX(), point.getY());
+    }
+
+}
