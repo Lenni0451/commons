@@ -4,6 +4,10 @@ import java.net.Proxy;
 
 public enum ProxyType {
 
+    /**
+     * By default, basic authentication is deactivated for HTTP proxies because it is insecure.<br>
+     * If you need it, you can enable it by setting the {@code jdk.http.auth.tunneling.disabledSchemes} system property to an empty string.
+     */
     HTTP,
     SOCKS4,
     SOCKS5;
