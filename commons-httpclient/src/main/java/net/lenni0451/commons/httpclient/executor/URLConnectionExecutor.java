@@ -33,27 +33,27 @@ public class URLConnectionExecutor extends RequestExecutor {
     @Override
     public HttpResponse execute(@Nonnull final HttpRequest request) throws IOException {
         CookieManager cookieManager = this.getCookieManager(request);
-        HttpURLConnection connection = this.openConnection(request, cookieManager);
-        return this.executeRequest(connection, cookieManager, request);
-    }
-
-    private HttpURLConnection openConnection(final HttpRequest request, final CookieManager cookieManager) throws IOException {
         SingleProxySelector proxySelector = null;
         if (this.client.getProxyHandler().isProxySet()) proxySelector = this.client.getProxyHandler().getProxySelector();
         try {
             if (proxySelector != null) proxySelector.set();
-            URL url = request.getURL();
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            if (this.isIgnoreInvalidSSL(request) && connection instanceof HttpsURLConnection) {
-                HttpsURLConnection httpsConnection = (HttpsURLConnection) connection;
-                httpsConnection.setSSLSocketFactory(IgnoringTrustManager.makeIgnoringSSLContext().getSocketFactory());
-            }
-            this.setupConnection(connection, cookieManager, request);
-            connection.connect();
-            return connection;
+            HttpURLConnection connection = this.openConnection(request, cookieManager);
+            return this.executeRequest(connection, cookieManager, request);
         } finally {
             if (proxySelector != null) proxySelector.reset();
         }
+    }
+
+    private HttpURLConnection openConnection(final HttpRequest request, final CookieManager cookieManager) throws IOException {
+        URL url = request.getURL();
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        if (this.isIgnoreInvalidSSL(request) && connection instanceof HttpsURLConnection) {
+            HttpsURLConnection httpsConnection = (HttpsURLConnection) connection;
+            httpsConnection.setSSLSocketFactory(IgnoringTrustManager.makeIgnoringSSLContext().getSocketFactory());
+        }
+        this.setupConnection(connection, cookieManager, request);
+        connection.connect();
+        return connection;
     }
 
     private void setupConnection(final HttpURLConnection connection, @Nullable final CookieManager cookieManager, final HttpRequest request) throws IOException {
