@@ -17,6 +17,7 @@ import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
+import java.util.function.BiConsumer;
 
 @UtilityClass
 public class HttpRequestUtils {
@@ -81,18 +82,30 @@ public class HttpRequestUtils {
      * @param headers    The headers to set
      */
     public static void setHeaders(final HttpURLConnection connection, final Map<String, List<String>> headers) {
+        setHeaders(headers, connection::setRequestProperty, connection::addRequestProperty);
+    }
+
+    /**
+     * Set the headers for a dynamic connection type.<br>
+     * Cookies will be merged into one header separated by {@code ;}.
+     *
+     * @param headers     The headers to set
+     * @param setConsumer The consumer to set the header
+     * @param addConsumer The consumer to add the header
+     */
+    public static void setHeaders(final Map<String, List<String>> headers, final BiConsumer<String, String> setConsumer, final BiConsumer<String, String> addConsumer) {
         for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
             if (HttpHeaders.COOKIE.equalsIgnoreCase(entry.getKey())) {
-                connection.setRequestProperty(entry.getKey(), String.join("; ", entry.getValue()));
+                setConsumer.accept(entry.getKey(), String.join("; ", entry.getValue()));
             } else {
                 boolean first = true;
                 for (String val : entry.getValue()) {
                     if (first) {
                         first = false;
                         //Use the first value to clear all previous values
-                        connection.setRequestProperty(entry.getKey(), val);
+                        setConsumer.accept(entry.getKey(), val);
                     } else {
-                        connection.addRequestProperty(entry.getKey(), val);
+                        addConsumer.accept(entry.getKey(), val);
                     }
                 }
             }
