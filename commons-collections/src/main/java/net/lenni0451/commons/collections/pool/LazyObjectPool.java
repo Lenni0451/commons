@@ -6,9 +6,9 @@ import java.util.Map;
 
 public abstract class LazyObjectPool<T> extends ObjectPool<T> {
 
-    protected final Map<T, Long> timestamps = this.createMap();
+    protected final Map<T, Long> timestamps = this.createTimestampsMap();
 
-    protected <K, V> Map<K, V> createMap() {
+    protected <K> Map<K, Long> createTimestampsMap() {
         return new HashMap<>();
     }
 
