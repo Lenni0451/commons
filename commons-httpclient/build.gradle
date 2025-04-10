@@ -14,9 +14,11 @@ compileJ11Java.targetCompatibility = JavaVersion.VERSION_11
 
 configurations {
     j11CompileOnly.extendsFrom compileOnly
+    testImplementation.extendsFrom compileOnly
 }
 
 dependencies {
+    compileOnly "io.projectreactor.netty:reactor-netty-http:1.2.4"
     j11CompileOnly sourceSets.main.output
 
     testImplementation sourceSets.j11.output

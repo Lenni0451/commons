@@ -23,6 +23,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Executor that uses {@link HttpURLConnection} to execute requests.<br>
+ * This executor is available on all Java versions and is the default executor if no other executor is available.<br>
+ * <br>
+ * Limitations:
+ * <ul>
+ *     <li>Only supports HTTP/1.1</li>
+ *     <li>Proxies are static and can't be used multithreaded</li>
+ * </ul>
+ */
 public class URLConnectionExecutor extends RequestExecutor {
 
     public URLConnectionExecutor(final HttpClient client) {

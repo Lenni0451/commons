@@ -28,6 +28,8 @@ public enum ExecutorType {
     /**
      * Use the default URLConnection executor.<br>
      * This is the default executor for Java 10 and below.
+     *
+     * @see net.lenni0451.commons.httpclient.executor.URLConnectionExecutor
      */
     URL_CONNECTION {
         @Override
@@ -36,9 +38,31 @@ public enum ExecutorType {
         }
     },
     /**
+     * Use the reactor-netty executor.<br>
+     * reactor-netty needs to be added as a dependency to your project.
+     *
+     * @see net.lenni0451.commons.httpclient.executor.extra.ReactorNettyExecutor
+     */
+    REACTOR_NETTY {
+        private Constructor<?> constructor;
+
+        @Override
+        protected void init() throws Throwable {
+            Class.forName("reactor.netty.http.client.HttpClient");
+            Class<?> executorClass = Class.forName("net.lenni0451.commons.httpclient.executor.extra.ReactorNettyExecutor");
+            this.constructor = executorClass.getDeclaredConstructor(HttpClient.class);
+        }
+
+        @Override
+        protected RequestExecutor initExecutor(HttpClient client) throws Throwable {
+            return (RequestExecutor) this.constructor.newInstance(client);
+        }
+    },
+    /**
      * Use the new HttpClient executor which was added in Java 11.<br>
-     * This implementation is faster than the URLConnection executor and supports HTTP/2.<br>
-     * Sadly the only supported proxy type is HTTP, SOCKS is not supported.
+     * This implementation is faster than the URLConnection executor and supports HTTP/2.
+     *
+     * @see net.lenni0451.commons.httpclient.executor.HttpClientExecutor
      */
     HTTP_CLIENT {
         private Constructor<?> constructor;

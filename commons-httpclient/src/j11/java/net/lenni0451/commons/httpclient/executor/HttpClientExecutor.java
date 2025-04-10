@@ -30,7 +30,13 @@ import java.util.concurrent.Executors;
 /**
  * This executor uses the Java 11 HttpClient to execute requests.<br>
  * <b>Make sure you are running Java 11 or higher before loading this class!</b><br>
- * The safest way to access this class is by using Reflection.
+ * The safest way to access this class is by using Reflection.<br>
+ * <br>
+ * Limitations:
+ * <ul>
+ *     <li>Only supports HTTP proxies</li>
+ *     <li>Only supports HTTP/1.1 and HTTP/2</li>
+ * </ul>
  */
 public class HttpClientExecutor extends RequestExecutor {
 
