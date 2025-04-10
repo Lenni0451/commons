@@ -29,6 +29,19 @@ public abstract class RequestExecutor {
     @Nonnull
     public abstract HttpResponse execute(@Nonnull final HttpRequest request) throws IOException, InterruptedException;
 
+    protected final boolean isFollowRedirects(@Nonnull final HttpRequest request) {
+        switch (request.getFollowRedirects()) {
+            case NOT_SET:
+                return this.client.isFollowRedirects();
+            case FOLLOW:
+                return true;
+            case IGNORE:
+                return false;
+            default:
+                throw new IllegalStateException("Unexpected value: " + request.getFollowRedirects());
+        }
+    }
+
     @Nullable
     protected final CookieManager getCookieManager(@Nonnull final HttpRequest request) {
         return request.isCookieManagerSet() ? request.getCookieManager() : this.client.getCookieManager();
@@ -39,8 +52,12 @@ public abstract class RequestExecutor {
     }
 
     protected final Map<String, List<String>> getHeaders(@Nonnull final HttpRequest request, @Nullable final CookieManager cookieManager) throws IOException {
+        return this.getHeaders(request, cookieManager, true);
+    }
+
+    protected final Map<String, List<String>> getHeaders(@Nonnull final HttpRequest request, @Nullable final CookieManager cookieManager, final boolean includeContentHeaders) throws IOException {
         Map<String, List<String>> headers = new HashMap<>();
-        if (request instanceof HttpContentRequest) {
+        if (request instanceof HttpContentRequest && includeContentHeaders) {
             HttpContent content = ((HttpContentRequest) request).getContent();
             if (content != null) {
                 headers.put(HttpHeaders.CONTENT_TYPE, Collections.singletonList(content.getContentType().toString()));
