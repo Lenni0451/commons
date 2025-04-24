@@ -39,8 +39,11 @@ public class Animation {
 
     /**
      * Add a new frame to the animation.<br>
-     * Fields that are not set will be copied from the last frame.<br>
-     * The start value will be copied from the end value of the last frame.
+     * Fields that are not set will be copied from the previous frame.<br>
+     * The start value will be copied from the end value of the previous frame.<br>
+     * <br>
+     * Copying values from the previous frame only works if a previous frame exists.
+     * It is recommended to use {@link #frame(EasingFunction, EasingMode, float, float, Integer, EasingBehavior)} or {@link #frame(EasingFunction, EasingMode, float[], float[], Integer, EasingBehavior)} to add the first frame and ensure all values are set.
      *
      * @param frameBuilder The builder for the frame
      * @return The current animation instance
@@ -58,8 +61,7 @@ public class Animation {
 
     /**
      * Add a new frame to the animation.<br>
-     * Fields that are set to {@code null} will be copied from the last frame.<br>
-     * The start value will be copied from the end value of the last frame.
+     * Fields that are set to {@code null} will be copied from the previous frame.
      *
      * @param easingFunction The easing function for the frame
      * @param easingMode     The easing mode for the frame
@@ -75,8 +77,7 @@ public class Animation {
 
     /**
      * Add a new frame to the animation.<br>
-     * Fields that are set to {@code null} will be copied from the last frame.<br>
-     * The start value will be copied from the end value of the last frame.
+     * Fields that are set to {@code null} will be copied from the previous frame.
      *
      * @param easingFunction The easing function for the frame
      * @param easingMode     The easing mode for the frame
@@ -110,7 +111,7 @@ public class Animation {
      * @param frameByFrame If the animation should be played frame by frame
      * @return The current animation instance
      */
-    public Animation setFrameByFrame(boolean frameByFrame) {
+    public Animation setFrameByFrame(final boolean frameByFrame) {
         this.frameByFrame = frameByFrame;
         return this;
     }
@@ -320,6 +321,19 @@ public class Animation {
             this.currentFrame = 0;
             this.stoppedValue = this.frames.get(0).getStartValue();
         }
+        return this;
+    }
+
+    /**
+     * Finish the animation immediately in the given direction.<br>
+     * This will stop the animation if it is running.
+     *
+     * @param direction The direction to finish the animation in
+     * @return The current animation instance
+     */
+    public Animation finish(final AnimationDirection direction) {
+        this.direction = direction;
+        this.finish();
         return this;
     }
 
