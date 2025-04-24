@@ -276,4 +276,60 @@ public class MathUtils {
         return values;
     }
 
+    /**
+     * Align a value to the given alignment.<br>
+     * The alignment must be a power of two and greater than 0.
+     *
+     * @param value     The value to align
+     * @param alignment The alignment
+     * @return The aligned value
+     */
+    public static int alignPOT(final int value, final int alignment) {
+        if (alignment <= 0) throw new IllegalArgumentException("Alignment must be greater than 0");
+        return (value + alignment - 1) & -alignment;
+    }
+
+    /**
+     * Align a value to the given alignment.<br>
+     * The alignment must be a power of two and greater than 0.
+     *
+     * @param value     The value to align
+     * @param alignment The alignment
+     * @return The aligned value
+     */
+    public static long alignPOT(final long value, final long alignment) {
+        if (alignment <= 0) throw new IllegalArgumentException("Alignment must be greater than 0");
+        return (value + alignment - 1) & -alignment;
+    }
+
+    /**
+     * Align a value to the given alignment.<br>
+     * The alignment must be a power of two and greater than 0.
+     *
+     * @param value     The value to align
+     * @param alignment The alignment
+     * @return The aligned value
+     */
+    public static int align(final int value, final int alignment) {
+        if (alignment <= 0) throw new IllegalArgumentException("Alignment must be greater than 0");
+        int remainder = value % alignment;
+        if (remainder == 0) return value;
+        return value + alignment - remainder;
+    }
+
+    /**
+     * Align a value to the given alignment.<br>
+     * The alignment must be a power of two and greater than 0.
+     *
+     * @param value     The value to align
+     * @param alignment The alignment
+     * @return The aligned value
+     */
+    public static long align(final long value, final long alignment) {
+        if (alignment <= 0) throw new IllegalArgumentException("Alignment must be greater than 0");
+        long remainder = value % alignment;
+        if (remainder == 0) return value;
+        return value + alignment - remainder;
+    }
+
 }

@@ -151,4 +151,46 @@ class MathUtilsTest {
         assertArrayEquals(out, MathUtils.round(in, 2));
     }
 
+    @Test
+    void alignPOT() {
+        assertEquals(8, MathUtils.alignPOT(5, 8));
+        assertEquals(16, MathUtils.alignPOT(9, 16));
+        assertEquals(32, MathUtils.alignPOT(31, 32));
+        assertEquals(32, MathUtils.alignPOT(32, 32));
+        assertThrows(IllegalArgumentException.class, () -> MathUtils.alignPOT(5, 0));
+        assertThrows(IllegalArgumentException.class, () -> MathUtils.alignPOT(5, -8));
+
+        assertEquals(8L, MathUtils.alignPOT(5L, 8L));
+        assertEquals(16L, MathUtils.alignPOT(9L, 16L));
+        assertEquals(32L, MathUtils.alignPOT(31L, 32L));
+        assertEquals(32L, MathUtils.alignPOT(32L, 32L));
+        assertThrows(IllegalArgumentException.class, () -> MathUtils.alignPOT(5L, 0L));
+        assertThrows(IllegalArgumentException.class, () -> MathUtils.alignPOT(5L, -8L));
+    }
+
+    @Test
+    void align() {
+        assertEquals(5, MathUtils.align(5, 5));
+        assertEquals(8, MathUtils.align(5, 8));
+        assertEquals(12, MathUtils.align(10, 6));
+        assertEquals(15, MathUtils.align(13, 5));
+        assertEquals(16, MathUtils.align(9, 16));
+        assertEquals(20, MathUtils.align(20, 5));
+        assertEquals(32, MathUtils.align(31, 32));
+        assertEquals(32, MathUtils.align(32, 32));
+        assertThrows(IllegalArgumentException.class, () -> MathUtils.align(5, 0));
+        assertThrows(IllegalArgumentException.class, () -> MathUtils.align(5, -5));
+
+        assertEquals(5L, MathUtils.align(5L, 5L));
+        assertEquals(8L, MathUtils.align(5L, 8L));
+        assertEquals(12L, MathUtils.align(10L, 6L));
+        assertEquals(15L, MathUtils.align(13L, 5L));
+        assertEquals(16L, MathUtils.align(9L, 16L));
+        assertEquals(20L, MathUtils.align(20L, 5L));
+        assertEquals(32L, MathUtils.align(31L, 32L));
+        assertEquals(32L, MathUtils.align(32L, 32L));
+        assertThrows(IllegalArgumentException.class, () -> MathUtils.align(5L, 0L));
+        assertThrows(IllegalArgumentException.class, () -> MathUtils.align(5L, -5L));
+    }
+
 }
