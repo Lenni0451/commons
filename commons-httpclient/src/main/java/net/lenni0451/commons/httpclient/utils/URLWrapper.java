@@ -255,6 +255,7 @@ public class URLWrapper {
         return url;
     }
 
+
     public class QueryWrapper {
         private final Map<String, String> queries = new HashMap<>();
 

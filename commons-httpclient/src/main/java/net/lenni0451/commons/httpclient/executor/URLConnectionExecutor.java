@@ -4,6 +4,7 @@ import net.lenni0451.commons.httpclient.HttpClient;
 import net.lenni0451.commons.httpclient.HttpResponse;
 import net.lenni0451.commons.httpclient.content.HttpContent;
 import net.lenni0451.commons.httpclient.content.StreamedHttpContent;
+import net.lenni0451.commons.httpclient.proxy.ProxyHandler;
 import net.lenni0451.commons.httpclient.proxy.SingleProxySelector;
 import net.lenni0451.commons.httpclient.requests.HttpContentRequest;
 import net.lenni0451.commons.httpclient.requests.HttpRequest;
@@ -43,20 +44,26 @@ public class URLConnectionExecutor extends RequestExecutor {
     @Override
     public HttpResponse execute(@Nonnull final HttpRequest request) throws IOException {
         CookieManager cookieManager = this.getCookieManager(request);
+        ProxyHandler proxyHandler = this.client.getProxyHandler();
         SingleProxySelector proxySelector = null;
-        if (this.client.getProxyHandler().isProxySet()) proxySelector = this.client.getProxyHandler().getProxySelector();
+        if (proxyHandler.isProxySet()) proxySelector = proxyHandler.getProxySelector();
         try {
-            if (proxySelector != null) proxySelector.set();
-            HttpURLConnection connection = this.openConnection(request, cookieManager);
+            if (proxySelector != null) proxySelector.set(false);
+            HttpURLConnection connection = this.openConnection(request, cookieManager, proxySelector == null ? null : proxyHandler);
             return this.executeRequest(connection, cookieManager, request);
         } finally {
-            if (proxySelector != null) proxySelector.reset();
+            if (proxySelector != null) proxySelector.reset(false);
         }
     }
 
-    private HttpURLConnection openConnection(final HttpRequest request, final CookieManager cookieManager) throws IOException {
+    private HttpURLConnection openConnection(final HttpRequest request, final CookieManager cookieManager, final ProxyHandler proxyHandler) throws IOException {
         URL url = request.getURL();
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        HttpURLConnection connection;
+        if (proxyHandler == null) {
+            connection = (HttpURLConnection) url.openConnection();
+        } else {
+            connection = (HttpURLConnection) url.openConnection(proxyHandler.toJavaProxy());
+        }
         if (this.isIgnoreInvalidSSL(request) && connection instanceof HttpsURLConnection) {
             HttpsURLConnection httpsConnection = (HttpsURLConnection) connection;
             httpsConnection.setSSLSocketFactory(IgnoringTrustManager.makeIgnoringSSLContext().getSocketFactory());
