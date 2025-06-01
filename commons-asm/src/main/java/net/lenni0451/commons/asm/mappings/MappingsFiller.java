@@ -126,13 +126,15 @@ public class MappingsFiller {
     }
 
     private static Set<String> getAllMentionedClasses(final Mappings mappings) {
-        Set<String> classes = new HashSet<>();
         Set<Type> types = new HashSet<>();
-        classes.addAll(mappings.classMappings.keySet());
+        Set<String> classes = new HashSet<>(mappings.classMappings.keySet());
         for (Map.Entry<String, String> entry : mappings.fieldMappings.entrySet()) {
             MemberDeclaration member = MemberDeclaration.fromFieldMapping(entry.getKey());
             classes.add(member.getOwner());
-            types.add(type(member.getDescriptor()));
+            if (member.getDescriptor() != null) {
+                //Field mappings can have null descriptors if they are not specified in the mappings
+                types.add(type(member.getDescriptor()));
+            }
         }
         for (Map.Entry<String, String> entry : mappings.methodMappings.entrySet()) {
             MemberDeclaration member = MemberDeclaration.fromMethodMapping(entry.getKey());

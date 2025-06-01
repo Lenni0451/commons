@@ -5,6 +5,7 @@ import net.lenni0451.commons.asm.mappings.Mappings;
 import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -29,6 +30,12 @@ public class SrgMappingsLoader extends MappingsLoader {
         Mappings mappings = new Mappings();
         for (String line : lines) {
             String[] parts = line.trim().split(" ");
+            for (int i = 0; i < parts.length; i++) {
+                if (parts[i].startsWith("#")) {
+                    parts = Arrays.copyOf(parts, i);
+                    break;
+                }
+            }
             if (parts[0].equals("PK:")) {
                 String name = parts[1];
                 String newName = parts[2];
