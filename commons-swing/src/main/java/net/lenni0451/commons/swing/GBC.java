@@ -169,6 +169,29 @@ public class GBC {
     }
 
     /**
+     * Skip the current column by incrementing the {@code gridx} value.<br>
+     * This will not change the {@code gridy} value.
+     *
+     * @return This GBC
+     */
+    public GBC skipColumn() {
+        this.constraints.gridx++;
+        return this;
+    }
+
+    /**
+     * Skip the current row by incrementing the {@code gridy} value.<br>
+     * The {@code gridx} value will be reset to 0.
+     *
+     * @return This GBC
+     */
+    public GBC skipRow() {
+        this.constraints.gridx = 0;
+        this.constraints.gridy++;
+        return this;
+    }
+
+    /**
      * Set the {@code gridx} of the constraints.
      *
      * @param gridx The gridx
