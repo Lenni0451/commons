@@ -1,7 +1,8 @@
-package net.lenni0451.commons.asm.mappings.loader;
+package net.lenni0451.commons.asm.mappings.loader.formats;
 
 import lombok.AllArgsConstructor;
 import net.lenni0451.commons.asm.mappings.Mappings;
+import net.lenni0451.commons.asm.mappings.loader.MappingsLoader;
 
 import java.io.File;
 import java.io.InputStream;

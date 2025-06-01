@@ -12,9 +12,9 @@ import java.util.stream.Collectors;
 /**
  * An abstract class for various mappings loaders.
  */
-public abstract class MappingsLoader {
+public abstract class MappingsLoader implements MappingsProvider {
 
-    private final MappingsProvider mappingsProvider;
+    private final IOProvider ioProvider;
     private Mappings mappings;
 
     public MappingsLoader(@WillClose final InputStream inputStream) {
@@ -29,8 +29,8 @@ public abstract class MappingsLoader {
         this(() -> Files.newInputStream(path));
     }
 
-    private MappingsLoader(final MappingsProvider mappingsProvider) {
-        this.mappingsProvider = mappingsProvider;
+    private MappingsLoader(final IOProvider ioProvider) {
+        this.ioProvider = ioProvider;
     }
 
     /**
@@ -39,6 +39,7 @@ public abstract class MappingsLoader {
      *
      * @return The loaded mappings
      */
+    @Override
     public Mappings getMappings() {
         if (this.mappings == null) {
             try {
@@ -73,14 +74,14 @@ public abstract class MappingsLoader {
     protected abstract Mappings load(final List<String> lines) throws Throwable;
 
     private List<String> readLines() throws IOException {
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(this.mappingsProvider.load()))) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(this.ioProvider.load()))) {
             return br.lines().filter(s -> !s.trim().isEmpty()).collect(Collectors.toList());
         }
     }
 
 
     @FunctionalInterface
-    private interface MappingsProvider {
+    private interface IOProvider {
         InputStream load() throws IOException;
     }
 

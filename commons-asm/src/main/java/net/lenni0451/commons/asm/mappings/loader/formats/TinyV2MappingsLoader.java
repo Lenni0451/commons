@@ -1,7 +1,8 @@
-package net.lenni0451.commons.asm.mappings.loader;
+package net.lenni0451.commons.asm.mappings.loader.formats;
 
 import lombok.AllArgsConstructor;
 import net.lenni0451.commons.asm.mappings.Mappings;
+import net.lenni0451.commons.asm.mappings.loader.MappingsLoader;
 import net.lenni0451.commons.asm.mappings.meta.ClassMetaMapping;
 import net.lenni0451.commons.asm.mappings.meta.FieldMetaMapping;
 import net.lenni0451.commons.asm.mappings.meta.MethodMetaMapping;
@@ -69,6 +70,7 @@ public class TinyV2MappingsLoader extends MappingsLoader {
      * @return The parsed metadata mappings
      * @throws IllegalStateException If metadata parsing is disabled
      */
+    @Override
     public List<ClassMetaMapping> getMetaMappings() {
         if (!this.parseMeta) throw new IllegalStateException("Meta parsing is disabled");
         this.getMappings(); //Ensure mappings are loaded

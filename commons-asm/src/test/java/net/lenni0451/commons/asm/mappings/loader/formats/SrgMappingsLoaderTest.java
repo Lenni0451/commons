@@ -1,4 +1,4 @@
-package net.lenni0451.commons.asm.mappings.loader;
+package net.lenni0451.commons.asm.mappings.loader.formats;
 
 import net.lenni0451.commons.asm.mappings.Mappings;
 import org.junit.jupiter.api.Test;
