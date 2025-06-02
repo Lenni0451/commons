@@ -93,6 +93,19 @@ class GsonArrayTest {
         this.check();
     }
 
+    @Test
+    void asListWithMapper() {
+        GsonArray array = new GsonArray();
+        array.add(new GsonObject().add("key1", "value1"));
+        array.add(new GsonObject().add("key2", "value2"));
+        array.add(new GsonObject().add("key3", "value3"));
+        List<GsonObject> list = array.asList(GsonElement::asObject);
+        assertEquals(3, list.size());
+        assertEquals("value1", list.get(0).get("key1").asString());
+        assertEquals("value2", list.get(1).get("key2").asString());
+        assertEquals("value3", list.get(2).get("key3").asString());
+    }
+
     private void check(final Object... objects) {
         List<GsonElement> expected = new ArrayList<>();
         for (Object object : objects) {

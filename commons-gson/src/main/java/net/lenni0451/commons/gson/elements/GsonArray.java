@@ -10,6 +10,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -137,8 +138,9 @@ public class GsonArray extends GsonElement implements Iterable<GsonElement> {
         return this.removeAll(other.getJsonArray());
     }
 
-    public void clear() {
+    public GsonArray clear() {
         while (!this.array.isEmpty()) this.array.remove(0);
+        return this;
     }
 
     public boolean has(final int index) {
@@ -175,6 +177,14 @@ public class GsonArray extends GsonElement implements Iterable<GsonElement> {
         List<GsonElement> list = new ArrayList<>();
         for (JsonElement element : this.array) {
             list.add(GsonElement.wrap(element));
+        }
+        return list;
+    }
+
+    public <T extends GsonElement> List<T> asList(final Function<GsonElement, T> mapper) {
+        List<T> list = new ArrayList<>();
+        for (JsonElement element : this.array) {
+            list.add(mapper.apply(GsonElement.wrap(element)));
         }
         return list;
     }
