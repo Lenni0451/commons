@@ -1,3 +1,11 @@
+plugins {
+    id "project.defaults"
+    id "extra.template_processor"
+    alias libs.plugins.templateProcessor
+}
+
 dependencies {
     api project(":commons-collections")
+
+    testImplementation libs.bundles.asm
 }

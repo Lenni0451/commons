@@ -1,10 +1,11 @@
+plugins {
+    id "project.defaults"
+}
+
 configurations {
     testImplementation.extendsFrom compileOnly
 }
 
 dependencies {
-    compileOnly "org.ow2.asm:asm:9.8"
-    compileOnly "org.ow2.asm:asm-commons:9.8"
-    compileOnly "org.ow2.asm:asm-tree:9.8"
-    compileOnly "org.ow2.asm:asm-analysis:9.8"
+    compileOnly libs.bundles.asm
 }

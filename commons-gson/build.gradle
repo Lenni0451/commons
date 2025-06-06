@@ -1,7 +1,11 @@
+plugins {
+    id "project.defaults"
+}
+
 configurations {
-    testImplementation.extendsFrom compileOnly
+    testImplementation.extendsFrom(compileOnly)
 }
 
 dependencies {
-    compileOnly "com.google.code.gson:gson:2.11.0"
+    compileOnly libs.gson
 }

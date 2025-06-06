@@ -1,0 +1,22 @@
+plugins {
+    id "java-library"
+    id "base.java"
+    id "base.maven_publish"
+    id "base.junit"
+    id "publishing.aggregating_publisher"
+    id "base.checkstyle"
+}
+
+dependencies {
+    compileOnly libs.findbugs
+    compileOnly libs.jetbrainsAnnotations
+    compileOnly libs.lombok
+    annotationProcessor libs.lombok
+
+    testCompileOnly libs.lombok
+    testAnnotationProcessor libs.lombok
+}
+
+javadoc {
+    failOnError = false
+}

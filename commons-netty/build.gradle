@@ -1,7 +1,9 @@
+plugins {
+    id "project.defaults"
+}
+
 dependencies {
     api project(":commons-core")
 
-    compileOnly "io.netty:netty-all:4.2.1.Final"
-    compileOnly "dev.kastle.netty:netty-transport-raknet:1.2.0"
-    compileOnly "io.jpower.kcp:kcp-netty:1.5.2"
+    compileOnly libs.bundles.netty
 }

@@ -1,29 +1,37 @@
-java.toolchain.languageVersion = JavaLanguageVersion.of(11)
-compileJava.targetCompatibility = JavaVersion.VERSION_1_8
-compileJava.sourceCompatibility = JavaVersion.VERSION_1_8
-compileTestJava.targetCompatibility = JavaVersion.VERSION_1_8
-compileTestJava.sourceCompatibility = JavaVersion.VERSION_1_8
+plugins {
+    id "project.defaults"
+}
+
+base {
+    java.toolchain.languageVersion = JavaLanguageVersion.of(11)
+    compileJava.targetCompatibility = JavaVersion.VERSION_1_8
+    compileJava.sourceCompatibility = JavaVersion.VERSION_1_8
+    compileTestJava.targetCompatibility = JavaVersion.VERSION_1_8
+    compileTestJava.sourceCompatibility = JavaVersion.VERSION_1_8
+}
 
 sourceSets {
     j11
 }
 
-compileJ11Java.options.encoding = "UTF-8"
-compileJ11Java.sourceCompatibility = JavaVersion.VERSION_11
-compileJ11Java.targetCompatibility = JavaVersion.VERSION_11
+base {
+    compileJ11Java.options.encoding = "UTF-8"
+    compileJ11Java.sourceCompatibility = JavaVersion.VERSION_11
+    compileJ11Java.targetCompatibility = JavaVersion.VERSION_11
+}
 
 configurations {
-    j11CompileOnly.extendsFrom compileOnly
-    testImplementation.extendsFrom compileOnly
+    j11CompileOnly.extendsFrom(compileOnly)
+    testImplementation.extendsFrom(compileOnly)
 }
 
 dependencies {
-    compileOnly "io.projectreactor.netty:reactor-netty-http:1.2.4"
+    compileOnly libs.reactorNetty
     j11CompileOnly sourceSets.main.output
 
     testImplementation sourceSets.j11.output
 }
 
 jar {
-    from sourceSets.j11.output
+    from(sourceSets.j11.output)
 }
