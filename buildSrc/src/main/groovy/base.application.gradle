@@ -5,7 +5,7 @@ plugins {
 jar {
     manifest {
         attributes(
-                "Main-Class": project.mainClass,
+                "Main-Class": project.main_class,
                 "Multi-Release": "true",
                 "Enable-Native-Access": "ALL-UNNAMED"
         )
