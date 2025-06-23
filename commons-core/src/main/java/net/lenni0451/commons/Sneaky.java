@@ -2,7 +2,10 @@ package net.lenni0451.commons;
 
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
+import org.jetbrains.annotations.ApiStatus;
 
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 @UtilityClass
@@ -30,44 +33,39 @@ public class Sneaky {
     }
 
     /**
-     * Run a runnable without having to declare the throwable in the method signature.
-     *
-     * @param runnable The runnable to run
+     * Use {@link SneakyRunnable#tryRun()} instead.
      */
+    @Deprecated
     @SneakyThrows
+    @ApiStatus.ScheduledForRemoval
     public static void sneak(final SneakyRunnable runnable) {
         runnable.run();
     }
 
     /**
-     * Get a value from a supplier without having to declare the throwable in the method signature.
-     *
-     * @param supplier The supplier to get the value from
-     * @param <O>      The type of the value
-     * @return The value
+     * Use {@link SneakySupplier#tryGet()} instead.
      */
+    @Deprecated
     @SneakyThrows
+    @ApiStatus.ScheduledForRemoval
     public static <O> O sneak(final SneakySupplier<O> supplier) {
         return supplier.get();
     }
 
     /**
-     * Convert a {@link SneakyRunnable} to a {@link Runnable}.
-     *
-     * @param runnable The sneaky runnable to convert
-     * @return The converted runnable
+     * Use {@link SneakyRunnable#toRunnable()} instead.
      */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval
     public Runnable toRunnable(final SneakyRunnable runnable) {
         return () -> sneak(runnable);
     }
 
     /**
-     * Convert a {@link SneakySupplier} to a {@link Supplier}.
-     *
-     * @param supplier The sneaky supplier to convert
-     * @param <O>      The type of the value
-     * @return The converted supplier
+     * Use {@link SneakySupplier#toSupplier()} instead.
      */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval
     public <O> O toSupplier(final SneakySupplier<O> supplier) {
         return sneak(supplier);
     }
@@ -76,11 +74,57 @@ public class Sneaky {
     @FunctionalInterface
     public interface SneakyRunnable {
         void run() throws Throwable;
+
+        @SneakyThrows
+        default void tryRun() {
+            this.run();
+        }
+
+        default Runnable toRunnable() {
+            return this::tryRun;
+        }
     }
 
     @FunctionalInterface
     public interface SneakySupplier<T> {
         T get() throws Throwable;
+
+        @SneakyThrows
+        default T tryGet() {
+            return this.get();
+        }
+
+        default Supplier<T> toSupplier() {
+            return this::tryGet;
+        }
+    }
+
+    @FunctionalInterface
+    public interface SneakyConsumer<T> {
+        void accept(final T t) throws Throwable;
+
+        @SneakyThrows
+        default void tryAccept(final T t) {
+            this.accept(t);
+        }
+
+        default Consumer<T> toConsumer() {
+            return this::tryAccept;
+        }
+    }
+
+    @FunctionalInterface
+    public interface SneakyFunction<T, R> {
+        R apply(final T t) throws Throwable;
+
+        @SneakyThrows
+        default R tryApply(final T t) {
+            return this.apply(t);
+        }
+
+        default Function<T, R> toFunction() {
+            return this::tryApply;
+        }
     }
 
 }
