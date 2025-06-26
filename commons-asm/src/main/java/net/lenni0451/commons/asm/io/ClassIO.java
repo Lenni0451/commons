@@ -68,7 +68,18 @@ public class ClassIO {
      * @return The bytecode of the class
      */
     public static byte[] toStacklessBytes(final ClassNode node) {
-        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+        return toStacklessBytes(node, ClassWriter.COMPUTE_MAXS);
+    }
+
+    /**
+     * Write a class to a byte array without computing the stack map frames.
+     *
+     * @param node  The class node
+     * @param flags The flags to use for writing the class
+     * @return The bytecode of the class
+     */
+    public static byte[] toStacklessBytes(final ClassNode node, final int flags) {
+        ClassWriter writer = new ClassWriter(flags);
         node.accept(writer);
         return writer.toByteArray();
     }
