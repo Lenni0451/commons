@@ -315,6 +315,17 @@ public class Color {
         return fromRGBF(r, g, b);
     }
 
+    /**
+     * Create a color from an AWT color.<br>
+     * The alpha value will be included in the created color.
+     *
+     * @param color The AWT color to convert
+     * @return The created color
+     */
+    public static Color fromAWT(final java.awt.Color color) {
+        return fromARGB(color.getRGB());
+    }
+
 
     /**
      * Get a color calculated by the current time.<br>
@@ -670,6 +681,13 @@ public class Color {
         h /= 6;
         if (h < 0) h++;
         return new float[]{h, s, v};
+    }
+
+    /**
+     * @return The color as an AWT color
+     */
+    public java.awt.Color toAWT() {
+        return new java.awt.Color(this.toARGB(), true);
     }
 
     /**

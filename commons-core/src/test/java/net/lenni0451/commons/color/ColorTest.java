@@ -64,6 +64,28 @@ class ColorTest {
     }
 
     @Test
+    void toFromAWT() {
+        java.awt.Color awtColor = new java.awt.Color(0xAABBCCDD, true);
+        Color color = Color.fromARGB(0xAABBCCDD);
+
+        assertEquals(color.getRed(), awtColor.getRed());
+        assertEquals(color.getGreen(), awtColor.getGreen());
+        assertEquals(color.getBlue(), awtColor.getBlue());
+        assertEquals(color.getAlpha(), awtColor.getAlpha());
+
+        java.awt.Color toAWTColor = color.toAWT();
+        Color fromAWTColor = Color.fromAWT(toAWTColor);
+
+        assertEquals(color.getRed(), fromAWTColor.getRed());
+        assertEquals(color.getGreen(), fromAWTColor.getGreen());
+        assertEquals(color.getBlue(), fromAWTColor.getBlue());
+        assertEquals(color.getAlpha(), fromAWTColor.getAlpha());
+
+        assertEquals(awtColor, toAWTColor);
+        assertEquals(color, fromAWTColor);
+    }
+
+    @Test
     void brighter() {
         java.awt.Color awtRed = new java.awt.Color(255, 0, 0);
         java.awt.Color awtGreen = new java.awt.Color(0, 255, 0);
