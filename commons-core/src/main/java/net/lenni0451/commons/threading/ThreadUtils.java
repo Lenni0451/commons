@@ -49,9 +49,21 @@ public class ThreadUtils {
      * This method is super precise but more expensive than {@link Thread#sleep(long)}.
      *
      * @param millis The amount of milliseconds to sleep
+     */
+    public static void hybridSleep(final float millis) {
+        long ms = (long) millis;
+        long ns = (long) ((millis - ms) * 1_000_000);
+        hybridSleep(ms, ns);
+    }
+
+    /**
+     * Sleeps the current thread for the given amount of time.<br>
+     * This method is super precise but more expensive than {@link Thread#sleep(long)}.
+     *
+     * @param millis The amount of milliseconds to sleep
      * @param nanos  The amount of nanoseconds to sleep
      */
-    public static void hybridSleep(long millis, final long nanos) {
+    public static void hybridSleep(final long millis, final long nanos) {
         long timeLeft = TimeUnit.MILLISECONDS.toNanos(millis) + nanos;
         final long end = System.nanoTime() + timeLeft;
         do {
