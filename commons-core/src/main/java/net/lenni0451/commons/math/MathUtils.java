@@ -332,4 +332,56 @@ public class MathUtils {
         return value + alignment - remainder;
     }
 
+    /**
+     * Calculate the logarithm of a value with a given base.<br>
+     * The value must be greater than 0 and the base must be greater than 1.
+     *
+     * @param value The value to calculate the logarithm for
+     * @param base  The base of the logarithm
+     * @return The logarithm of the value with the given base
+     */
+    public static int log(final int value, final int base) {
+        if (value <= 0 || base <= 1) throw new IllegalArgumentException("Value must be greater than 0 and base must be greater than 1");
+        return (int) (Math.log(value) / Math.log(base));
+    }
+
+    /**
+     * Calculate the logarithm of a value with a given base.<br>
+     * The value must be greater than 0 and the base must be greater than 1.
+     *
+     * @param value The value to calculate the logarithm for
+     * @param base  The base of the logarithm
+     * @return The logarithm of the value with the given base
+     */
+    public static long log(final long value, final long base) {
+        if (value <= 0 || base <= 1) throw new IllegalArgumentException("Value must be greater than 0 and base must be greater than 1");
+        return (long) (Math.log(value) / Math.log(base));
+    }
+
+    /**
+     * Calculate the logarithm of a value with a given base.<br>
+     * The value must be greater than 0 and the base must be greater than 1.
+     *
+     * @param value The value to calculate the logarithm for
+     * @param base  The base of the logarithm
+     * @return The logarithm of the value with the given base
+     */
+    public static float log(final float value, final float base) {
+        if (value <= 0 || base <= 1) throw new IllegalArgumentException("Value must be greater than 0 and base must be greater than 1");
+        return (float) (Math.log(value) / Math.log(base));
+    }
+
+    /**
+     * Calculate the logarithm of a value with a given base.<br>
+     * The value must be greater than 0 and the base must be greater than 1.
+     *
+     * @param value The value to calculate the logarithm for
+     * @param base  The base of the logarithm
+     * @return The logarithm of the value with the given base
+     */
+    public static double log(final double value, final double base) {
+        if (value <= 0 || base <= 1) throw new IllegalArgumentException("Value must be greater than 0 and base must be greater than 1");
+        return Math.log(value) / Math.log(base);
+    }
+
 }

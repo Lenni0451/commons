@@ -193,4 +193,56 @@ class MathUtilsTest {
         assertThrows(IllegalArgumentException.class, () -> MathUtils.align(5L, -5L));
     }
 
+    @Test
+    void log() {
+        assertEquals(0, MathUtils.log(1, 2));
+        assertEquals(1, MathUtils.log(2, 2));
+        assertEquals(2, MathUtils.log(4, 2));
+        assertEquals(3, MathUtils.log(8, 2));
+        assertEquals(4, MathUtils.log(16, 2));
+        assertEquals(5, MathUtils.log(32, 2));
+        assertThrows(IllegalArgumentException.class, () -> MathUtils.log(-1, 2));
+        assertThrows(IllegalArgumentException.class, () -> MathUtils.log(0, 2));
+        assertThrows(IllegalArgumentException.class, () -> MathUtils.log(1, -2));
+
+        assertEquals(0L, MathUtils.log(1L, 2L));
+        assertEquals(1L, MathUtils.log(2L, 2L));
+        assertEquals(2L, MathUtils.log(4L, 2L));
+        assertEquals(3L, MathUtils.log(8L, 2L));
+        assertEquals(4L, MathUtils.log(16L, 2L));
+        assertEquals(5L, MathUtils.log(32L, 2L));
+        assertThrows(IllegalArgumentException.class, () -> MathUtils.log(-1L, 2L));
+        assertThrows(IllegalArgumentException.class, () -> MathUtils.log(0L, 2L));
+        assertThrows(IllegalArgumentException.class, () -> MathUtils.log(1L, -2L));
+
+        assertEquals(0F, MathUtils.log(1F, 2F));
+        assertEquals(1F, MathUtils.log(2F, 2F));
+        assertEquals(2F, MathUtils.log(4F, 2F));
+        assertEquals(3F, MathUtils.log(8F, 2F));
+        assertEquals(4F, MathUtils.log(16F, 2F));
+        assertEquals(5F, MathUtils.log(32F, 2F));
+        assertThrows(IllegalArgumentException.class, () -> MathUtils.log(-1F, 2F));
+        assertThrows(IllegalArgumentException.class, () -> MathUtils.log(0F, 2F));
+        assertThrows(IllegalArgumentException.class, () -> MathUtils.log(1F, -2F));
+
+        assertEquals(0D, MathUtils.log(1D, 2D));
+        assertEquals(1D, MathUtils.log(2D, 2D));
+        assertEquals(2D, MathUtils.log(4D, 2D));
+        assertEquals(3D, MathUtils.log(8D, 2D));
+        assertEquals(4D, MathUtils.log(16D, 2D));
+        assertEquals(5D, MathUtils.log(32D, 2D));
+        assertThrows(IllegalArgumentException.class, () -> MathUtils.log(-1D, 2D));
+        assertThrows(IllegalArgumentException.class, () -> MathUtils.log(0D, 2D));
+        assertThrows(IllegalArgumentException.class, () -> MathUtils.log(1D, -2D));
+
+        assertEquals(0, MathUtils.log(1, 2.5));
+        assertEquals(1, MathUtils.log(2.5, 2.5));
+        assertEquals(2, MathUtils.log(6.25, 2.5));
+        assertEquals(3, MathUtils.log(15.625, 2.5));
+        assertEquals(4, MathUtils.log(39.0625, 2.5));
+        assertThrows(IllegalArgumentException.class, () -> MathUtils.log(-1, 2.5));
+        assertThrows(IllegalArgumentException.class, () -> MathUtils.log(0, 2.5));
+        assertThrows(IllegalArgumentException.class, () -> MathUtils.log(1, -2.5));
+    }
+
 }
