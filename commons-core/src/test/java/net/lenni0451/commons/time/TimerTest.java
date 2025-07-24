@@ -52,7 +52,7 @@ class TimerTest {
     @Test
     void waitUntil() throws InterruptedException {
         long start = this.timer.getTime();
-        this.timer.waitUntil();
+        assertTrue(this.timer.waitUntil() > 0);
         assertTrue(System.currentTimeMillis() - start >= MIN_DELAY);
     }
 

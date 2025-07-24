@@ -23,12 +23,13 @@ public class NanoTimer extends Timer {
     }
 
     @Override
-    public void waitUntil() throws InterruptedException {
-        if (!this.forcePass) {
-            long time = this.timeUntil();
-            Thread.sleep(time / 1_000_000, (int) (time % 1_000_000));
+    public long waitUntil() throws InterruptedException {
+        long timeUntil = this.timeUntil();
+        if (!this.forcePass && timeUntil > 0) {
+            Thread.sleep(timeUntil / 1_000_000, (int) (timeUntil % 1_000_000));
         }
         this.reset();
+        return timeUntil;
     }
 
 }

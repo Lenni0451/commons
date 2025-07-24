@@ -74,13 +74,19 @@ public class Timer {
 
     /**
      * Wait until the delay has passed.<br>
-     * The time will be reset after the delay has passed.
+     * The time will be reset after the delay has passed.<br>
+     * The thread will not be paused if the delay has already passed or if {@link #forcePass()} has been called.
      *
+     * @return The amount of time the thread was paused, may be smaller than 0
      * @throws InterruptedException If the thread is interrupted
      */
-    public void waitUntil() throws InterruptedException {
-        if (!this.forcePass) Thread.sleep(this.timeUntil());
+    public long waitUntil() throws InterruptedException {
+        long timeUntil = this.timeUntil();
+        if (!this.forcePass && timeUntil > 0) {
+            Thread.sleep(timeUntil);
+        }
         this.reset();
+        return timeUntil;
     }
 
 }
