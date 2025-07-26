@@ -1,5 +1,7 @@
 package net.lenni0451.commons.swing;
 
+import org.intellij.lang.annotations.MagicConstant;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.OptionalInt;
@@ -133,8 +135,8 @@ public class GBC {
      * @see #currentGridY(Container)
      * @see Box#createHorizontalGlue()
      */
-    public static void fillVerticalSpace(final Container parent, final int gridy) {
-        GBC.create(parent).gridy(gridy).anchor(GridBagConstraints.WEST).weighty(1).fill(GridBagConstraints.HORIZONTAL).add(Box.createVerticalGlue());
+    public static void fillVerticalSpace(final Container parent, @MagicConstant(intValues = {RELATIVE, REMAINDER}) final int gridy) {
+        GBC.create(parent).gridy(gridy).anchor(WEST).weighty(1).fill(HORIZONTAL).add(Box.createVerticalGlue());
     }
 
 
@@ -198,7 +200,7 @@ public class GBC {
      * @return This GBC
      * @see GridBagConstraints#gridx
      */
-    public GBC gridx(final int gridx) {
+    public GBC gridx(@MagicConstant(intValues = {RELATIVE, REMAINDER}) final int gridx) {
         this.constraints.gridx = gridx;
         return this;
     }
@@ -210,7 +212,7 @@ public class GBC {
      * @return This GBC
      * @see GridBagConstraints#gridy
      */
-    public GBC gridy(final int gridy) {
+    public GBC gridy(@MagicConstant(intValues = {RELATIVE, REMAINDER}) final int gridy) {
         this.constraints.gridy = gridy;
         return this;
     }
@@ -224,7 +226,8 @@ public class GBC {
      * @see GridBagConstraints#gridx
      * @see GridBagConstraints#gridy
      */
-    public GBC grid(final int gridx, final int gridy) {
+    public GBC grid(@MagicConstant(intValues = {RELATIVE, REMAINDER}) final int gridx,
+                    @MagicConstant(intValues = {RELATIVE, REMAINDER}) final int gridy) {
         this.constraints.gridx = gridx;
         this.constraints.gridy = gridy;
         return this;
@@ -237,7 +240,7 @@ public class GBC {
      * @return This GBC
      * @see GridBagConstraints#gridwidth
      */
-    public GBC width(final int gridwidth) {
+    public GBC width(@MagicConstant(intValues = {RELATIVE, REMAINDER}) final int gridwidth) {
         this.constraints.gridwidth = gridwidth;
         return this;
     }
@@ -249,7 +252,7 @@ public class GBC {
      * @return This GBC
      * @see GridBagConstraints#gridheight
      */
-    public GBC height(final int gridheight) {
+    public GBC height(@MagicConstant(intValues = {RELATIVE, REMAINDER}) final int gridheight) {
         this.constraints.gridheight = gridheight;
         return this;
     }
@@ -263,7 +266,8 @@ public class GBC {
      * @see GridBagConstraints#gridwidth
      * @see GridBagConstraints#gridheight
      */
-    public GBC size(final int gridwidth, final int gridheight) {
+    public GBC size(@MagicConstant(intValues = {RELATIVE, REMAINDER}) final int gridwidth,
+                    @MagicConstant(intValues = {RELATIVE, REMAINDER}) final int gridheight) {
         this.constraints.gridwidth = gridwidth;
         this.constraints.gridheight = gridheight;
         return this;
@@ -315,7 +319,13 @@ public class GBC {
      * @return This GBC
      * @see GridBagConstraints#anchor
      */
-    public GBC anchor(final int anchor) {
+    public GBC anchor(@MagicConstant(intValues = {CENTER, NORTH, NORTHEAST, EAST,
+            SOUTHEAST, SOUTH, SOUTHWEST, WEST,
+            NORTHWEST, PAGE_START, PAGE_END, LINE_START,
+            LINE_END, FIRST_LINE_START, FIRST_LINE_END, LAST_LINE_START,
+            LAST_LINE_END, BASELINE, BASELINE_LEADING, BASELINE_TRAILING,
+            ABOVE_BASELINE, ABOVE_BASELINE_LEADING, ABOVE_BASELINE_TRAILING, BELOW_BASELINE,
+            BELOW_BASELINE_LEADING, BELOW_BASELINE_TRAILING}) final int anchor) {
         this.constraints.anchor = anchor;
         return this;
     }
@@ -327,7 +337,7 @@ public class GBC {
      * @return This GBC
      * @see GridBagConstraints#fill
      */
-    public GBC fill(final int fill) {
+    public GBC fill(@MagicConstant(intValues = {HORIZONTAL, NONE, BOTH, VERTICAL}) final int fill) {
         this.constraints.fill = fill;
         return this;
     }
