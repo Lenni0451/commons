@@ -135,7 +135,7 @@ public class GBC {
      * @see #currentGridY(Container)
      * @see Box#createHorizontalGlue()
      */
-    public static void fillVerticalSpace(final Container parent, @MagicConstant(intValues = {RELATIVE, REMAINDER}) final int gridy) {
+    public static void fillVerticalSpace(final Container parent, final int gridy) {
         GBC.create(parent).gridy(gridy).anchor(WEST).weighty(1).fill(HORIZONTAL).add(Box.createVerticalGlue());
     }
 
@@ -200,7 +200,7 @@ public class GBC {
      * @return This GBC
      * @see GridBagConstraints#gridx
      */
-    public GBC gridx(@MagicConstant(intValues = {RELATIVE, REMAINDER}) final int gridx) {
+    public GBC gridx(final int gridx) {
         this.constraints.gridx = gridx;
         return this;
     }
@@ -212,7 +212,7 @@ public class GBC {
      * @return This GBC
      * @see GridBagConstraints#gridy
      */
-    public GBC gridy(@MagicConstant(intValues = {RELATIVE, REMAINDER}) final int gridy) {
+    public GBC gridy(final int gridy) {
         this.constraints.gridy = gridy;
         return this;
     }
@@ -226,8 +226,7 @@ public class GBC {
      * @see GridBagConstraints#gridx
      * @see GridBagConstraints#gridy
      */
-    public GBC grid(@MagicConstant(intValues = {RELATIVE, REMAINDER}) final int gridx,
-                    @MagicConstant(intValues = {RELATIVE, REMAINDER}) final int gridy) {
+    public GBC grid(final int gridx, final int gridy) {
         this.constraints.gridx = gridx;
         this.constraints.gridy = gridy;
         return this;
@@ -240,7 +239,7 @@ public class GBC {
      * @return This GBC
      * @see GridBagConstraints#gridwidth
      */
-    public GBC width(@MagicConstant(intValues = {RELATIVE, REMAINDER}) final int gridwidth) {
+    public GBC width(final int gridwidth) {
         this.constraints.gridwidth = gridwidth;
         return this;
     }
@@ -252,7 +251,7 @@ public class GBC {
      * @return This GBC
      * @see GridBagConstraints#gridheight
      */
-    public GBC height(@MagicConstant(intValues = {RELATIVE, REMAINDER}) final int gridheight) {
+    public GBC height(final int gridheight) {
         this.constraints.gridheight = gridheight;
         return this;
     }
@@ -266,8 +265,7 @@ public class GBC {
      * @see GridBagConstraints#gridwidth
      * @see GridBagConstraints#gridheight
      */
-    public GBC size(@MagicConstant(intValues = {RELATIVE, REMAINDER}) final int gridwidth,
-                    @MagicConstant(intValues = {RELATIVE, REMAINDER}) final int gridheight) {
+    public GBC size(final int gridwidth, final int gridheight) {
         this.constraints.gridwidth = gridwidth;
         this.constraints.gridheight = gridheight;
         return this;
