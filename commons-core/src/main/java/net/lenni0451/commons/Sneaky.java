@@ -33,6 +33,18 @@ public class Sneaky {
     }
 
     /**
+     * Cast an object to any type without any checks.<br>
+     * This method should be used with caution, as it can lead to {@link ClassCastException}s at runtime if the object is not of the expected type.
+     *
+     * @param object The object to cast
+     * @param <T>    The type to cast the object to
+     * @return The object casted to the specified type
+     */
+    public static <T> T unsafeCast(final Object object) {
+        return (T) object;
+    }
+
+    /**
      * Use {@link SneakyRunnable#tryRun()} instead.
      */
     @Deprecated
