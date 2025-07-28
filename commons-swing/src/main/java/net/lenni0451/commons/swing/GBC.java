@@ -341,6 +341,50 @@ public class GBC {
     }
 
     /**
+     * Set the {@code fill} and {@code weightx} of the constraints.<br>
+     * This is a shortcut for {@code fill(fill).weightx(weightx)}.
+     *
+     * @param fill    The fill
+     * @param weightx The weightx
+     * @return This GBC
+     */
+    public GBC fillx(@MagicConstant(intValues = {HORIZONTAL, NONE, BOTH, VERTICAL}) final int fill, final double weightx) {
+        this.constraints.fill = fill;
+        this.constraints.weightx = weightx;
+        return this;
+    }
+
+    /**
+     * Set the {@code fill} and {@code weighty} of the constraints.<br>
+     * This is a shortcut for {@code fill(fill).weighty(weighty)}.
+     *
+     * @param fill    The fill
+     * @param weighty The weighty
+     * @return This GBC
+     */
+    public GBC filly(@MagicConstant(intValues = {HORIZONTAL, NONE, BOTH, VERTICAL}) final int fill, final double weighty) {
+        this.constraints.fill = fill;
+        this.constraints.weighty = weighty;
+        return this;
+    }
+
+    /**
+     * Set the {@code fill}, {@code weightx} and {@code weighty} of the constraints.<br>
+     * This is a shortcut for {@code fill(fill).weightx(weightx).weighty(weighty)}.
+     *
+     * @param fill    The fill
+     * @param weightx The weightx
+     * @param weighty The weighty
+     * @return This GBC
+     */
+    public GBC fillxy(@MagicConstant(intValues = {HORIZONTAL, NONE, BOTH, VERTICAL}) final int fill, final double weightx, final double weighty) {
+        this.constraints.fill = fill;
+        this.constraints.weightx = weightx;
+        this.constraints.weighty = weighty;
+        return this;
+    }
+
+    /**
      * Set the {@code insets} of the constraints.
      *
      * @param insets The insets
