@@ -1,4 +1,4 @@
-package net.lenni0451.commons;
+package net.lenni0451.commons.classloader;
 
 import net.lenni0451.commons.io.IOUtils;
 import org.junit.jupiter.api.*;
@@ -95,7 +95,7 @@ class ByteArrayClassLoaderTest {
     @Test
     @Order(3)
     void findClass() {
-        Class<?> clazz = assertDoesNotThrow(() -> classLoader.findClass(CLASS_NAME.replace('/', '.')));
+        Class<?> clazz = Assertions.assertDoesNotThrow(() -> classLoader.findClass(CLASS_NAME.replace('/', '.')));
         assertEquals(CLASS_NAME.replace('/', '.'), clazz.getName());
 
         Constructor<?> constructor = assertDoesNotThrow(() -> clazz.getDeclaredConstructor());
