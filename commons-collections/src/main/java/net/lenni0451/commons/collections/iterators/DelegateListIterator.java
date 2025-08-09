@@ -2,6 +2,11 @@ package net.lenni0451.commons.collections.iterators;
 
 import java.util.ListIterator;
 
+/**
+ * A list iterator which delegates all calls to the given list iterator.
+ *
+ * @param <E> The type of the elements in this list iterator
+ */
 public class DelegateListIterator<E> implements ListIterator<E> {
 
     private final ListIterator<E> delegate;

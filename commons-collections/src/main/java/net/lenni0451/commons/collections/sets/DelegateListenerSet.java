@@ -8,6 +8,13 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.function.Consumer;
 
+/**
+ * A set which delegates all calls to the given set.<br>
+ * All mutation methods will call the given listeners.<br>
+ * The listeners will be called before the mutation is applied to the set.
+ *
+ * @param <E> The type of the elements in this set
+ */
 public class DelegateListenerSet<E> extends DelegateSet<E> {
 
     private final Consumer<E> addListener;

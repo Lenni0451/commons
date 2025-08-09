@@ -10,6 +10,13 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.function.Consumer;
 
+/**
+ * A list which delegates all calls to the given list.<br>
+ * All mutation methods will call the given listeners.<br>
+ * The listeners will be called before the mutation is applied to the list.
+ *
+ * @param <E> The type of the elements in this list
+ */
 public class DelegateListenerList<E> extends DelegateList<E> {
 
     private final Consumer<E> addListener;

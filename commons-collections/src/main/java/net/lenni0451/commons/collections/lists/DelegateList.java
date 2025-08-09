@@ -6,6 +6,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+/**
+ * A list which delegates all calls to the given list.
+ *
+ * @param <E> The type of the elements in this list
+ */
 public class DelegateList<E> implements List<E> {
 
     private final List<E> delegate;
