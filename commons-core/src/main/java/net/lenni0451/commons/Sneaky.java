@@ -49,7 +49,7 @@ public class Sneaky {
      */
     @Deprecated
     @SneakyThrows
-    @ApiStatus.ScheduledForRemoval
+    @ApiStatus.ScheduledForRemoval //23.12.2025
     public static void sneak(final SneakyRunnable runnable) {
         runnable.run();
     }
@@ -59,27 +59,57 @@ public class Sneaky {
      */
     @Deprecated
     @SneakyThrows
-    @ApiStatus.ScheduledForRemoval
+    @ApiStatus.ScheduledForRemoval //23.12.2025
     public static <O> O sneak(final SneakySupplier<O> supplier) {
         return supplier.get();
     }
 
     /**
-     * Use {@link SneakyRunnable#toRunnable()} instead.
+     * Turn a sneaky runnable into a regular runnable.
+     *
+     * @param sneakyRunnable The sneaky runnable to convert
+     * @return A regular runnable that will execute the sneaky runnable's run method
+     * @see SneakyRunnable#toRunnable()
      */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval
-    public Runnable toRunnable(final SneakyRunnable runnable) {
-        return () -> sneak(runnable);
+    public Runnable toRunnable(final SneakyRunnable sneakyRunnable) {
+        return sneakyRunnable.toRunnable();
     }
 
     /**
-     * Use {@link SneakySupplier#toSupplier()} instead.
+     * Turn a sneaky supplier into a regular supplier.
+     *
+     * @param sneakySupplier The sneaky supplier to convert
+     * @param <T>            The type of the value returned by the supplier
+     * @return A regular supplier that will execute the sneaky supplier's get method
+     * @see SneakySupplier#toSupplier()
      */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval
-    public <O> O toSupplier(final SneakySupplier<O> supplier) {
-        return sneak(supplier);
+    public <T> Supplier<T> toSupplier(final SneakySupplier<T> sneakySupplier) {
+        return sneakySupplier.toSupplier();
+    }
+
+    /**
+     * Turn a sneaky consumer into a regular consumer.
+     *
+     * @param sneakyConsumer The sneaky consumer to convert
+     * @param <T>            The type of the value accepted by the consumer
+     * @return A regular consumer that will execute the sneaky consumer's accept method
+     * @see SneakyConsumer#toConsumer()
+     */
+    public <T> Consumer<T> toConsumer(final SneakyConsumer<T> sneakyConsumer) {
+        return sneakyConsumer.toConsumer();
+    }
+
+    /**
+     * Turn a sneaky function into a regular function.
+     *
+     * @param sneakyFunction The sneaky function to convert
+     * @param <T>            The type of the input to the function
+     * @param <R>            The type of the result of the function
+     * @return A regular function that will execute the sneaky function's apply method
+     * @see SneakyFunction#toFunction()
+     */
+    public <T, R> Function<T, R> toFunction(final SneakyFunction<T, R> sneakyFunction) {
+        return sneakyFunction.toFunction();
     }
 
 
