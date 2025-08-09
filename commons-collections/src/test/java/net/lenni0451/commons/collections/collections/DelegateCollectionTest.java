@@ -1,6 +1,5 @@
-package net.lenni0451.commons.collections;
+package net.lenni0451.commons.collections.collections;
 
-import net.lenni0451.commons.collections.collections.DelegateCollection;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

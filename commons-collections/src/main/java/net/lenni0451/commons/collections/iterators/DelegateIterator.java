@@ -25,4 +25,9 @@ public class DelegateIterator<E> implements Iterator<E> {
         return this.delegate.next();
     }
 
+    @Override
+    public void remove() {
+        this.delegate.remove();
+    }
+
 }
