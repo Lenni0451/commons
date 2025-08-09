@@ -2,6 +2,7 @@ package net.lenni0451.commons.io;
 
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
+import org.jetbrains.annotations.ApiStatus;
 
 import javax.annotation.WillNotClose;
 import java.io.*;
@@ -132,7 +133,9 @@ public class FileUtils {
      * @param is   The stream to read from
      * @throws IOException If an I/O error occurs
      */
+    @Deprecated
     @WillNotClose
+    @ApiStatus.ScheduledForRemoval //09.02.2026
     public static void read(final File file, final InputStream is) throws IOException {
         try (FileOutputStream fos = new FileOutputStream(file)) {
             fos.write(IOUtils.readAll(is));
@@ -146,7 +149,9 @@ public class FileUtils {
      * @param os   The stream to write to
      * @throws IOException If an I/O error occurs
      */
+    @Deprecated
     @WillNotClose
+    @ApiStatus.ScheduledForRemoval //09.02.2026
     public static void write(final File file, final OutputStream os) throws IOException {
         try (FileInputStream fis = new FileInputStream(file)) {
             os.write(IOUtils.readAll(fis));
