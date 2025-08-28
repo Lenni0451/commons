@@ -142,4 +142,27 @@ public class Sets {
         return any(ConcurrentSkipListSet::new, setConsumer);
     }
 
+    /**
+     * Create a new {@link IdentityHashMap} based set with the given objects.
+     *
+     * @param objects The objects to add to the set
+     * @param <T>     The object type
+     * @return The created set
+     */
+    @SafeVarargs
+    public static <T> Set<T> identitySet(final T... objects) {
+        return any(() -> Collections.newSetFromMap(new IdentityHashMap<>()), objects);
+    }
+
+    /**
+     * Create a new {@link IdentityHashMap} based set which is passed to the given consumer.
+     *
+     * @param setConsumer The consumer to pass the set to
+     * @param <T>         The object type
+     * @return The created set
+     */
+    public static <T> Set<T> identitySet(final Consumer<Set<T>> setConsumer) {
+        return any(() -> Collections.newSetFromMap(new IdentityHashMap<>()), setConsumer);
+    }
+
 }
