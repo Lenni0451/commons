@@ -67,7 +67,7 @@ public class ThreadUtils {
         long timeLeft = TimeUnit.MILLISECONDS.toNanos(millis) + nanos;
         final long end = System.nanoTime() + timeLeft;
         do {
-            if (timeLeft > SLEEP_PRECISION) sleep(1);
+            if (timeLeft >= SLEEP_PRECISION) sleep(1);
             else if (timeLeft > SPIN_YIELD_PRECISION) Thread.yield();
 
             timeLeft = end - System.nanoTime();
