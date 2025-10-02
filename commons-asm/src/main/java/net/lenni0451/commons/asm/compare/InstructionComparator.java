@@ -64,7 +64,9 @@ public class InstructionComparator {
         if (insns1.length != insns2.length) return false;
 
         for (int i = 0; i < insns1.length; i++) {
-            if (!this.equals(insns1[i], insns2[i])) return false;
+            if (!this.equals(insns1[i], insns2[i])) {
+                return false;
+            }
         }
         return true;
     }

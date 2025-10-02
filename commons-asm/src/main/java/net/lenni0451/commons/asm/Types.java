@@ -22,15 +22,15 @@ public class Types {
      */
     public static boolean isPrimitive(final Type type) {
         if (type.equals(Type.VOID_TYPE)) return true;
-        else if (type.equals(Type.BOOLEAN_TYPE)) return true;
-        else if (type.equals(Type.BYTE_TYPE)) return true;
-        else if (type.equals(Type.SHORT_TYPE)) return true;
-        else if (type.equals(Type.CHAR_TYPE)) return true;
-        else if (type.equals(Type.INT_TYPE)) return true;
-        else if (type.equals(Type.LONG_TYPE)) return true;
-        else if (type.equals(Type.FLOAT_TYPE)) return true;
-        else if (type.equals(Type.DOUBLE_TYPE)) return true;
-        else return false;
+        if (type.equals(Type.BOOLEAN_TYPE)) return true;
+        if (type.equals(Type.BYTE_TYPE)) return true;
+        if (type.equals(Type.SHORT_TYPE)) return true;
+        if (type.equals(Type.CHAR_TYPE)) return true;
+        if (type.equals(Type.INT_TYPE)) return true;
+        if (type.equals(Type.LONG_TYPE)) return true;
+        if (type.equals(Type.FLOAT_TYPE)) return true;
+        if (type.equals(Type.DOUBLE_TYPE)) return true;
+        return false;
     }
 
     /**
@@ -54,21 +54,14 @@ public class Types {
             } catch (Throwable t) {
                 return Type.getObjectType(s);
             }
-        } else if (ob instanceof Class) {
-            return Type.getType((Class<?>) ob);
-        } else if (ob instanceof Field) {
-            return Type.getType(((Field) ob).getType());
-        } else if (ob instanceof FieldNode) {
-            return Type.getType(((FieldNode) ob).desc);
-        } else if (ob instanceof Method) {
-            return Type.getType((Method) ob);
-        } else if (ob instanceof MethodNode) {
-            return Type.getType(((MethodNode) ob).desc);
-        } else if (ob instanceof Constructor) {
-            return Type.getType((Constructor<?>) ob);
-        } else if (ob instanceof Type) {
-            return (Type) ob;
         }
+        if (ob instanceof Class) return Type.getType((Class<?>) ob);
+        if (ob instanceof Field) return Type.getType(((Field) ob).getType());
+        if (ob instanceof FieldNode) return Type.getType(((FieldNode) ob).desc);
+        if (ob instanceof Method) return Type.getType((Method) ob);
+        if (ob instanceof MethodNode) return Type.getType(((MethodNode) ob).desc);
+        if (ob instanceof Constructor) return Type.getType((Constructor<?>) ob);
+        if (ob instanceof Type) return (Type) ob;
         throw new IllegalArgumentException("Unable to convert " + ob + " into a type");
     }
 
@@ -86,10 +79,10 @@ public class Types {
      */
     public static Type returnType(final Object ob) {
         if (ob instanceof String) return Type.getReturnType((String) ob);
-        else if (ob instanceof Method) return Type.getReturnType((Method) ob);
-        else if (ob instanceof MethodNode) return Type.getReturnType(((MethodNode) ob).desc);
-        else if (ob instanceof MethodInsnNode) return Type.getReturnType(((MethodInsnNode) ob).desc);
-        else if (ob instanceof Type) return ((Type) ob).getReturnType();
+        if (ob instanceof Method) return Type.getReturnType((Method) ob);
+        if (ob instanceof MethodNode) return Type.getReturnType(((MethodNode) ob).desc);
+        if (ob instanceof MethodInsnNode) return Type.getReturnType(((MethodInsnNode) ob).desc);
+        if (ob instanceof Type) return ((Type) ob).getReturnType();
         throw new IllegalArgumentException("Unable to get return type of " + ob);
     }
 
@@ -106,9 +99,9 @@ public class Types {
      */
     public static Type[] argumentTypes(final Object ob) {
         if (ob instanceof String) return Type.getArgumentTypes((String) ob);
-        else if (ob instanceof Method) return Type.getArgumentTypes((Method) ob);
-        else if (ob instanceof MethodNode) return Type.getArgumentTypes(((MethodNode) ob).desc);
-        else if (ob instanceof MethodInsnNode) return Type.getArgumentTypes(((MethodInsnNode) ob).desc);
+        if (ob instanceof Method) return Type.getArgumentTypes((Method) ob);
+        if (ob instanceof MethodNode) return Type.getArgumentTypes(((MethodNode) ob).desc);
+        if (ob instanceof MethodInsnNode) return Type.getArgumentTypes(((MethodInsnNode) ob).desc);
         throw new IllegalArgumentException("Unable to get argument types of " + ob);
     }
 
