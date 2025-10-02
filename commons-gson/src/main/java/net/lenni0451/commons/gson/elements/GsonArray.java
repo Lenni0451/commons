@@ -206,6 +206,11 @@ public class GsonArray extends GsonElement implements Iterable<GsonElement> {
         public GsonElement next() {
             return GsonElement.wrap(this.iterator.next());
         }
+
+        @Override
+        public void remove() {
+            this.iterator.remove();
+        }
     }
 
 }

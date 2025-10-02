@@ -303,6 +303,11 @@ public class GsonObject extends GsonElement implements Iterable<Map.Entry<String
         public Map.Entry<String, GsonElement> next() {
             return new WrappedMapEntry(this.iterator.next());
         }
+
+        @Override
+        public void remove() {
+            this.iterator.remove();
+        }
     }
 
 }
