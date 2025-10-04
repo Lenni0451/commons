@@ -7,12 +7,39 @@ import java.util.Arrays;
 
 public class SequentialInputStream extends InputStream {
 
+    private static final int DEFAULT_INITIAL_CAPACITY = 0;
+    private static final float DEFAULT_GROWTH_FACTOR = 1;
+
     private final Object lock = new Object();
-    private byte[] available = new byte[0];
-    private int pos = 0;
-    private int limit = 0;
-    private boolean closed = false;
-    private Throwable error = null;
+    private final float growthFactor;
+    private byte[] available;
+    private int pos;
+    private int limit;
+    private boolean closed;
+    private Throwable error;
+
+    public SequentialInputStream() {
+        this(DEFAULT_INITIAL_CAPACITY, DEFAULT_GROWTH_FACTOR);
+    }
+
+    public SequentialInputStream(final int initialCapacity) {
+        this(initialCapacity, DEFAULT_GROWTH_FACTOR);
+    }
+
+    public SequentialInputStream(final float growthFactor) {
+        this(DEFAULT_INITIAL_CAPACITY, growthFactor);
+    }
+
+    public SequentialInputStream(final int initialCapacity, final float growthFactor) {
+        if (initialCapacity < 0) throw new IllegalArgumentException("initialCapacity must be >= 0");
+        if (growthFactor < 1) throw new IllegalArgumentException("growthFactor must be >= 1");
+        this.growthFactor = growthFactor;
+        this.available = new byte[initialCapacity];
+        this.pos = 0;
+        this.limit = 0;
+        this.closed = false;
+        this.error = null;
+    }
 
     public boolean isClosed() {
         synchronized (this.lock) {
@@ -30,7 +57,7 @@ public class SequentialInputStream extends InputStream {
                 this.pos = 0;
             }
             if (this.limit + bytes.length > this.available.length) {
-                this.available = Arrays.copyOf(this.available, this.limit + bytes.length);
+                this.available = Arrays.copyOf(this.available, (int) ((this.limit + bytes.length) * this.growthFactor));
             }
             System.arraycopy(bytes, 0, this.available, this.limit, bytes.length);
             this.limit += bytes.length;
