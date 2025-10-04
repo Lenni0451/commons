@@ -14,7 +14,7 @@ import java.net.URLStreamHandler;
 public class ByteArrayURLStreamHandler extends URLStreamHandler {
 
     /**
-     * Make an url which has an {@link URLConnection} to the given byte array.
+     * Make a url which has an {@link URLConnection} to the given byte array.
      *
      * @param file The file name of the url
      * @param data The byte array to open the connection to
