@@ -1,5 +1,6 @@
 package net.lenni0451.commons.httpclient;
 
+import lombok.SneakyThrows;
 import net.lenni0451.commons.httpclient.constants.ContentTypes;
 import net.lenni0451.commons.httpclient.constants.HttpHeaders;
 import net.lenni0451.commons.httpclient.constants.StatusCodes;
@@ -9,7 +10,6 @@ import net.lenni0451.commons.httpclient.content.impl.InputStreamContent;
 import net.lenni0451.commons.httpclient.model.ContentType;
 import org.jetbrains.annotations.ApiStatus;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.Charset;
@@ -85,24 +85,39 @@ public class HttpResponse extends HeaderStore<HttpResponse> {
         return this.content;
     }
 
+    /**
+     * Use {@link #getContent()} and {@link HttpContent#getAsStream()} instead.
+     */
     @Deprecated
+    @SneakyThrows
     @ApiStatus.ScheduledForRemoval
-    public InputStream getInputStream() throws IOException {
+    public InputStream getInputStream() {
         return this.content.getAsStream();
     }
 
+    /**
+     * Use {@link #getContent()} and {@link HttpContent#getAsString()} instead.
+     */
     @Deprecated
+    @SneakyThrows
     @ApiStatus.ScheduledForRemoval
-    public String getContentAsString() throws IOException {
+    public String getContentAsString() {
         return this.content.getAsString();
     }
 
+    /**
+     * Use {@link #getContent()} and {@link HttpContent#getAsString(Charset)} instead.
+     */
     @Deprecated
+    @SneakyThrows
     @ApiStatus.ScheduledForRemoval
-    public String getContentAsString(final Charset charset) throws IOException {
+    public String getContentAsString(final Charset charset) {
         return this.content.getAsString(charset);
     }
 
+    /**
+     * Use {@link #getContent()} and {@link HttpContent#getContentType()} instead.
+     */
     @Deprecated
     @ApiStatus.ScheduledForRemoval
     public Optional<ContentType> getContentType() {
