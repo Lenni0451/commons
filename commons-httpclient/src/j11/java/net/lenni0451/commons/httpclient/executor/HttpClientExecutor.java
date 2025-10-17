@@ -4,13 +4,12 @@ import net.lenni0451.commons.httpclient.HttpClient;
 import net.lenni0451.commons.httpclient.HttpResponse;
 import net.lenni0451.commons.httpclient.constants.HttpHeaders;
 import net.lenni0451.commons.httpclient.content.HttpContent;
-import net.lenni0451.commons.httpclient.content.StreamedHttpContent;
 import net.lenni0451.commons.httpclient.proxy.ProxyType;
 import net.lenni0451.commons.httpclient.requests.HttpContentRequest;
 import net.lenni0451.commons.httpclient.requests.HttpRequest;
-import net.lenni0451.commons.httpclient.utils.CloseListenerInputStream;
 import net.lenni0451.commons.httpclient.utils.IgnoringTrustManager;
 import net.lenni0451.commons.httpclient.utils.URLWrapper;
+import net.lenni0451.commons.httpclient.utils.stream.CloseListenerInputStream;
 
 import javax.annotation.Nonnull;
 import java.io.Closeable;
@@ -102,12 +101,8 @@ public class HttpClientExecutor extends RequestExecutor {
         builder.timeout(Duration.ofMillis(this.client.getReadTimeout()));
         if (request instanceof HttpContentRequest && ((HttpContentRequest) request).hasContent()) {
             HttpContent content = ((HttpContentRequest) request).getContent();
-            if (content instanceof StreamedHttpContent) {
-                InputStream inputStream = ((StreamedHttpContent) content).getInputStream();
-                builder.method(request.getMethod(), BodyPublishers.ofInputStream(() -> inputStream));
-            } else {
-                builder.method(request.getMethod(), BodyPublishers.ofByteArray(content.getAsBytes()));
-            }
+            InputStream inputStream = content.getAsStream();
+            builder.method(request.getMethod(), BodyPublishers.ofInputStream(() -> inputStream));
         } else {
             builder.method(request.getMethod(), BodyPublishers.noBody());
         }

@@ -59,8 +59,8 @@ public class HttpRequest extends HeaderStore<HttpRequest> {
     /**
      * Set if the response should be streamed.<br>
      * Streaming the response will not buffer the content and will allow you to read the content while it is being downloaded.<br>
-     * Use the {@link HttpResponse#getInputStream()} method to get the stream.<br>
-     * Some executors may not support streaming responses. All built-in executors support this feature.
+     * You are responsible for closing the input stream of the response to close the connection and free resources.<br>
+     * Streaming is not a mandatory feature and might not be supported by all executors.
      *
      * @param streamedResponse If the response should be streamed
      * @return This instance for chaining

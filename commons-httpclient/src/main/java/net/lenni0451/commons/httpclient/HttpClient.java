@@ -66,8 +66,9 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
      * @return This instance for chaining
      */
     public HttpClient setExecutor(@Nonnull final Function<HttpClient, RequestExecutor> executorSupplier) {
-        this.executor = executorSupplier.apply(this);
-        if (this.executor == null) throw new IllegalArgumentException("Unsupported executor type");
+        RequestExecutor executor = executorSupplier.apply(this);
+        if (executor == null) throw new NullPointerException("The executor supplier returned null");
+        this.executor = executor;
         return this;
     }
 

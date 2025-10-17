@@ -149,7 +149,9 @@ public class HttpRequestUtils {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         byte[] buf = new byte[1024];
         int len;
-        while ((len = is.read(buf)) != -1) baos.write(buf, 0, len);
+        while ((len = is.read(buf)) != -1) {
+            baos.write(buf, 0, len);
+        }
         return baos.toByteArray();
     }
 

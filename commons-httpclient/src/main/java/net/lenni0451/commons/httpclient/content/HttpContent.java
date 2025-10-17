@@ -1,9 +1,12 @@
 package net.lenni0451.commons.httpclient.content;
 
+import lombok.Getter;
 import net.lenni0451.commons.httpclient.content.impl.*;
 import net.lenni0451.commons.httpclient.model.ContentType;
+import net.lenni0451.commons.httpclient.utils.HttpRequestUtils;
 
 import javax.annotation.Nonnull;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -97,30 +100,50 @@ public abstract class HttpContent {
     }
 
     /**
-     * Create a new streamed content from the given input stream.
+     * Create a new input stream content from the given input stream.
      *
      * @param contentType   The content type
      * @param inputStream   The input stream
      * @param contentLength The content length
      * @return The created content
      */
-    public static StreamedHttpContent streamed(final ContentType contentType, final InputStream inputStream, final int contentLength) {
-        return new StreamedHttpContent(contentType, inputStream, contentLength);
+    public static InputStreamContent inputStream(final ContentType contentType, final InputStream inputStream, final int contentLength) {
+        return new InputStreamContent(contentType, inputStream, contentLength);
     }
 
 
+    @Getter
     private final ContentType contentType;
-    protected byte[] content;
+    @Getter
+    private int bufferSize = 1024;
+    private boolean computed = false;
+    protected byte[] byteCache;
 
     public HttpContent(final ContentType contentType) {
         this.contentType = contentType;
     }
 
+    public HttpContent setBufferSize(final int bufferSize) {
+        this.bufferSize = bufferSize;
+        return this;
+    }
+
     /**
-     * @return The content type
+     * Get the content as an input stream.<br>
+     * You are responsible for closing the input stream after use.
+     *
+     * @return The content as an input stream
+     * @throws IOException If an I/O error occurs
      */
-    public ContentType getContentType() {
-        return this.contentType;
+    public InputStream getAsStream() throws IOException {
+        if (this.byteCache != null) {
+            return new ByteArrayInputStream(this.byteCache);
+        } else if (!this.computed || this.canBeStreamedMultipleTimes()) {
+            this.computed = true;
+            return this.compute();
+        } else {
+            throw new IOException("This content cannot be streamed multiple times");
+        }
     }
 
     /**
@@ -129,8 +152,12 @@ public abstract class HttpContent {
      */
     @Nonnull
     public byte[] getAsBytes() throws IOException {
-        if (this.content == null) this.content = this.compute();
-        return this.content;
+        if (this.byteCache == null) {
+            try (InputStream is = this.getAsStream()) {
+                this.byteCache = HttpRequestUtils.readFromStream(is);
+            }
+        }
+        return this.byteCache;
     }
 
     /**
@@ -155,6 +182,14 @@ public abstract class HttpContent {
     }
 
     /**
+     * Get if the content can be streamed multiple times.<br>
+     * The return value is allowed to change between multiple calls depending on the implementation.
+     *
+     * @return If the content can be streamed multiple times
+     */
+    public abstract boolean canBeStreamedMultipleTimes();
+
+    /**
      * @return The content length
      */
     public abstract int getContentLength();
@@ -164,6 +199,6 @@ public abstract class HttpContent {
      * @throws IOException If an I/O error occurs
      */
     @Nonnull
-    protected abstract byte[] compute() throws IOException;
+    protected abstract InputStream compute() throws IOException;
 
 }

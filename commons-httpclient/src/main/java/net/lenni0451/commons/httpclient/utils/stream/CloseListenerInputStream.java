@@ -1,4 +1,4 @@
-package net.lenni0451.commons.httpclient.utils;
+package net.lenni0451.commons.httpclient.utils.stream;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;

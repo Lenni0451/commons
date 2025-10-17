@@ -1,11 +1,15 @@
 package net.lenni0451.commons.httpclient.content.impl;
 
-import lombok.SneakyThrows;
+import lombok.Getter;
 import net.lenni0451.commons.httpclient.constants.ContentTypes;
 import net.lenni0451.commons.httpclient.content.HttpContent;
 import net.lenni0451.commons.httpclient.utils.URLCoder;
 
 import javax.annotation.Nonnull;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -34,7 +38,9 @@ public class URLEncodedFormContent extends HttpContent {
 
     public URLEncodedFormContent(final Map<String, String> entries, final Charset charset) {
         super(ContentTypes.APPLICATION_FORM_URLENCODED);
-        this.entries = entries.entrySet().stream().map(e -> new FormEntry(e.getKey(), e.getValue())).collect(Collectors.toList());
+        this.entries = entries.entrySet().stream()
+                .map(e -> new FormEntry(e.getKey(), e.getValue(), charset))
+                .collect(Collectors.toList());
         this.charset = charset;
     }
 
@@ -46,54 +52,54 @@ public class URLEncodedFormContent extends HttpContent {
      * @return This instance for chaining
      */
     public URLEncodedFormContent put(final String key, final String value) {
-        this.entries.add(new FormEntry(key, value));
-        this.content = null;
+        this.entries.add(new FormEntry(key, value, this.charset));
+        this.byteCache = null;
         return this;
     }
 
     @Override
-    @SneakyThrows
+    public boolean canBeStreamedMultipleTimes() {
+        return true;
+    }
+
+    @Override
     public int getContentLength() {
-        return this.getAsBytes().length;
+        int length = this.entries.size() - 1; // & characters
+        for (FormEntry entry : this.entries) {
+            length += entry.getLength();
+        }
+        return length;
     }
 
     @Nonnull
     @Override
-    protected byte[] compute() {
-        StringBuilder builder = new StringBuilder();
-        for (FormEntry entry : this.entries) {
-            if (builder.length() != 0) builder.append("&");
-            builder
-                    .append(entry.encodeKey(this.charset))
-                    .append("=")
-                    .append(entry.encodeValue(this.charset));
+    protected InputStream compute() throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream(this.getContentLength());
+        for (int i = 0; i < this.entries.size(); i++) {
+            FormEntry entry = this.entries.get(i);
+            baos.write(entry.getKey());
+            baos.write('=');
+            baos.write(entry.getValue());
+            if (i < this.entries.size() - 1) {
+                baos.write('&');
+            }
         }
-        return builder.toString().getBytes(this.charset);
+        return new ByteArrayInputStream(baos.toByteArray());
     }
 
+
+    @Getter
     private static class FormEntry {
-        private final String key;
-        private final String value;
+        private final byte[] key;
+        private final byte[] value;
 
-        private FormEntry(final String key, final String value) {
-            this.key = key;
-            this.value = value;
+        private FormEntry(final String key, final String value, final Charset charset) {
+            this.key = URLCoder.encode(key).getBytes(charset);
+            this.value = URLCoder.encode(value).getBytes(charset);
         }
 
-        private String getKey() {
-            return this.key;
-        }
-
-        private String encodeKey(Charset charset) {
-            return URLCoder.encode(this.key, charset);
-        }
-
-        private String getValue() {
-            return this.value;
-        }
-
-        private String encodeValue(Charset charset) {
-            return URLCoder.encode(this.value, charset);
+        public int getLength() {
+            return this.key.length + 1 + this.value.length; // key=value
         }
     }
 

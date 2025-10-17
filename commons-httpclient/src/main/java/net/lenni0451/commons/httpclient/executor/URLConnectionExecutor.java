@@ -3,7 +3,6 @@ package net.lenni0451.commons.httpclient.executor;
 import net.lenni0451.commons.httpclient.HttpClient;
 import net.lenni0451.commons.httpclient.HttpResponse;
 import net.lenni0451.commons.httpclient.content.HttpContent;
-import net.lenni0451.commons.httpclient.content.StreamedHttpContent;
 import net.lenni0451.commons.httpclient.proxy.ProxyHandler;
 import net.lenni0451.commons.httpclient.proxy.SingleProxySelector;
 import net.lenni0451.commons.httpclient.requests.HttpContentRequest;
@@ -84,7 +83,7 @@ public class URLConnectionExecutor extends RequestExecutor {
         connection.setDoInput(true);
         if (contentRequest != null && content != null) {
             connection.setDoOutput(true);
-            if (content instanceof StreamedHttpContent) connection.setFixedLengthStreamingMode(content.getContentLength());
+            connection.setFixedLengthStreamingMode(content.getContentLength());
         } else {
             connection.setDoOutput(false);
         }
@@ -107,15 +106,12 @@ public class URLConnectionExecutor extends RequestExecutor {
             if (connection.getDoOutput()) {
                 HttpContent content = ((HttpContentRequest) request).getContent();
                 OutputStream os = connection.getOutputStream();
-                if (content instanceof StreamedHttpContent) {
-                    StreamedHttpContent streamedContent = (StreamedHttpContent) content;
-                    InputStream is = streamedContent.getInputStream();
-                    byte[] buffer = new byte[streamedContent.getBufferSize()];
+                try (InputStream is = content.getAsStream()) {
+                    byte[] buffer = new byte[content.getBufferSize()];
                     int read;
-                    while ((read = is.read(buffer)) != -1) os.write(buffer, 0, read);
-                    is.close();
-                } else {
-                    os.write(content.getAsBytes());
+                    while ((read = is.read(buffer)) != -1) {
+                        os.write(buffer, 0, read);
+                    }
                 }
                 os.flush();
             }

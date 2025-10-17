@@ -3,6 +3,7 @@ package net.lenni0451.commons.httpclient;
 import net.lenni0451.commons.httpclient.model.HttpHeader;
 
 import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 public abstract class HeaderStore<T extends HeaderStore<T>> {
@@ -21,9 +22,7 @@ public abstract class HeaderStore<T extends HeaderStore<T>> {
      */
     public Map<String, List<String>> getHeaders() {
         return Collections.unmodifiableMap(
-                this.headers
-                        .entrySet()
-                        .stream()
+                this.headers.entrySet().stream()
                         .collect(Collectors.toMap(
                                 Map.Entry::getKey,
                                 e -> new ArrayList<>(e.getValue())
@@ -189,6 +188,21 @@ public abstract class HeaderStore<T extends HeaderStore<T>> {
      */
     public boolean hasHeader(final HttpHeader header) {
         return this.hasHeader(header.getName(), header.getValue());
+    }
+
+    /**
+     * Iterate over all headers.
+     *
+     * @param consumer The consumer
+     * @return This instance for chaining
+     */
+    public T forEachHeader(final BiConsumer<String, String> consumer) {
+        for (Map.Entry<String, List<String>> entry : this.headers.entrySet()) {
+            for (String value : entry.getValue()) {
+                consumer.accept(entry.getKey(), value);
+            }
+        }
+        return (T) this;
     }
 
 }

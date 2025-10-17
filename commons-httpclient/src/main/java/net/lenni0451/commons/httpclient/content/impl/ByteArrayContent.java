@@ -5,7 +5,8 @@ import net.lenni0451.commons.httpclient.content.HttpContent;
 import net.lenni0451.commons.httpclient.model.ContentType;
 
 import javax.annotation.Nonnull;
-import java.util.Arrays;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 
 public class ByteArrayContent extends HttpContent {
 
@@ -36,14 +37,19 @@ public class ByteArrayContent extends HttpContent {
     }
 
     @Override
+    public boolean canBeStreamedMultipleTimes() {
+        return true;
+    }
+
+    @Override
     public int getContentLength() {
         return this.content.length;
     }
 
     @Nonnull
     @Override
-    protected byte[] compute() {
-        return Arrays.copyOfRange(this.content, this.start, this.start + this.length);
+    protected InputStream compute() {
+        return new ByteArrayInputStream(this.content, this.start, this.length);
     }
 
 }
