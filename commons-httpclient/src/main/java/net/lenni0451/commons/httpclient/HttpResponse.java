@@ -28,7 +28,7 @@ public class HttpResponse extends HeaderStore<HttpResponse> {
         this.url = url;
         this.statusCode = statusCode;
         this.content = new ByteArrayContent(
-                this.getFirstHeader(HttpHeaders.CONTENT_TYPE).map(ContentType::new).orElse(ContentTypes.APPLICATION_OCTET_STREAM),
+                this.getFirstHeader(HttpHeaders.CONTENT_TYPE).map(ContentType::parse).orElse(ContentTypes.APPLICATION_OCTET_STREAM),
                 content
         );
     }
@@ -38,7 +38,7 @@ public class HttpResponse extends HeaderStore<HttpResponse> {
         this.url = url;
         this.statusCode = statusCode;
         this.content = new InputStreamContent(
-                this.getFirstHeader(HttpHeaders.CONTENT_TYPE).map(ContentType::new).orElse(ContentTypes.APPLICATION_OCTET_STREAM),
+                this.getFirstHeader(HttpHeaders.CONTENT_TYPE).map(ContentType::parse).orElse(ContentTypes.APPLICATION_OCTET_STREAM),
                 inputStream,
                 this.getFirstHeader(HttpHeaders.CONTENT_LENGTH).map(s -> {
                     try {
@@ -121,7 +121,7 @@ public class HttpResponse extends HeaderStore<HttpResponse> {
     @Deprecated
     @ApiStatus.ScheduledForRemoval
     public Optional<ContentType> getContentType() {
-        return Optional.of(this.content.getContentType());
+        return this.getFirstHeader("Content-Type").map(ContentType::parse);
     }
 
 }
