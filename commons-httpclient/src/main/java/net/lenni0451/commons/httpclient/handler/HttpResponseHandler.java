@@ -15,6 +15,13 @@ public interface HttpResponseHandler<R> {
         return response -> response;
     }
 
+    /**
+     * @return A handler that throws an exception if the response status code is >= 300
+     */
+    static ThrowingResponseHandler throwing() {
+        return new ThrowingResponseHandler();
+    }
+
 
     /**
      * Handle the response and return the result.
