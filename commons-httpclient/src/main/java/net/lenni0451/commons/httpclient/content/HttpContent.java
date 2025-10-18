@@ -3,13 +3,10 @@ package net.lenni0451.commons.httpclient.content;
 import lombok.Getter;
 import net.lenni0451.commons.httpclient.content.impl.*;
 import net.lenni0451.commons.httpclient.model.ContentType;
-import net.lenni0451.commons.httpclient.utils.HttpRequestUtils;
 
 import javax.annotation.Nonnull;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import javax.annotation.WillNotClose;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
@@ -123,9 +120,33 @@ public abstract class HttpContent {
         this.contentType = contentType;
     }
 
+    /**
+     * Set the recommended buffer size for streaming the content.<br>
+     * This is only a recommendation and may be ignored by the implementation.
+     *
+     * @param bufferSize The buffer size
+     * @return This instance for chaining
+     */
     public HttpContent setBufferSize(final int bufferSize) {
         this.bufferSize = bufferSize;
         return this;
+    }
+
+    /**
+     * Transfer the content to the given output stream.<br>
+     * The content stream will be closed after the transfer is complete.
+     *
+     * @param outputStream The output stream to transfer to
+     * @throws IOException If an I/O error occurs
+     */
+    public void transferTo(@WillNotClose final OutputStream outputStream) throws IOException {
+        try (InputStream is = this.getAsStream()) {
+            byte[] buffer = new byte[this.bufferSize];
+            int read;
+            while ((read = is.read(buffer)) >= 0) {
+                outputStream.write(buffer, 0, read);
+            }
+        }
     }
 
     /**
@@ -153,8 +174,10 @@ public abstract class HttpContent {
     @Nonnull
     public byte[] getAsBytes() throws IOException {
         if (this.byteCache == null) {
-            try (InputStream is = this.getAsStream()) {
-                this.byteCache = HttpRequestUtils.readFromStream(is);
+            int initSize = this.getContentLength() > 0 ? this.getContentLength() : this.bufferSize;
+            try (ByteArrayOutputStream baos = new ByteArrayOutputStream(initSize)) {
+                this.transferTo(baos);
+                this.byteCache = baos.toByteArray();
             }
         }
         return this.byteCache;
@@ -190,6 +213,10 @@ public abstract class HttpContent {
     public abstract boolean canBeStreamedMultipleTimes();
 
     /**
+     * Get the content length in bytes.<br>
+     * If the content length is unknown, return {@code -1}.<br>
+     * Streaming the content may require valid content length depending on the implementation.
+     *
      * @return The content length
      */
     public abstract int getContentLength();

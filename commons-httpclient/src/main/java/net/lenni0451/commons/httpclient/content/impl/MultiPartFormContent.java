@@ -18,6 +18,7 @@ public class MultiPartFormContent extends HttpContent {
 
     private final String boundary;
     private final List<FormPart> parts = new ArrayList<>();
+    private boolean unknownLength = false;
 
     public MultiPartFormContent() {
         this("---" + UUID.randomUUID() + "---");
@@ -37,6 +38,7 @@ public class MultiPartFormContent extends HttpContent {
      * @see FormPart
      */
     public MultiPartFormContent addPart(final String name, final HttpContent content) {
+        if (content.getContentLength() < 0) this.unknownLength = true;
         return this.addPart(new FormPart(name, content));
     }
 
@@ -49,6 +51,7 @@ public class MultiPartFormContent extends HttpContent {
      * @return This instance for chaining
      */
     public MultiPartFormContent addPart(final String name, final HttpContent content, @Nullable final String fileName) {
+        if (content.getContentLength() < 0) this.unknownLength = true;
         return this.addPart(new FormPart(name, content, fileName));
     }
 
@@ -59,6 +62,7 @@ public class MultiPartFormContent extends HttpContent {
      * @return This instance for chaining
      */
     public MultiPartFormContent addPart(final FormPart part) {
+        if (part.getContent().getContentLength() < 0) this.unknownLength = true;
         this.parts.add(part);
         return this;
     }
@@ -70,6 +74,7 @@ public class MultiPartFormContent extends HttpContent {
 
     @Override
     public int getContentLength() {
+        if (this.unknownLength) return -1;
         int boundaryLength = ("--" + this.boundary + "\r\n").getBytes().length;
         int[] length = {0};
         for (FormPart part : this.parts) {

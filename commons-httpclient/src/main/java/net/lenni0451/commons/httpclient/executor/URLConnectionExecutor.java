@@ -83,7 +83,9 @@ public class URLConnectionExecutor extends RequestExecutor {
         connection.setDoInput(true);
         if (contentRequest != null && content != null) {
             connection.setDoOutput(true);
-            connection.setFixedLengthStreamingMode(content.getContentLength());
+            if (connection.getContentLength() >= 0) {
+                connection.setFixedLengthStreamingMode(content.getContentLength());
+            }
         } else {
             connection.setDoOutput(false);
         }
@@ -106,13 +108,7 @@ public class URLConnectionExecutor extends RequestExecutor {
             if (connection.getDoOutput()) {
                 HttpContent content = ((HttpContentRequest) request).getContent();
                 OutputStream os = connection.getOutputStream();
-                try (InputStream is = content.getAsStream()) {
-                    byte[] buffer = new byte[content.getBufferSize()];
-                    int read;
-                    while ((read = is.read(buffer)) != -1) {
-                        os.write(buffer, 0, read);
-                    }
-                }
+                content.transferTo(os);
                 os.flush();
             }
 
