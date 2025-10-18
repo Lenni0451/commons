@@ -430,6 +430,16 @@ public class URLWrapper {
         }
 
         /**
+         * Check if a parameter with the given key exists.
+         *
+         * @param key The key of the parameter
+         * @return If a parameter with the key exists
+         */
+        public boolean hasParameter(final String key) {
+            return this.parameters.stream().anyMatch(param -> param.getKey().equals(key));
+        }
+
+        /**
          * Add a parameter.
          *
          * @param key   The key of the parameter
@@ -453,6 +463,39 @@ public class URLWrapper {
         }
 
         /**
+         * Add multiple parameters.
+         *
+         * @param parameters The parameters to add
+         * @return This instance for chaining
+         */
+        public QueryParametersWrapper addParameters(final Iterable<Parameter> parameters) {
+            parameters.forEach(this.parameters::add);
+            return this;
+        }
+
+        /**
+         * Add multiple parameters.
+         *
+         * @param parameters The parameters to add
+         * @return This instance for chaining
+         */
+        public QueryParametersWrapper addParameters(final Parameter[] parameters) {
+            Collections.addAll(this.parameters, parameters);
+            return this;
+        }
+
+        /**
+         * Add multiple parameters.
+         *
+         * @param parameters The parameters to add
+         * @return This instance for chaining
+         */
+        public QueryParametersWrapper addParameters(final Map<String, String> parameters) {
+            parameters.forEach((key, value) -> this.parameters.add(new Parameter(key, value)));
+            return this;
+        }
+
+        /**
          * Set a parameter. Existing parameters with the same key are removed.
          *
          * @param key   The key of the parameter
@@ -462,6 +505,19 @@ public class URLWrapper {
         public QueryParametersWrapper setParameter(final String key, @Nullable final String value) {
             this.parameters.removeIf(param -> param.getKey().equals(key));
             this.parameters.add(new Parameter(key, value));
+            return this;
+        }
+
+        /**
+         * Set multiple parameters. Existing parameters with the same keys are removed.
+         *
+         * @param parameters The parameters to set
+         * @return This instance for chaining
+         */
+        public QueryParametersWrapper setParameters(final Map<String, String> parameters) {
+            for (Map.Entry<String, String> entry : parameters.entrySet()) {
+                this.setParameter(entry.getKey(), entry.getValue());
+            }
             return this;
         }
 
@@ -477,13 +533,13 @@ public class URLWrapper {
         }
 
         /**
-         * Check if a parameter with the given key exists.
+         * Clear all parameters.
          *
-         * @param key The key of the parameter
-         * @return If a parameter with the key exists
+         * @return This instance for chaining
          */
-        public boolean hasParameter(final String key) {
-            return this.parameters.stream().anyMatch(param -> param.getKey().equals(key));
+        public QueryParametersWrapper clearParameters() {
+            this.parameters.clear();
+            return this;
         }
 
         /**
