@@ -1,12 +1,14 @@
 package net.lenni0451.commons.httpclient.utils;
 
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.annotation.Nullable;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class URLWrapper {
 
@@ -139,6 +141,9 @@ public class URLWrapper {
      * @return The URLWrapper
      */
     public URLWrapper setPort(final int port) {
+        if (port > 65535) {
+            throw new IllegalArgumentException("Port must not be greater than 65535");
+        }
         this.port = port;
         return this;
     }
@@ -186,8 +191,18 @@ public class URLWrapper {
      *
      * @return The query wrapper
      */
+    @Deprecated
     public QueryWrapper wrapQuery() {
         return new QueryWrapper();
+    }
+
+    /**
+     * Get a wrapper for the query parameters.
+     *
+     * @return The query parameters wrapper
+     */
+    public QueryParametersWrapper wrapQueryParameters() {
+        return new QueryParametersWrapper();
     }
 
     /**
@@ -262,12 +277,13 @@ public class URLWrapper {
     }
 
 
+    @Deprecated
     public class QueryWrapper {
         private final Map<String, String> queries = new HashMap<>();
 
         private QueryWrapper() {
             String query = URLWrapper.this.getQuery();
-            if (query != null) {
+            if (query != null && !query.isEmpty()) {
                 for (String queryPart : query.split("&")) {
                     String[] split = queryPart.split("=", 2);
                     if (split.length == 2) {
@@ -362,6 +378,148 @@ public class URLWrapper {
          */
         public URLWrapper discard() {
             return URLWrapper.this;
+        }
+    }
+
+    public class QueryParametersWrapper {
+        @Getter
+        private final List<Parameter> parameters = new ArrayList<>();
+
+        public QueryParametersWrapper() {
+            String query = URLWrapper.this.getQuery();
+            if (query != null && !query.isEmpty()) {
+                for (String queryPart : query.split("&")) {
+                    String[] split = queryPart.split("=", 2);
+                    if (split.length == 2) {
+                        this.parameters.add(new Parameter(URLCoder.decode(split[0]), URLCoder.decode(split[1])));
+                    } else {
+                        this.parameters.add(new Parameter(URLCoder.decode(split[0])));
+                    }
+                }
+            }
+        }
+
+        /**
+         * Get all values for a specific key.<br>
+         * {@code null} values are filtered out.
+         *
+         * @param key The key of the parameter
+         * @return A list of all values for the key
+         */
+        public List<String> getValues(final String key) {
+            return this.parameters.stream()
+                    .filter(param -> param.getKey().equals(key))
+                    .map(Parameter::getValue)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
+        }
+
+        /**
+         * Get the first value for a specific key.<br>
+         * {@code null} values are filtered out.
+         *
+         * @param key The key of the parameter
+         * @return An optional containing the first value for the key
+         */
+        public Optional<String> getFirstValue(final String key) {
+            return this.parameters.stream()
+                    .filter(param -> param.getKey().equals(key))
+                    .map(Parameter::getValue)
+                    .filter(Objects::nonNull)
+                    .findFirst();
+        }
+
+        /**
+         * Add a parameter.
+         *
+         * @param key   The key of the parameter
+         * @param value The value of the parameter
+         * @return This instance for chaining
+         */
+        public QueryParametersWrapper addParameter(final String key, @Nullable final String value) {
+            this.parameters.add(new Parameter(key, value));
+            return this;
+        }
+
+        /**
+         * Add a parameter.
+         *
+         * @param parameter The parameter to add
+         * @return This instance for chaining
+         */
+        public QueryParametersWrapper addParameter(final Parameter parameter) {
+            this.parameters.add(parameter);
+            return this;
+        }
+
+        /**
+         * Set a parameter. Existing parameters with the same key are removed.
+         *
+         * @param key   The key of the parameter
+         * @param value The value of the parameter
+         * @return This instance for chaining
+         */
+        public QueryParametersWrapper setParameter(final String key, @Nullable final String value) {
+            this.parameters.removeIf(param -> param.getKey().equals(key));
+            this.parameters.add(new Parameter(key, value));
+            return this;
+        }
+
+        /**
+         * Remove all parameters with the given key.
+         *
+         * @param key The key of the parameters to remove
+         * @return This instance for chaining
+         */
+        public QueryParametersWrapper removeParameters(final String key) {
+            this.parameters.removeIf(param -> param.getKey().equals(key));
+            return this;
+        }
+
+        /**
+         * Check if a parameter with the given key exists.
+         *
+         * @param key The key of the parameter
+         * @return If a parameter with the key exists
+         */
+        public boolean hasParameter(final String key) {
+            return this.parameters.stream().anyMatch(param -> param.getKey().equals(key));
+        }
+
+        /**
+         * Apply the changes to the URL.
+         *
+         * @return The URLWrapper
+         */
+        public URLWrapper apply() {
+            StringBuilder query = new StringBuilder();
+            for (Parameter parameter : this.parameters) {
+                query.append(URLCoder.encode(parameter.getKey()));
+                if (parameter.getValue() != null) {
+                    query.append("=").append(URLCoder.encode(parameter.getValue()));
+                }
+                query.append("&");
+            }
+            if (query.length() > 0) query.deleteCharAt(query.length() - 1);
+            URLWrapper.this.setQuery(query.toString());
+            return URLWrapper.this;
+        }
+    }
+
+    @Getter
+    @Setter
+    public static class Parameter {
+        private String key;
+        @Nullable
+        private String value;
+
+        public Parameter(final String key) {
+            this.key = key;
+        }
+
+        public Parameter(final String key, @Nullable final String value) {
+            this.key = key;
+            this.value = value;
         }
     }
 

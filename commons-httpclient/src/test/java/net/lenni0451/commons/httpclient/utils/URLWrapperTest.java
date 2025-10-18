@@ -68,7 +68,7 @@ class URLWrapperTest {
     @Test
     void testQueryWrapperGet() {
         URLWrapper wrapper = new URLWrapper(url);
-        assertEquals("1", wrapper.wrapQuery().getQuery("query").orElse(null));
+        assertEquals("1", wrapper.wrapQueryParameters().getFirstValue("query").orElse(null));
     }
 
     @Test
@@ -76,9 +76,9 @@ class URLWrapperTest {
         URLWrapper wrapper = new URLWrapper()
                 .setProtocol("https")
                 .setHost("www.example.com")
-                .wrapQuery()
-                .setQuery("Test", "Hello World")
-                .setQuery("Test2", "Hello World2")
+                .wrapQueryParameters()
+                .setParameter("Test", "Hello World")
+                .setParameter("Test2", "Hello World2")
                 .apply();
 
         assertEquals(assertDoesNotThrow(() -> new URL("https://www.example.com?Test=Hello+World&Test2=Hello+World2")), assertDoesNotThrow(wrapper::toURL));
