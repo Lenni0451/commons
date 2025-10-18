@@ -16,7 +16,7 @@ public interface HttpResponseHandler<R> {
     }
 
     /**
-     * @return A handler that throws an exception if the response status code is >= 300
+     * @return A handler that throws an exception if the response status code is {@literal >=} 300
      */
     static ThrowingResponseHandler throwing() {
         return new ThrowingResponseHandler();
