@@ -53,24 +53,32 @@ public class SingleProxySelector extends ProxySelector {
      * This also sets the authenticator if username and password are set.
      *
      * @param setProxySelector If the default proxy selector should be set to this instance
+     * @return This instance for chaining
      */
-    public void set(final boolean setProxySelector) {
-        if (setProxySelector) ProxySelector.setDefault(this);
+    public SingleProxySelector set(final boolean setProxySelector) {
+        if (setProxySelector) {
+            ProxySelector.setDefault(this);
+        }
         if (this.username != null && this.password != null) {
             Authenticator.setDefault(new SingleProxyAuthenticator(this.username, this.password));
         }
+        return this;
     }
 
     /**
      * Reset the default proxy selector and authenticator.
      *
      * @param resetProxySelector If the default proxy selector should be reset to the original one
+     * @return This instance for chaining
      */
-    public void reset(final boolean resetProxySelector) {
-        if (resetProxySelector) ProxySelector.setDefault(this.defaultProxySelector);
+    public SingleProxySelector reset(final boolean resetProxySelector) {
+        if (resetProxySelector) {
+            ProxySelector.setDefault(this.defaultProxySelector);
+        }
         if (this.username != null && this.password != null) {
             Authenticator.setDefault(this.defaultAuthenticator);
         }
+        return this;
     }
 
     @Override
