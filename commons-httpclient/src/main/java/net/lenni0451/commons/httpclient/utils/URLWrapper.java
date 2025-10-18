@@ -245,14 +245,20 @@ public class URLWrapper {
 
     @Override
     public String toString() {
-        String url = this.protocol + "://";
-        if (this.userInfo != null) url += this.userInfo + "@";
-        url += this.host;
-        if (this.port >= 0) url += ":" + this.port;
-        if (this.path != null) url += this.path;
-        if (this.query != null) url += "?" + this.query;
-        if (this.reference != null) url += "#" + this.reference;
-        return url;
+        StringBuilder url = new StringBuilder();
+        if (this.protocol != null) url.append(this.protocol).append("://");
+        if (this.userInfo != null) url.append(this.userInfo).append("@");
+        if (this.host != null) url.append(this.host);
+        if (this.port >= 0) url.append(":").append(this.port);
+        if (this.path != null) {
+            if (!this.path.startsWith("/")) {
+                url.append("/");
+            }
+            url.append(this.path);
+        }
+        if (this.query != null) url.append("?").append(this.query);
+        if (this.reference != null) url.append("#").append(this.reference);
+        return url.toString();
     }
 
 
