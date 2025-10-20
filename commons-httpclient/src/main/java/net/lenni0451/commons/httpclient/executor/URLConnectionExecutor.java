@@ -107,9 +107,9 @@ public class URLConnectionExecutor extends RequestExecutor {
         try {
             if (connection.getDoOutput()) {
                 HttpContent content = ((HttpContentRequest) request).getContent();
-                OutputStream os = connection.getOutputStream();
-                content.transferTo(os);
-                os.flush();
+                try (OutputStream os = connection.getOutputStream()) {
+                    content.transferTo(os);
+                }
             }
 
             Map<String, List<String>> headers = new HashMap<>(connection.getHeaderFields());
