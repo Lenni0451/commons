@@ -203,6 +203,20 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
     }
 
     /**
+     * Execute a request that is also a response handler and return the handled response.<br>
+     * This is just a shortcut for {@link #execute(HttpRequest, HttpResponseHandler)}.
+     *
+     * @param requestAndHandler The request that is also the response handler
+     * @param <T>               The type of the request and response handler
+     * @param <R>               The return type of the response handler
+     * @return The handled response
+     * @throws IOException If an I/O error occurs
+     */
+    public <T extends HttpRequest & HttpResponseHandler<R>, R> R executeAndHandle(final T requestAndHandler) throws IOException {
+        return this.execute(requestAndHandler, requestAndHandler);
+    }
+
+    /**
      * Execute a request and pass the response to the response handler.<br>
      * The return value of the response handler will be returned.
      *
