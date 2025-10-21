@@ -103,6 +103,13 @@ public class GsonObject extends GsonElement implements Iterable<Map.Entry<String
         return Optional.ofNullable(this.get(key, null));
     }
 
+    @Nonnull
+    public GsonElement req(final String key) {
+        GsonElement element = this.get(key, null);
+        if (element == null) throw new NoSuchElementException("No element found for key: " + key);
+        return element;
+    }
+
     public GsonObject getObject(final String key) {
         return this.getObject(key, null);
     }
@@ -113,6 +120,13 @@ public class GsonObject extends GsonElement implements Iterable<Map.Entry<String
 
     public Optional<GsonObject> optObject(final String key) {
         return Optional.ofNullable(this.getObject(key, null));
+    }
+
+    @Nonnull
+    public GsonObject reqObject(final String key) {
+        GsonObject object = this.getObject(key, null);
+        if (object == null) throw new NoSuchElementException("No object found for key: " + key);
+        return object;
     }
 
     public GsonArray getArray(final String key) {
@@ -127,6 +141,13 @@ public class GsonObject extends GsonElement implements Iterable<Map.Entry<String
         return Optional.ofNullable(this.getArray(key, null));
     }
 
+    @Nonnull
+    public GsonArray reqArray(final String key) {
+        GsonArray array = this.getArray(key, null);
+        if (array == null) throw new NoSuchElementException("No array found for key: " + key);
+        return array;
+    }
+
     public GsonPrimitive getPrimitive(final String key) {
         return this.getPrimitive(key, null);
     }
@@ -139,12 +160,24 @@ public class GsonObject extends GsonElement implements Iterable<Map.Entry<String
         return Optional.ofNullable(this.getPrimitive(key, null));
     }
 
+    @Nonnull
+    public GsonPrimitive reqPrimitive(final String key) {
+        GsonPrimitive primitive = this.getPrimitive(key, null);
+        if (primitive == null) throw new NoSuchElementException("No primitive found for key: " + key);
+        return primitive;
+    }
+
     public boolean getBoolean(final String key) {
         return this.getBoolean(key, false);
     }
 
     public boolean getBoolean(final String key, final boolean defaultValue) {
         return this.hasBoolean(key) ? this.object.get(key).getAsBoolean() : defaultValue;
+    }
+
+    public boolean reqBoolean(final String key) {
+        if (!this.hasBoolean(key)) throw new NoSuchElementException("No boolean found for key: " + key);
+        return this.getBoolean(key);
     }
 
     public byte getByte(final String key) {
@@ -155,12 +188,22 @@ public class GsonObject extends GsonElement implements Iterable<Map.Entry<String
         return this.hasNumber(key) ? this.object.get(key).getAsByte() : defaultValue;
     }
 
+    public byte reqByte(final String key) {
+        if (!this.hasNumber(key)) throw new NoSuchElementException("No byte found for key: " + key);
+        return this.getByte(key);
+    }
+
     public short getShort(final String key) {
         return this.getShort(key, (short) 0);
     }
 
     public short getShort(final String key, final short defaultValue) {
         return this.hasNumber(key) ? this.object.get(key).getAsShort() : defaultValue;
+    }
+
+    public short reqShort(final String key) {
+        if (!this.hasNumber(key)) throw new NoSuchElementException("No short found for key: " + key);
+        return this.getShort(key);
     }
 
     public int getInt(final String key) {
@@ -175,6 +218,11 @@ public class GsonObject extends GsonElement implements Iterable<Map.Entry<String
         return this.hasNumber(key) ? OptionalInt.of(this.object.get(key).getAsInt()) : OptionalInt.empty();
     }
 
+    public int reqInt(final String key) {
+        if (!this.hasNumber(key)) throw new NoSuchElementException("No int found for key: " + key);
+        return this.getInt(key);
+    }
+
     public long getLong(final String key) {
         return this.getLong(key, 0);
     }
@@ -183,12 +231,26 @@ public class GsonObject extends GsonElement implements Iterable<Map.Entry<String
         return this.hasNumber(key) ? this.object.get(key).getAsLong() : defaultValue;
     }
 
+    public OptionalLong optLong(final String key) {
+        return this.hasNumber(key) ? OptionalLong.of(this.object.get(key).getAsLong()) : OptionalLong.empty();
+    }
+
+    public long reqLong(final String key) {
+        if (!this.hasNumber(key)) throw new NoSuchElementException("No long found for key: " + key);
+        return this.getLong(key);
+    }
+
     public float getFloat(final String key) {
         return this.getFloat(key, 0);
     }
 
     public float getFloat(final String key, final float defaultValue) {
         return this.hasNumber(key) ? this.object.get(key).getAsFloat() : defaultValue;
+    }
+
+    public float reqFloat(final String key) {
+        if (!this.hasNumber(key)) throw new NoSuchElementException("No float found for key: " + key);
+        return this.getFloat(key);
     }
 
     public double getDouble(final String key) {
@@ -203,6 +265,11 @@ public class GsonObject extends GsonElement implements Iterable<Map.Entry<String
         return this.hasNumber(key) ? OptionalDouble.of(this.object.get(key).getAsDouble()) : OptionalDouble.empty();
     }
 
+    public double reqDouble(final String key) {
+        if (!this.hasNumber(key)) throw new NoSuchElementException("No double found for key: " + key);
+        return this.getDouble(key);
+    }
+
     public Number getNumber(final String key) {
         return this.getNumber(key, null);
     }
@@ -215,6 +282,12 @@ public class GsonObject extends GsonElement implements Iterable<Map.Entry<String
         return Optional.ofNullable(this.getNumber(key, null));
     }
 
+    @Nonnull
+    public Number reqNumber(final String key) {
+        if (!this.hasNumber(key)) throw new NoSuchElementException("No number found for key: " + key);
+        return this.getNumber(key);
+    }
+
     public String getString(final String key) {
         return this.getString(key, null);
     }
@@ -225,6 +298,13 @@ public class GsonObject extends GsonElement implements Iterable<Map.Entry<String
 
     public Optional<String> optString(final String key) {
         return Optional.ofNullable(this.getString(key, null));
+    }
+
+    @Nonnull
+    public String reqString(final String key) {
+        String value = this.getString(key, null);
+        if (value == null) throw new NoSuchElementException("No string found for key: " + key);
+        return value;
     }
 
     public int size() {
