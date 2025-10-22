@@ -3,6 +3,7 @@ package net.lenni0451.commons.httpclient.content;
 import lombok.Getter;
 import net.lenni0451.commons.httpclient.content.impl.*;
 import net.lenni0451.commons.httpclient.model.ContentType;
+import org.jetbrains.annotations.ApiStatus;
 
 import javax.annotation.Nonnull;
 import javax.annotation.WillNotClose;
@@ -109,7 +110,6 @@ public abstract class HttpContent {
     }
 
 
-    @Getter
     private final ContentType contentType;
     @Getter
     private int bufferSize = 1024;
@@ -118,6 +118,22 @@ public abstract class HttpContent {
 
     public HttpContent(final ContentType contentType) {
         this.contentType = contentType;
+    }
+
+    /**
+     * Deprecated, use {@link #getType()} instead.
+     */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval
+    public ContentType getContentType() {
+        return this.getType();
+    }
+
+    /**
+     * @return The type of this content
+     */
+    public ContentType getType() {
+        return this.contentType;
     }
 
     /**
@@ -174,7 +190,7 @@ public abstract class HttpContent {
     @Nonnull
     public byte[] getAsBytes() throws IOException {
         if (this.byteCache == null) {
-            int initSize = this.getContentLength() > 0 ? this.getContentLength() : this.bufferSize;
+            int initSize = this.getLength() > 0 ? this.getLength() : this.bufferSize;
             try (ByteArrayOutputStream baos = new ByteArrayOutputStream(initSize)) {
                 this.transferTo(baos);
                 this.byteCache = baos.toByteArray();
@@ -215,6 +231,15 @@ public abstract class HttpContent {
     }
 
     /**
+     * Deprecated, use {@link #getLength()} instead.
+     */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval
+    public int getContentLength() {
+        return this.getLength();
+    }
+
+    /**
      * Get if the content can be streamed multiple times.<br>
      * The return value is allowed to change between multiple calls depending on the implementation.
      *
@@ -229,7 +254,7 @@ public abstract class HttpContent {
      *
      * @return The content length
      */
-    public abstract int getContentLength();
+    public abstract int getLength();
 
     /**
      * Compute the content and return it as an input stream.<br>

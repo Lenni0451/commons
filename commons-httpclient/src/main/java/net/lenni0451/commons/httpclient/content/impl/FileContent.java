@@ -29,7 +29,7 @@ public class FileContent extends HttpContent {
     }
 
     @Override
-    public int getContentLength() {
+    public int getLength() {
         return (int) this.file.length();
     }
 

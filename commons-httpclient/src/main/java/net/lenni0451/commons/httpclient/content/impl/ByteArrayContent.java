@@ -42,7 +42,7 @@ public class ByteArrayContent extends HttpContent {
     }
 
     @Override
-    public int getContentLength() {
+    public int getLength() {
         return this.content.length;
     }
 

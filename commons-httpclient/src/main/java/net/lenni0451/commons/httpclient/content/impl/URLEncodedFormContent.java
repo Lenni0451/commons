@@ -63,7 +63,7 @@ public class URLEncodedFormContent extends HttpContent {
     }
 
     @Override
-    public int getContentLength() {
+    public int getLength() {
         int length = this.entries.size() - 1; // & characters
         for (FormEntry entry : this.entries) {
             length += entry.getLength();
@@ -74,7 +74,7 @@ public class URLEncodedFormContent extends HttpContent {
     @Nonnull
     @Override
     protected InputStream compute() throws IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream(this.getContentLength());
+        ByteArrayOutputStream baos = new ByteArrayOutputStream(this.getLength());
         for (int i = 0; i < this.entries.size(); i++) {
             FormEntry entry = this.entries.get(i);
             baos.write(entry.getKey());

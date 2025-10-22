@@ -13,7 +13,7 @@ class URLEncodedFormContentTest {
         content.put("key1", "value1");
         content.put("key 2", "value 2");
         content.put("key&3", "value&3");
-        int calculatedLength = content.getContentLength();
+        int calculatedLength = content.getLength();
         byte[] contentBytes = assertDoesNotThrow(content::getAsBytes);
         assertEquals(contentBytes.length, calculatedLength);
     }

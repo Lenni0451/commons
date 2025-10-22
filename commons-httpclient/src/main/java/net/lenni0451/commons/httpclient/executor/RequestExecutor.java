@@ -60,9 +60,9 @@ public abstract class RequestExecutor {
         if (request instanceof HttpContentRequest && includeContentHeaders) {
             HttpContent content = ((HttpContentRequest) request).getContent();
             if (content != null) {
-                headers.put(HttpHeaders.CONTENT_TYPE, Collections.singletonList(content.getContentType().toString()));
-                if (content.getContentLength() < 0) {
-                    headers.put(HttpHeaders.CONTENT_LENGTH, Collections.singletonList(String.valueOf(content.getContentLength())));
+                headers.put(HttpHeaders.CONTENT_TYPE, Collections.singletonList(content.getType().toString()));
+                if (content.getLength() < 0) {
+                    headers.put(HttpHeaders.CONTENT_LENGTH, Collections.singletonList(String.valueOf(content.getLength())));
                 }
             }
         }

@@ -23,7 +23,7 @@ public class InputStreamContent extends HttpContent {
     }
 
     @Override
-    public int getContentLength() {
+    public int getLength() {
         return this.contentLength;
     }
 

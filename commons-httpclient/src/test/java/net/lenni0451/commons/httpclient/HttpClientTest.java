@@ -81,7 +81,7 @@ class HttpClientTest {
     void testEmptyGet() throws IOException {
         HttpResponse response = this.client.get(baseUrl + "/empty").execute();
         assertEquals(StatusCodes.OK, response.getStatusCode());
-        assertEquals(0, response.getContent().getContentLength());
+        assertEquals(0, response.getContent().getLength());
         assertEquals("", response.getContent().getAsString());
     }
 
@@ -89,7 +89,7 @@ class HttpClientTest {
     void testEmptyPost() throws IOException {
         HttpResponse response = this.client.post(baseUrl + "/echo").execute();
         assertEquals(StatusCodes.OK, response.getStatusCode());
-        assertEquals(0, response.getContent().getContentLength());
+        assertEquals(0, response.getContent().getLength());
     }
 
     @Test

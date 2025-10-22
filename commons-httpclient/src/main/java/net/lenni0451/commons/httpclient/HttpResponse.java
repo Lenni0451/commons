@@ -116,7 +116,7 @@ public class HttpResponse extends HeaderStore<HttpResponse> {
     }
 
     /**
-     * Use {@link #getContent()} and {@link HttpContent#getContentType()} instead.
+     * Use {@link #getContent()} and {@link HttpContent#getType()} instead.
      */
     @Deprecated
     @ApiStatus.ScheduledForRemoval

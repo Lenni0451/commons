@@ -84,7 +84,7 @@ public class URLConnectionExecutor extends RequestExecutor {
         if (contentRequest != null && content != null) {
             connection.setDoOutput(true);
             if (connection.getContentLength() >= 0) {
-                connection.setFixedLengthStreamingMode(content.getContentLength());
+                connection.setFixedLengthStreamingMode(content.getLength());
             }
         } else {
             connection.setDoOutput(false);

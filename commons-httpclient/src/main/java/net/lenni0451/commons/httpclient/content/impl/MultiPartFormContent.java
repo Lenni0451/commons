@@ -38,7 +38,7 @@ public class MultiPartFormContent extends HttpContent {
      * @see FormPart
      */
     public MultiPartFormContent addPart(final String name, final HttpContent content) {
-        if (content.getContentLength() < 0) this.unknownLength = true;
+        if (content.getLength() < 0) this.unknownLength = true;
         return this.addPart(new FormPart(name, content));
     }
 
@@ -51,7 +51,7 @@ public class MultiPartFormContent extends HttpContent {
      * @return This instance for chaining
      */
     public MultiPartFormContent addPart(final String name, final HttpContent content, @Nullable final String fileName) {
-        if (content.getContentLength() < 0) this.unknownLength = true;
+        if (content.getLength() < 0) this.unknownLength = true;
         return this.addPart(new FormPart(name, content, fileName));
     }
 
@@ -62,7 +62,7 @@ public class MultiPartFormContent extends HttpContent {
      * @return This instance for chaining
      */
     public MultiPartFormContent addPart(final FormPart part) {
-        if (part.getContent().getContentLength() < 0) this.unknownLength = true;
+        if (part.getContent().getLength() < 0) this.unknownLength = true;
         this.parts.add(part);
         return this;
     }
@@ -73,7 +73,7 @@ public class MultiPartFormContent extends HttpContent {
     }
 
     @Override
-    public int getContentLength() {
+    public int getLength() {
         if (this.unknownLength) return -1;
         int boundaryLength = ("--" + this.boundary + "\r\n").getBytes().length;
         int[] length = {0};
@@ -81,7 +81,7 @@ public class MultiPartFormContent extends HttpContent {
             length[0] += boundaryLength;
             part.forEachHeader(header -> length[0] += header.getBytes().length);
             length[0] += 2; // \r\n between headers and content
-            length[0] += part.getContent().getContentLength();
+            length[0] += part.getContent().getLength();
             length[0] += 2; // \r\n after content
         }
         return length[0] + boundaryLength; // final boundary, '--' has the same length as '\r\n'
@@ -116,7 +116,7 @@ public class MultiPartFormContent extends HttpContent {
         public FormPart(final String name, final HttpContent content, @Nullable final String fileName) {
             this.content = content;
             this.setHeader(HttpHeaders.CONTENT_DISPOSITION, "form-data; name=\"" + name + "\"" + (fileName == null ? "" : ("; filename=\"" + fileName + "\"")));
-            this.setHeader(HttpHeaders.CONTENT_TYPE, content.getContentType().toString());
+            this.setHeader(HttpHeaders.CONTENT_TYPE, content.getType().toString());
         }
 
         public HttpContent getContent() {
