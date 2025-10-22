@@ -64,7 +64,7 @@ public class ReactorNettyExecutor extends RequestExecutor {
         try {
             return responseReceiver.responseSingle((response, content) -> {
                 try {
-                    URL resourceURL = URLWrapper.of(response.resourceUrl()).toURL();
+                    URL resourceURL = URLWrapper.ofURL(response.resourceUrl()).toURL();
                     Map<String, List<String>> responseHeaders = this.convertHeaders(response.responseHeaders());
                     HttpRequestUtils.updateCookies(cookieManager, resourceURL, responseHeaders);
                     return content.asByteArray().defaultIfEmpty(EMPTY_BODY).map(bytes -> new HttpResponse(

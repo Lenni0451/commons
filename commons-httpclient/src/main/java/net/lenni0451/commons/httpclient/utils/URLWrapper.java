@@ -2,6 +2,7 @@ package net.lenni0451.commons.httpclient.utils;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.ApiStatus;
 
 import javax.annotation.Nullable;
 import java.net.MalformedURLException;
@@ -22,14 +23,34 @@ public class URLWrapper {
     }
 
     /**
-     * Create a new URLWrapper from a {@link String}.
+     * Deprecated, use {@link #ofURL(String)} or {@link #ofURI(String)} instead.
+     */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval
+    public static URLWrapper of(final String url) throws MalformedURLException {
+        return ofURL(url);
+    }
+
+    /**
+     * Create a new URLWrapper from a URL string.
      *
      * @param url The URL to wrap
      * @return The URLWrapper
      * @throws MalformedURLException If the URL is invalid
      */
-    public static URLWrapper of(final String url) throws MalformedURLException {
-        return new URLWrapper(url);
+    public static URLWrapper ofURL(final String url) throws MalformedURLException {
+        return new URLWrapper(new URL(url));
+    }
+
+    /**
+     * Create a new URLWrapper from a URI string.
+     *
+     * @param uri The URI to wrap
+     * @return The URLWrapper
+     * @throws IllegalArgumentException If the URI is invalid
+     */
+    public static URLWrapper ofURI(final String uri) throws IllegalArgumentException {
+        return new URLWrapper(URI.create(uri));
     }
 
     /**
@@ -64,6 +85,8 @@ public class URLWrapper {
     public URLWrapper() {
     }
 
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval
     public URLWrapper(final String url) throws MalformedURLException {
         this(new URL(url));
     }
