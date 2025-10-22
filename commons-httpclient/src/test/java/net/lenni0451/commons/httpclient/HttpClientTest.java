@@ -12,20 +12,20 @@ import net.lenni0451.commons.httpclient.requests.HttpRequest;
 import net.lenni0451.commons.httpclient.server.TestWebServer;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+import static net.lenni0451.commons.httpclient.HttpClientSource.DATA_SOURCE;
 import static org.junit.jupiter.api.Assertions.*;
 
 class HttpClientTest {
 
     private static TestWebServer server;
     private static String baseUrl;
-    private HttpClient client;
 
     @BeforeAll
     static void startServer() throws IOException {
@@ -38,115 +38,125 @@ class HttpClientTest {
         server.stop();
     }
 
-    @BeforeEach
-    void setUp() {
-        this.client = new HttpClient();
-    }
-
-    @Test
-    void testGet() throws IOException {
-        HttpResponse response = this.client.get(baseUrl + "/echo").execute();
+    @ParameterizedTest
+    @MethodSource(DATA_SOURCE)
+    void testGet(final HttpClient client) throws IOException {
+        HttpResponse response = client.get(baseUrl + "/echo").execute();
         assertEquals(StatusCodes.OK, response.getStatusCode());
     }
 
-    @Test
-    void testErrorGet() throws IOException {
-        HttpResponse response = this.client.get(baseUrl + "/response?content=123&code=404").execute();
+    @ParameterizedTest
+    @MethodSource(DATA_SOURCE)
+    void testErrorGet(final HttpClient client) throws IOException {
+        HttpResponse response = client.get(baseUrl + "/response?content=123&code=404").execute();
         assertEquals(StatusCodes.NOT_FOUND, response.getStatusCode());
         assertEquals("123", response.getContent().getAsString());
     }
 
-    @Test
-    void testCustomCode() throws IOException {
-        HttpResponse response = this.client.get(baseUrl + "/response?content=321&code=432").execute();
+    @ParameterizedTest
+    @MethodSource(DATA_SOURCE)
+    void testCustomCode(final HttpClient client) throws IOException {
+        HttpResponse response = client.get(baseUrl + "/response?content=321&code=432").execute();
         assertEquals(432, response.getStatusCode());
         assertEquals("321", response.getContent().getAsString());
     }
 
-    @Test
-    void testPostString() throws IOException {
-        HttpResponse response = this.client.post(baseUrl + "/echo").setContent(new StringContent("Hello World")).execute();
+    @ParameterizedTest
+    @MethodSource(DATA_SOURCE)
+    void testPostString(final HttpClient client) throws IOException {
+        HttpResponse response = client.post(baseUrl + "/echo").setContent(new StringContent("Hello World")).execute();
         assertEquals(StatusCodes.OK, response.getStatusCode());
         assertEquals("Hello World", response.getContent().getAsString());
     }
 
-    @Test
-    void testPostForm() throws IOException {
-        HttpResponse response = this.client.post(baseUrl + "/echo").setContent(new URLEncodedFormContent().put("content", "Hello World")).execute();
+    @ParameterizedTest
+    @MethodSource(DATA_SOURCE)
+    void testPostForm(final HttpClient client) throws IOException {
+        HttpResponse response = client.post(baseUrl + "/echo").setContent(new URLEncodedFormContent().put("content", "Hello World")).execute();
         assertEquals(StatusCodes.OK, response.getStatusCode());
         assertEquals("content=Hello+World", response.getContent().getAsString());
     }
 
-    @Test
-    void testEmptyGet() throws IOException {
-        HttpResponse response = this.client.get(baseUrl + "/empty").execute();
+    @ParameterizedTest
+    @MethodSource(DATA_SOURCE)
+    void testEmptyGet(final HttpClient client) throws IOException {
+        HttpResponse response = client.get(baseUrl + "/empty").execute();
         assertEquals(StatusCodes.OK, response.getStatusCode());
         assertEquals(0, response.getContent().getLength());
         assertEquals("", response.getContent().getAsString());
     }
 
-    @Test
-    void testEmptyPost() throws IOException {
-        HttpResponse response = this.client.post(baseUrl + "/echo").execute();
+    @ParameterizedTest
+    @MethodSource(DATA_SOURCE)
+    void testEmptyPost(final HttpClient client) throws IOException {
+        HttpResponse response = client.post(baseUrl + "/echo").execute();
         assertEquals(StatusCodes.OK, response.getStatusCode());
         assertEquals(0, response.getContent().getLength());
     }
 
-    @Test
-    void connectFail() {
-        assertThrows(IOException.class, () -> this.client.get("http://" + System.currentTimeMillis()).execute());
+    @ParameterizedTest
+    @MethodSource(DATA_SOURCE)
+    void connectFail(final HttpClient client) {
+        assertThrows(IOException.class, () -> client.get("http://" + System.currentTimeMillis()).execute());
     }
 
-    @Test
-    void headerRetry() throws IOException {
-        this.client.setRetryHandler(new RetryHandler(0, 4/*1 initial request + 4 retries*/));
-        HttpResponse response = this.client.get(baseUrl + "/retryCookie").execute();
+    @ParameterizedTest
+    @MethodSource(DATA_SOURCE)
+    void headerRetry(final HttpClient client) throws IOException {
+        client.setRetryHandler(new RetryHandler(0, 4/*1 initial request + 4 retries*/));
+        HttpResponse response = client.get(baseUrl + "/retryCookie").execute();
         assertEquals(StatusCodes.OK, response.getStatusCode());
         assertEquals("OK", response.getContent().getAsString());
     }
 
-    @Test
-    void getWithRetry() throws IOException {
-        HttpResponse response = this.client.get(baseUrl + "/retryCookie").execute();
+    @ParameterizedTest
+    @MethodSource(DATA_SOURCE)
+    void getWithRetry(final HttpClient client) throws IOException {
+        HttpResponse response = client.get(baseUrl + "/retryCookie").execute();
         assertEquals(StatusCodes.SERVICE_UNAVAILABLE, response.getStatusCode());
         assertTrue(response.hasHeader(HttpHeaders.RETRY_AFTER));
     }
 
-    @Test
-    void failingHeaderRetry() throws IOException {
-        this.client.setRetryHandler(new RetryHandler(Integer.MAX_VALUE, Integer.MAX_VALUE));
-        HttpRequest request = this.client.get(baseUrl + "/retryCookie");
+    @ParameterizedTest
+    @MethodSource(DATA_SOURCE)
+    void failingHeaderRetry(final HttpClient client) throws IOException {
+        client.setRetryHandler(new RetryHandler(Integer.MAX_VALUE, Integer.MAX_VALUE));
+        HttpRequest request = client.get(baseUrl + "/retryCookie");
         request.setRetryHandler(new RetryHandler(0, 1));
         assertThrows(RetryExceededException.class, request::execute);
     }
 
-    @Test
-    void contentType() throws IOException {
-        HttpResponse response = this.client.post(baseUrl + "/contentType").setContent(new ByteArrayContent("Hello World".getBytes(StandardCharsets.UTF_8))).execute();
+    @ParameterizedTest
+    @MethodSource(DATA_SOURCE)
+    void contentType(final HttpClient client) throws IOException {
+        HttpResponse response = client.post(baseUrl + "/contentType").setContent(new ByteArrayContent("Hello World".getBytes(StandardCharsets.UTF_8))).execute();
         assertEquals(StatusCodes.OK, response.getStatusCode());
         assertEquals("application/octet-stream", response.getContent().getAsString());
     }
 
-    @Test
-    void followRedirect() throws IOException {
-        this.client.setFollowRedirects(true);
-        HttpResponse response = this.client.get(baseUrl + "/redirect").execute();
+    @ParameterizedTest
+    @MethodSource(DATA_SOURCE)
+    void followRedirect(final HttpClient client) throws IOException {
+        client.setFollowRedirects(true);
+        HttpResponse response = client.get(baseUrl + "/redirect").execute();
         assertEquals(StatusCodes.OK, response.getStatusCode());
         assertEquals("test", response.getContent().getAsString());
     }
 
-    @Test
-    void dontFollowRedirect() throws IOException {
-        this.client.setFollowRedirects(false);
-        HttpResponse response = this.client.get(baseUrl + "/redirect").execute();
+    @ParameterizedTest
+    @MethodSource(DATA_SOURCE)
+    void dontFollowRedirect(final HttpClient client) throws IOException {
+        client.setFollowRedirects(false);
+        HttpResponse response = client.get(baseUrl + "/redirect").execute();
         assertEquals(StatusCodes.MOVED_PERMANENTLY, response.getStatusCode());
         assertEquals("redirect", response.getContent().getAsString());
     }
 
-    @Test
-    void streamed() throws IOException {
+    @ParameterizedTest
+    @MethodSource(DATA_SOURCE)
+    void streamed(final HttpClient client) throws IOException {
         byte[] payload = "Hello World".getBytes(StandardCharsets.UTF_8);
-        HttpResponse response = this.client.post(baseUrl + "/echo").setContent(HttpContent.inputStream(ContentTypes.APPLICATION_OCTET_STREAM, new ByteArrayInputStream(payload), payload.length).setBufferSize(1)).setStreamedResponse(true).execute();
+        HttpResponse response = client.post(baseUrl + "/echo").setContent(HttpContent.inputStream(ContentTypes.APPLICATION_OCTET_STREAM, new ByteArrayInputStream(payload), payload.length).setBufferSize(1)).setStreamedResponse(true).execute();
         assertEquals(StatusCodes.OK, response.getStatusCode());
         assertEquals("Hello World", response.getContent().getAsString());
     }

@@ -278,4 +278,8 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
         return request;
     }
 
+    @Override
+    public String toString() {
+        return "HttpClient#" + this.executor.getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this));
+    }
 }
