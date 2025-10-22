@@ -1,6 +1,5 @@
 package net.lenni0451.commons.httpclient.content;
 
-import lombok.Getter;
 import net.lenni0451.commons.httpclient.content.impl.*;
 import net.lenni0451.commons.httpclient.model.ContentType;
 import org.jetbrains.annotations.ApiStatus;
@@ -111,7 +110,6 @@ public abstract class HttpContent {
 
 
     private final ContentType contentType;
-    @Getter
     private int bufferSize = 1024;
     private boolean computed = false;
     private byte[] byteCache;
@@ -125,15 +123,22 @@ public abstract class HttpContent {
      */
     @Deprecated
     @ApiStatus.ScheduledForRemoval
-    public ContentType getContentType() {
+    public final ContentType getContentType() {
         return this.getType();
     }
 
     /**
      * @return The type of this content
      */
-    public ContentType getType() {
+    public final ContentType getType() {
         return this.contentType;
+    }
+
+    /**
+     * @return The recommended buffer size for streaming the content
+     */
+    public final int getBufferSize() {
+        return this.bufferSize;
     }
 
     /**
@@ -143,7 +148,7 @@ public abstract class HttpContent {
      * @param bufferSize The buffer size
      * @return This instance for chaining
      */
-    public HttpContent setBufferSize(final int bufferSize) {
+    public final HttpContent setBufferSize(final int bufferSize) {
         this.bufferSize = bufferSize;
         return this;
     }
@@ -155,7 +160,7 @@ public abstract class HttpContent {
      * @param outputStream The output stream to transfer to
      * @throws IOException If an I/O error occurs
      */
-    public void transferTo(@WillNotClose final OutputStream outputStream) throws IOException {
+    public final void transferTo(@WillNotClose final OutputStream outputStream) throws IOException {
         try (InputStream is = this.getAsStream()) {
             byte[] buffer = new byte[this.bufferSize];
             int read;
@@ -172,12 +177,12 @@ public abstract class HttpContent {
      * @return The content as an input stream
      * @throws IOException If an I/O error occurs
      */
-    public InputStream getAsStream() throws IOException {
+    public final InputStream getAsStream() throws IOException {
         if (this.byteCache != null) {
             return new ByteArrayInputStream(this.byteCache);
         } else if (!this.computed || this.canBeStreamedMultipleTimes()) {
             this.computed = true;
-            return this.compute();
+            return this.modify(this.compute());
         } else {
             throw new IOException("This content cannot be streamed multiple times");
         }
@@ -188,7 +193,7 @@ public abstract class HttpContent {
      * @throws IOException If an I/O error occurs
      */
     @Nonnull
-    public byte[] getAsBytes() throws IOException {
+    public final byte[] getAsBytes() throws IOException {
         if (this.byteCache == null) {
             int initSize = this.getLength() > 0 ? this.getLength() : this.bufferSize;
             try (ByteArrayOutputStream baos = new ByteArrayOutputStream(initSize)) {
@@ -204,7 +209,7 @@ public abstract class HttpContent {
      * @throws IOException If an I/O error occurs
      */
     @Nonnull
-    public String getAsString() throws IOException {
+    public final String getAsString() throws IOException {
         return this.getAsString(StandardCharsets.UTF_8);
     }
 
@@ -216,7 +221,7 @@ public abstract class HttpContent {
      * @throws IOException If an I/O error occurs
      */
     @Nonnull
-    public String getAsString(final Charset charset) throws IOException {
+    public final String getAsString(final Charset charset) throws IOException {
         return new String(this.getAsBytes(), charset);
     }
 
@@ -225,7 +230,7 @@ public abstract class HttpContent {
      * This will force the content to be recomputed on the next access.<br>
      * This should only be used if {@link #canBeStreamedMultipleTimes()} returns {@code true}.
      */
-    protected void clearCache() {
+    protected final void clearCache() {
         this.byteCache = null;
         this.computed = false;
     }
@@ -235,7 +240,7 @@ public abstract class HttpContent {
      */
     @Deprecated
     @ApiStatus.ScheduledForRemoval
-    public int getContentLength() {
+    public final int getContentLength() {
         return this.getLength();
     }
 
@@ -265,5 +270,18 @@ public abstract class HttpContent {
      */
     @Nonnull
     protected abstract InputStream compute() throws IOException;
+
+    /**
+     * Modify the given input stream before returning it to the user.<br>
+     * This can be used to wrap the input stream with another stream (e.g. for decompression).<br>
+     * The default implementation just returns the given input stream.
+     *
+     * @param inputStream The input stream to modify
+     * @return The modified input stream
+     * @throws IOException If an I/O error occurs
+     */
+    protected InputStream modify(final InputStream inputStream) throws IOException {
+        return inputStream;
+    }
 
 }
