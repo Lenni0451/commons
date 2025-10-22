@@ -7,7 +7,6 @@ import net.lenni0451.commons.httpclient.executor.RequestExecutor;
 import net.lenni0451.commons.httpclient.handler.HttpResponseHandler;
 import net.lenni0451.commons.httpclient.proxy.ProxyHandler;
 import net.lenni0451.commons.httpclient.requests.HttpRequest;
-import net.lenni0451.commons.httpclient.utils.HttpRequestUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -16,6 +15,9 @@ import java.io.IOException;
 import java.net.CookieManager;
 import java.net.ProtocolException;
 import java.net.UnknownHostException;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -250,9 +252,14 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
                     Optional<String> retryAfter = response.getFirstHeader(HttpHeaders.RETRY_AFTER);
                     if (retryAfter.isPresent()) {
                         if (headers >= retryHandler.getMaxHeaderRetries()) break;
-                        Long delay = HttpRequestUtils.parseSecondsOrHttpDate(retryAfter.get());
-                        if (delay == null) return response; //An invalid retry after header. Treat as no retry
-                        if (delay > 0) Thread.sleep(delay);
+                        Long delay = this.parseSecondsOrHttpDate(retryAfter.get());
+                        if (delay == null) {
+                            //An invalid retry after header. Treat as no retry
+                            return response;
+                        }
+                        if (delay > 0) {
+                            Thread.sleep(delay);
+                        }
                     } else {
                         return response;
                     }
@@ -270,6 +277,21 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
             }
         }
         throw new IllegalStateException("Connect retry failed but no exception was thrown");
+    }
+
+    @Nullable
+    private Long parseSecondsOrHttpDate(final String value) {
+        try {
+            Instant date = Instant.from(DateTimeFormatter.RFC_1123_DATE_TIME.parse(value));
+            return date.toEpochMilli() - Instant.now().toEpochMilli();
+        } catch (DateTimeParseException ignored) {
+        }
+        try {
+            int seconds = Integer.parseInt(value);
+            return (long) seconds * 1000;
+        } catch (NumberFormatException ignored) {
+        }
+        return null;
     }
 
     @Override

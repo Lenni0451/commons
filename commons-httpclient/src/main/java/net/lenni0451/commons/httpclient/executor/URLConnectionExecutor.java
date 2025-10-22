@@ -7,15 +7,12 @@ import net.lenni0451.commons.httpclient.proxy.ProxyHandler;
 import net.lenni0451.commons.httpclient.proxy.SingleProxySelector;
 import net.lenni0451.commons.httpclient.requests.HttpContentRequest;
 import net.lenni0451.commons.httpclient.requests.HttpRequest;
-import net.lenni0451.commons.httpclient.utils.HttpRequestUtils;
 import net.lenni0451.commons.httpclient.utils.IgnoringTrustManager;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.net.ssl.HttpsURLConnection;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.CookieManager;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -73,7 +70,7 @@ public class URLConnectionExecutor extends RequestExecutor {
     }
 
     private void setupConnection(final HttpURLConnection connection, @Nullable final CookieManager cookieManager, final HttpRequest request) throws IOException {
-        HttpRequestUtils.setHeaders(connection, this.getHeaders(request, cookieManager));
+        this.setHeaders(this.getHeaders(request, cookieManager), connection::setRequestProperty, connection::addRequestProperty);
         HttpContentRequest contentRequest = request instanceof HttpContentRequest ? (HttpContentRequest) request : null;
         HttpContent content = contentRequest != null ? contentRequest.getContent() : null;
 
@@ -119,19 +116,42 @@ public class URLConnectionExecutor extends RequestExecutor {
             Map<String, List<String>> headers = new HashMap<>(connection.getHeaderFields());
             headers.remove(null);
             HttpResponse response;
+            InputStream body = this.getInputStream(connection);
             if (request.isStreamedResponse()) {
-                InputStream body = HttpRequestUtils.getInputStream(connection);
                 response = new HttpResponse(request.getURL(), connection.getResponseCode(), body, headers);
                 closeConnection = false; //The connection needs to remain open for streamed responses
             } else {
-                byte[] body = HttpRequestUtils.readBody(connection);
-                response = new HttpResponse(request.getURL(), connection.getResponseCode(), body, headers);
+                byte[] bodyContent = this.readAllBytes(body, connection.getContentLength());
+                response = new HttpResponse(request.getURL(), connection.getResponseCode(), bodyContent, headers);
             }
-            HttpRequestUtils.updateCookies(cookieManager, request.getURL(), connection.getHeaderFields());
+            this.updateCookies(cookieManager, request.getURL(), connection.getHeaderFields());
             return response;
         } finally {
             if (closeConnection) connection.disconnect();
         }
+    }
+
+    private InputStream getInputStream(final HttpURLConnection connection) throws IOException {
+        InputStream is;
+        if (connection.getResponseCode() >= 400) {
+            is = connection.getErrorStream();
+        } else {
+            is = connection.getInputStream();
+        }
+        if (is == null) {
+            is = new ByteArrayInputStream(new byte[0]);
+        }
+        return is;
+    }
+
+    private byte[] readAllBytes(final InputStream is, final int contentLength) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream(contentLength >= 0 ? contentLength : 1024);
+        byte[] buffer = new byte[1024];
+        int len;
+        while ((len = is.read(buffer)) >= 0) {
+            baos.write(buffer, 0, len);
+        }
+        return baos.toByteArray();
     }
 
 }

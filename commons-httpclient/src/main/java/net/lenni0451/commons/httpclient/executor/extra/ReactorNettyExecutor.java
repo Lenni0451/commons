@@ -9,7 +9,6 @@ import net.lenni0451.commons.httpclient.executor.RequestExecutor;
 import net.lenni0451.commons.httpclient.proxy.ProxyHandler;
 import net.lenni0451.commons.httpclient.requests.HttpContentRequest;
 import net.lenni0451.commons.httpclient.requests.HttpRequest;
-import net.lenni0451.commons.httpclient.utils.HttpRequestUtils;
 import net.lenni0451.commons.httpclient.utils.IgnoringTrustManager;
 import net.lenni0451.commons.httpclient.utils.URLWrapper;
 import reactor.core.publisher.Flux;
@@ -66,7 +65,7 @@ public class ReactorNettyExecutor extends RequestExecutor {
                 try {
                     URL resourceURL = URLWrapper.ofURL(response.resourceUrl()).toURL();
                     Map<String, List<String>> responseHeaders = this.convertHeaders(response.responseHeaders());
-                    HttpRequestUtils.updateCookies(cookieManager, resourceURL, responseHeaders);
+                    this.updateCookies(cookieManager, resourceURL, responseHeaders);
                     return content.asByteArray().defaultIfEmpty(EMPTY_BODY).map(bytes -> new HttpResponse(
                             resourceURL,
                             response.status().code(),
@@ -92,7 +91,7 @@ public class ReactorNettyExecutor extends RequestExecutor {
         reactor.netty.http.client.HttpClient httpClient = reactor.netty.http.client.HttpClient.create()
                 .responseTimeout(Duration.ofMillis(this.client.getReadTimeout()))
                 .followRedirect(this.isFollowRedirects(request))
-                .headers(headers -> HttpRequestUtils.setHeaders(requestHeaders, headers::set, headers::add));
+                .headers(headers -> this.setHeaders(requestHeaders, headers::set, headers::add));
         if (this.isIgnoreInvalidSSL(request)) {
             httpClient = httpClient.secure(SslProvider.builder().sslContext(SslContextBuilder.forClient().trustManager(new IgnoringTrustManager()).build()).build());
         }
