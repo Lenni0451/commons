@@ -19,6 +19,7 @@ public class HttpRequest extends HeaderStore<HttpRequest> {
 
     private final String method;
     private final URL url;
+    private boolean streamedRequest;
     private boolean streamedResponse;
     private FollowRedirects followRedirects = FollowRedirects.NOT_SET;
     private final ResettableStorage<CookieManager> cookieManager = new ResettableStorage<>();
@@ -47,6 +48,26 @@ public class HttpRequest extends HeaderStore<HttpRequest> {
      */
     public URL getURL() {
         return this.url;
+    }
+
+    /**
+     * @return If the request should be streamed
+     */
+    public boolean isStreamedRequest() {
+        return this.streamedRequest;
+    }
+
+    /**
+     * Set if the request should be streamed.<br>
+     * Streaming the request will not buffer the content and will allow you to write the content while it is being uploaded.<br>
+     * Streaming is not a mandatory feature and might not be supported by all executors.
+     *
+     * @param streamedRequest If the request should be streamed
+     * @return This instance for chaining
+     */
+    public HttpRequest setStreamedRequest(final boolean streamedRequest) {
+        this.streamedRequest = streamedRequest;
+        return this;
     }
 
     /**

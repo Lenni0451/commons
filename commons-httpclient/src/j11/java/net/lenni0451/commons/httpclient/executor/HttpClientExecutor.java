@@ -99,16 +99,27 @@ public class HttpClientExecutor extends RequestExecutor {
         java.net.http.HttpRequest.Builder builder = java.net.http.HttpRequest.newBuilder();
         builder.uri(new URLWrapper(request.getURL()).toURI());
         builder.timeout(Duration.ofMillis(this.client.getReadTimeout()));
+        java.net.http.HttpRequest.BodyPublisher bodyPublisher;
         if (request instanceof HttpContentRequest && ((HttpContentRequest) request).hasContent()) {
             HttpContent content = ((HttpContentRequest) request).getContent();
-            InputStream inputStream = content.getAsStream();
-            builder.method(request.getMethod(), BodyPublishers.ofInputStream(() -> inputStream));
+            if (request.isStreamedRequest()) {
+                InputStream inputStream = content.getAsStream();
+                bodyPublisher = BodyPublishers.ofInputStream(() -> inputStream);
+            } else {
+                bodyPublisher = BodyPublishers.ofByteArray(content.getAsBytes());
+            }
         } else {
-            builder.method(request.getMethod(), BodyPublishers.noBody());
+            bodyPublisher = BodyPublishers.noBody();
         }
+        builder.method(request.getMethod(), bodyPublisher);
         for (Map.Entry<String, List<String>> entry : this.getHeaders(request, null).entrySet()) {
-            if (entry.getKey().equalsIgnoreCase(HttpHeaders.CONTENT_LENGTH)) continue; //Java 11 HttpClient does not allow manually setting the content length
-            for (String value : entry.getValue()) builder.header(entry.getKey(), value);
+            if (entry.getKey().equalsIgnoreCase(HttpHeaders.CONTENT_LENGTH)) {
+                //Java 11 HttpClient does not allow manually setting the content length
+                continue;
+            }
+            for (String value : entry.getValue()) {
+                builder.header(entry.getKey(), value);
+            }
         }
         return builder.build();
     }

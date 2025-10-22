@@ -64,7 +64,9 @@ class HttpClientTest {
     @ParameterizedTest
     @MethodSource(DATA_SOURCE)
     void testPostString(final HttpClient client) throws IOException {
-        HttpResponse response = client.post(baseUrl + "/echo").setContent(new StringContent("Hello World")).execute();
+        HttpResponse response = client.post(baseUrl + "/echo")
+                .setContent(new StringContent("Hello World"))
+                .execute();
         assertEquals(StatusCodes.OK, response.getStatusCode());
         assertEquals("Hello World", response.getContent().getAsString());
     }
@@ -72,7 +74,9 @@ class HttpClientTest {
     @ParameterizedTest
     @MethodSource(DATA_SOURCE)
     void testPostForm(final HttpClient client) throws IOException {
-        HttpResponse response = client.post(baseUrl + "/echo").setContent(new URLEncodedFormContent().put("content", "Hello World")).execute();
+        HttpResponse response = client.post(baseUrl + "/echo")
+                .setContent(new URLEncodedFormContent().put("content", "Hello World"))
+                .execute();
         assertEquals(StatusCodes.OK, response.getStatusCode());
         assertEquals("content=Hello+World", response.getContent().getAsString());
     }
@@ -129,7 +133,9 @@ class HttpClientTest {
     @ParameterizedTest
     @MethodSource(DATA_SOURCE)
     void contentType(final HttpClient client) throws IOException {
-        HttpResponse response = client.post(baseUrl + "/contentType").setContent(new ByteArrayContent("Hello World".getBytes(StandardCharsets.UTF_8))).execute();
+        HttpResponse response = client.post(baseUrl + "/contentType")
+                .setContent(new ByteArrayContent("Hello World".getBytes(StandardCharsets.UTF_8)))
+                .execute();
         assertEquals(StatusCodes.OK, response.getStatusCode());
         assertEquals("application/octet-stream", response.getContent().getAsString());
     }
@@ -156,7 +162,11 @@ class HttpClientTest {
     @MethodSource(DATA_SOURCE)
     void streamed(final HttpClient client) throws IOException {
         byte[] payload = "Hello World".getBytes(StandardCharsets.UTF_8);
-        HttpResponse response = client.post(baseUrl + "/echo").setContent(HttpContent.inputStream(ContentTypes.APPLICATION_OCTET_STREAM, new ByteArrayInputStream(payload), payload.length).setBufferSize(1)).setStreamedResponse(true).execute();
+        HttpResponse response = client.post(baseUrl + "/echo")
+                .setContent(HttpContent.inputStream(ContentTypes.APPLICATION_OCTET_STREAM, new ByteArrayInputStream(payload), payload.length).setBufferSize(1))
+                .setStreamedRequest(true)
+                .setStreamedResponse(true)
+                .execute();
         assertEquals(StatusCodes.OK, response.getStatusCode());
         assertEquals("Hello World", response.getContent().getAsString());
     }
