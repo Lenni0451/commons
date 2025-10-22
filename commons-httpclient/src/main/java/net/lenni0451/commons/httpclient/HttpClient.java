@@ -282,4 +282,5 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
     public String toString() {
         return "HttpClient#" + this.executor.getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this));
     }
+
 }
