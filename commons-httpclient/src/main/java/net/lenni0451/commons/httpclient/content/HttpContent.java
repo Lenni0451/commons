@@ -114,7 +114,7 @@ public abstract class HttpContent {
     @Getter
     private int bufferSize = 1024;
     private boolean computed = false;
-    protected byte[] byteCache;
+    private byte[] byteCache;
 
     public HttpContent(final ContentType contentType) {
         this.contentType = contentType;
@@ -205,6 +205,16 @@ public abstract class HttpContent {
     }
 
     /**
+     * Clear the cached byte array if present.<br>
+     * This will force the content to be recomputed on the next access.<br>
+     * This should only be used if {@link #canBeStreamedMultipleTimes()} returns {@code true}.
+     */
+    protected void clearCache() {
+        this.byteCache = null;
+        this.computed = false;
+    }
+
+    /**
      * Get if the content can be streamed multiple times.<br>
      * The return value is allowed to change between multiple calls depending on the implementation.
      *
@@ -222,6 +232,9 @@ public abstract class HttpContent {
     public abstract int getContentLength();
 
     /**
+     * Compute the content and return it as an input stream.<br>
+     * This method can be called multiple times if {@link #canBeStreamedMultipleTimes()} returns {@code true}.
+     *
      * @return The content
      * @throws IOException If an I/O error occurs
      */

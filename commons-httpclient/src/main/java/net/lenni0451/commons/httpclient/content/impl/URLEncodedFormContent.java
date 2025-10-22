@@ -53,7 +53,7 @@ public class URLEncodedFormContent extends HttpContent {
      */
     public URLEncodedFormContent put(final String key, final String value) {
         this.entries.add(new FormEntry(key, value, this.charset));
-        this.byteCache = null;
+        this.clearCache();
         return this;
     }
 
