@@ -23,7 +23,8 @@ public class URLWrapper {
     }
 
     /**
-     * Deprecated, use {@link #ofURL(String)} or {@link #ofURI(String)} instead.
+     * Deprecated, use {@link #ofURL(String)} or {@link #ofURI(String)} instead.<br>
+     * The original behavior was {@link #ofURL(String)}.
      */
     @Deprecated
     @ApiStatus.ScheduledForRemoval
@@ -85,6 +86,10 @@ public class URLWrapper {
     public URLWrapper() {
     }
 
+    /**
+     * Deprecated, use {@link #ofURL(String)} or {@link #ofURI(String)} instead.<br>
+     * The original behavior was {@link #ofURL(String)}.
+     */
     @Deprecated
     @ApiStatus.ScheduledForRemoval
     public URLWrapper(final String url) throws MalformedURLException {
