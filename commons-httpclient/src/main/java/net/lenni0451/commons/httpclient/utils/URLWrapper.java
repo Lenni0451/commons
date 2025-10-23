@@ -100,7 +100,7 @@ public class URLWrapper {
         this.protocol = url.getProtocol();
         this.host = url.getHost();
         this.port = url.getPort();
-        this.path = url.getPath();
+        this.path = url.getPath().isEmpty() ? null : url.getPath();
         this.query = url.getQuery();
         this.userInfo = url.getUserInfo();
         this.reference = url.getRef();
