@@ -156,7 +156,7 @@ public class HttpResponse extends HeaderStore<HttpResponse> {
      */
     @Deprecated
     @SneakyThrows
-    @ApiStatus.ScheduledForRemoval
+    @ApiStatus.ScheduledForRemoval //17.04.2026
     public InputStream getInputStream() {
         return this.content.getAsStream();
     }
@@ -166,7 +166,7 @@ public class HttpResponse extends HeaderStore<HttpResponse> {
      */
     @Deprecated
     @SneakyThrows
-    @ApiStatus.ScheduledForRemoval
+    @ApiStatus.ScheduledForRemoval //17.04.2026
     public String getContentAsString() {
         return this.content.getAsString();
     }
@@ -176,7 +176,7 @@ public class HttpResponse extends HeaderStore<HttpResponse> {
      */
     @Deprecated
     @SneakyThrows
-    @ApiStatus.ScheduledForRemoval
+    @ApiStatus.ScheduledForRemoval //17.04.2026
     public String getContentAsString(final Charset charset) {
         return this.content.getAsString(charset);
     }
@@ -185,7 +185,7 @@ public class HttpResponse extends HeaderStore<HttpResponse> {
      * Use {@link #getContent()} and {@link HttpContent#getType()} instead.
      */
     @Deprecated
-    @ApiStatus.ScheduledForRemoval
+    @ApiStatus.ScheduledForRemoval //17.04.2026
     public Optional<ContentType> getContentType() {
         return this.getFirstHeader("Content-Type").map(ContentType::parse);
     }

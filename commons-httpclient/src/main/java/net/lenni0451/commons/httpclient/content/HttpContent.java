@@ -122,7 +122,7 @@ public abstract class HttpContent {
      * Deprecated, use {@link #getType()} instead.
      */
     @Deprecated
-    @ApiStatus.ScheduledForRemoval
+    @ApiStatus.ScheduledForRemoval //22.04.2026
     public final ContentType getContentType() {
         return this.getType();
     }
@@ -239,7 +239,7 @@ public abstract class HttpContent {
      * Deprecated, use {@link #getLength()} instead.
      */
     @Deprecated
-    @ApiStatus.ScheduledForRemoval
+    @ApiStatus.ScheduledForRemoval //22.04.2026
     public final int getContentLength() {
         return this.getLength();
     }

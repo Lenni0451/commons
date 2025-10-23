@@ -27,7 +27,7 @@ public class URLWrapper {
      * The original behavior was {@link #ofURL(String)}.
      */
     @Deprecated
-    @ApiStatus.ScheduledForRemoval
+    @ApiStatus.ScheduledForRemoval //22.04.2026
     public static URLWrapper of(final String url) throws MalformedURLException {
         return ofURL(url);
     }
@@ -91,7 +91,7 @@ public class URLWrapper {
      * The original behavior was {@link #ofURL(String)}.
      */
     @Deprecated
-    @ApiStatus.ScheduledForRemoval
+    @ApiStatus.ScheduledForRemoval //22.04.2026
     public URLWrapper(final String url) throws MalformedURLException {
         this(new URL(url));
     }
@@ -375,7 +375,7 @@ public class URLWrapper {
      * Deprecated, use {@link #getFragment()} instead.
      */
     @Deprecated
-    @ApiStatus.ScheduledForRemoval
+    @ApiStatus.ScheduledForRemoval //23.04.2026
     public String getReference() {
         return this.getFragment();
     }
@@ -384,7 +384,7 @@ public class URLWrapper {
      * Deprecated, use {@link #setFragment(String)} instead.
      */
     @Deprecated
-    @ApiStatus.ScheduledForRemoval
+    @ApiStatus.ScheduledForRemoval //23.04.2026
     public URLWrapper setReference(final String reference) {
         return this.setFragment(reference);
     }
