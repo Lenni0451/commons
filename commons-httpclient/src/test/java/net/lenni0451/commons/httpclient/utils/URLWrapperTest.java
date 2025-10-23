@@ -27,7 +27,7 @@ class URLWrapperTest {
         assertEquals("/test", wrapper.getPath());
         assertEquals("query=1", wrapper.getQuery());
         assertEquals("admin:123456", wrapper.getUserInfo());
-        assertEquals("ref", wrapper.getReference());
+        assertEquals("ref", wrapper.getFragment());
     }
 
     @Test
@@ -39,7 +39,7 @@ class URLWrapperTest {
         assertEquals("/test", wrapper.getPath());
         assertEquals("query=1", wrapper.getQuery());
         assertEquals("admin:123456", wrapper.getUserInfo());
-        assertEquals("ref", wrapper.getReference());
+        assertEquals("ref", wrapper.getFragment());
     }
 
     @Test
@@ -51,7 +51,7 @@ class URLWrapperTest {
                 .setPath("/test")
                 .setQuery("query=1")
                 .setUserInfo("admin:123456")
-                .setReference("ref");
+                .setFragment("ref");
 
         assertEquals(url, assertDoesNotThrow(wrapper::toURL));
     }

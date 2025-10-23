@@ -81,7 +81,7 @@ public class URLWrapper {
     private String path;
     private String query;
     private String userInfo;
-    private String reference;
+    private String fragment;
 
     public URLWrapper() {
     }
@@ -98,22 +98,29 @@ public class URLWrapper {
 
     public URLWrapper(final URL url) {
         this.protocol = url.getProtocol();
-        this.host = url.getHost();
+        this.host = this.emptyToNull(url.getHost());
         this.port = url.getPort();
-        this.path = url.getPath().isEmpty() ? null : url.getPath();
-        this.query = url.getQuery();
-        this.userInfo = url.getUserInfo();
-        this.reference = url.getRef();
+        this.path = this.emptyToNull(url.getPath());
+        this.query = this.emptyToNull(url.getQuery());
+        this.userInfo = this.emptyToNull(url.getUserInfo());
+        this.fragment = this.emptyToNull(url.getRef());
     }
 
     public URLWrapper(final URI uri) {
-        this.protocol = uri.getScheme();
-        this.host = uri.getHost();
+        this.protocol = this.emptyToNull(uri.getScheme());
+        this.host = this.emptyToNull(uri.getHost());
         this.port = uri.getPort();
-        this.path = uri.getPath();
-        this.query = uri.getQuery();
-        this.userInfo = uri.getUserInfo();
-        this.reference = uri.getFragment();
+        this.path = this.emptyToNull(uri.getPath());
+        this.query = this.emptyToNull(uri.getQuery());
+        this.userInfo = this.emptyToNull(uri.getUserInfo());
+        this.fragment = this.emptyToNull(uri.getFragment());
+    }
+
+    /**
+     * @return If the protocol is set
+     */
+    public boolean hasProtocol() {
+        return this.protocol != null;
     }
 
     /**
@@ -124,15 +131,29 @@ public class URLWrapper {
     }
 
     /**
-     * Set the protocol of the URL.<br>
-     * e.g. {@code https}
+     * @param defaultProtocol The default protocol to return if none is set
+     * @return The protocol of the URL. e.g. {@code https}
+     */
+    public String getProtocolOr(final String defaultProtocol) {
+        return this.protocol == null ? defaultProtocol : this.protocol;
+    }
+
+    /**
+     * Set the protocol of the URL. e.g. {@code https}
      *
      * @param protocol The new protocol
      * @return The URLWrapper
      */
     public URLWrapper setProtocol(final String protocol) {
-        this.protocol = protocol;
+        this.protocol = this.emptyToNull(protocol);
         return this;
+    }
+
+    /**
+     * @return If the host is set
+     */
+    public boolean hasHost() {
+        return this.host != null;
     }
 
     /**
@@ -143,15 +164,29 @@ public class URLWrapper {
     }
 
     /**
-     * Set the host of the URL.<br>
-     * e.g. {@code www.example.com}
+     * @param defaultHost The default host to return if none is set
+     * @return The host of the URL. e.g. {@code www.example.com}
+     */
+    public String getHostOr(final String defaultHost) {
+        return this.host == null ? defaultHost : this.host;
+    }
+
+    /**
+     * Set the host of the URL. e.g. {@code www.example.com}
      *
      * @param host The new host
      * @return The URLWrapper
      */
     public URLWrapper setHost(final String host) {
-        this.host = host;
+        this.host = this.emptyToNull(host);
         return this;
+    }
+
+    /**
+     * @return If the port is set
+     */
+    public boolean hasPort() {
+        return this.port >= 0;
     }
 
     /**
@@ -159,6 +194,14 @@ public class URLWrapper {
      */
     public int getPort() {
         return this.port;
+    }
+
+    /**
+     * @param defaultPort The default port to return if none is set
+     * @return The port of the URL. e.g. {@code 443}
+     */
+    public int getPortOr(final int defaultPort) {
+        return this.port < 0 ? defaultPort : this.port;
     }
 
     /**
@@ -177,28 +220,57 @@ public class URLWrapper {
     }
 
     /**
-     * @return The file of the URL. e.g. {@code /search}
+     * @return If the path is set
+     */
+    public boolean hasPath() {
+        return this.path != null;
+    }
+
+    /**
+     * @return The path of the URL. e.g. {@code /search}
      */
     public String getPath() {
         return this.path;
     }
 
     /**
-     * Set the file of the URL.<br>
-     * e.g. {@code /search}
+     * @param defaultPath The default path to return if none is set
+     * @return The path of the URL. e.g. {@code /search}
+     */
+    public String getPathOr(final String defaultPath) {
+        return this.path == null ? defaultPath : this.path;
+    }
+
+    /**
+     * Set the path of the URL. e.g. {@code /search}
      *
-     * @param path The new file
+     * @param path The new path
      * @return The URLWrapper
      */
     public URLWrapper setPath(final String path) {
-        this.path = path;
+        this.path = this.emptyToNull(path);
         return this;
+    }
+
+    /**
+     * @return If the query is set
+     */
+    public boolean hasQuery() {
+        return this.query != null;
     }
 
     /**
      * @return The query of the URL. e.g. {@code q=hello}
      */
     public String getQuery() {
+        return this.query;
+    }
+
+    /**
+     * @param defaultQuery The default query to return if none is set
+     * @return The query of the URL. e.g. {@code q=hello}
+     */
+    public String getQueryOr(final String defaultQuery) {
         return this.query;
     }
 
@@ -210,7 +282,7 @@ public class URLWrapper {
      * @return The URLWrapper
      */
     public URLWrapper setQuery(final String query) {
-        this.query = query;
+        this.query = this.emptyToNull(query);
         return this;
     }
 
@@ -234,10 +306,24 @@ public class URLWrapper {
     }
 
     /**
+     * @return If the user info is set
+     */
+    public boolean hasUserInfo() {
+        return this.userInfo != null;
+    }
+
+    /**
      * @return The user info of the URL. e.g. {@code user:password}
      */
     public String getUserInfo() {
         return this.userInfo;
+    }
+
+    /**
+     * @return The user info of the URL. e.g. {@code user:password}
+     */
+    public String getUserInfoOr(final String defaultUserInfo) {
+        return this.userInfo == null ? defaultUserInfo : this.userInfo;
     }
 
     /**
@@ -248,27 +334,59 @@ public class URLWrapper {
      * @return The URLWrapper
      */
     public URLWrapper setUserInfo(final String userInfo) {
-        this.userInfo = userInfo;
+        this.userInfo = this.emptyToNull(userInfo);
         return this;
     }
 
     /**
-     * @return The reference of the URL. e.g. {@code reference}
+     * @return If the fragment is set
      */
-    public String getReference() {
-        return this.reference;
+    public boolean hasFragment() {
+        return this.fragment != null;
     }
 
     /**
-     * Set the reference of the URL.<br>
-     * e.g. {@code reference}
+     * @return The fragment of the URL. e.g. {@code fragment}
+     */
+    public String getFragment() {
+        return this.fragment;
+    }
+
+    /**
+     * @return The fragment of the URL. e.g. {@code fragment}
+     */
+    public String getFragmentOr(final String defaultFragment) {
+        return this.fragment == null ? defaultFragment : this.fragment;
+    }
+
+    /**
+     * Set the fragment of the URL.<br>
+     * e.g. {@code fragment}
      *
-     * @param reference The new reference
+     * @param fragment The new fragment
      * @return The URLWrapper
      */
-    public URLWrapper setReference(final String reference) {
-        this.reference = reference;
+    public URLWrapper setFragment(final String fragment) {
+        this.fragment = this.emptyToNull(fragment);
         return this;
+    }
+
+    /**
+     * Deprecated, use {@link #getFragment()} instead.
+     */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval
+    public String getReference() {
+        return this.getFragment();
+    }
+
+    /**
+     * Deprecated, use {@link #setFragment(String)} instead.
+     */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval
+    public URLWrapper setReference(final String reference) {
+        return this.setFragment(reference);
     }
 
     /**
@@ -300,8 +418,12 @@ public class URLWrapper {
             url.append(this.path);
         }
         if (this.query != null) url.append("?").append(this.query);
-        if (this.reference != null) url.append("#").append(this.reference);
+        if (this.fragment != null) url.append("#").append(this.fragment);
         return url.toString();
+    }
+
+    private String emptyToNull(final String s) {
+        return (s == null || s.isEmpty()) ? null : s;
     }
 
 
