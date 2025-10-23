@@ -292,6 +292,7 @@ public class URLWrapper {
      * @return The query wrapper
      */
     @Deprecated
+    @ApiStatus.ScheduledForRemoval //18.04.2026
     public QueryWrapper wrapQuery() {
         return new QueryWrapper();
     }
@@ -428,6 +429,7 @@ public class URLWrapper {
 
 
     @Deprecated
+    @ApiStatus.ScheduledForRemoval //18.04.2026
     public class QueryWrapper {
         private final Map<String, String> queries = new HashMap<>();
 
