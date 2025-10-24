@@ -124,7 +124,7 @@ public class URLWrapper {
     }
 
     /**
-     * @return The protocol of the URL. e.g. {@code https}
+     * @return The protocol of the URL (e.g. {@code https})
      */
     public String getProtocol() {
         return this.protocol;
@@ -132,14 +132,14 @@ public class URLWrapper {
 
     /**
      * @param defaultProtocol The default protocol to return if none is set
-     * @return The protocol of the URL. e.g. {@code https}
+     * @return The protocol of the URL (e.g. {@code https})
      */
     public String getProtocolOr(final String defaultProtocol) {
         return this.protocol == null ? defaultProtocol : this.protocol;
     }
 
     /**
-     * Set the protocol of the URL. e.g. {@code https}
+     * Set the protocol of the URL (e.g. {@code https}).
      *
      * @param protocol The new protocol
      * @return The URLWrapper
@@ -157,7 +157,7 @@ public class URLWrapper {
     }
 
     /**
-     * @return The host of the URL. e.g. {@code www.example.com}
+     * @return The host of the URL (e.g. {@code www.example.com})
      */
     public String getHost() {
         return this.host;
@@ -165,14 +165,14 @@ public class URLWrapper {
 
     /**
      * @param defaultHost The default host to return if none is set
-     * @return The host of the URL. e.g. {@code www.example.com}
+     * @return The host of the URL (e.g. {@code www.example.com})
      */
     public String getHostOr(final String defaultHost) {
         return this.host == null ? defaultHost : this.host;
     }
 
     /**
-     * Set the host of the URL. e.g. {@code www.example.com}
+     * Set the host of the URL (e.g. {@code www.example.com}).
      *
      * @param host The new host
      * @return The URLWrapper
@@ -190,7 +190,7 @@ public class URLWrapper {
     }
 
     /**
-     * @return The port of the URL. e.g. {@code 443}
+     * @return The port of the URL (e.g. {@code 443})
      */
     public int getPort() {
         return this.port;
@@ -198,15 +198,14 @@ public class URLWrapper {
 
     /**
      * @param defaultPort The default port to return if none is set
-     * @return The port of the URL. e.g. {@code 443}
+     * @return The port of the URL (e.g. {@code 443})
      */
     public int getPortOr(final int defaultPort) {
         return this.port < 0 ? defaultPort : this.port;
     }
 
     /**
-     * Set the port of the URL.<br>
-     * e.g. {@code 443}
+     * Set the port of the URL (e.g. {@code 443}).
      *
      * @param port The new port
      * @return The URLWrapper
@@ -227,7 +226,7 @@ public class URLWrapper {
     }
 
     /**
-     * @return The path of the URL. e.g. {@code /search}
+     * @return The path of the URL (e.g. {@code /search})
      */
     public String getPath() {
         return this.path;
@@ -235,14 +234,14 @@ public class URLWrapper {
 
     /**
      * @param defaultPath The default path to return if none is set
-     * @return The path of the URL. e.g. {@code /search}
+     * @return The path of the URL (e.g. {@code /search})
      */
     public String getPathOr(final String defaultPath) {
         return this.path == null ? defaultPath : this.path;
     }
 
     /**
-     * Set the path of the URL. e.g. {@code /search}
+     * Set the path of the URL (e.g. {@code /search}).
      *
      * @param path The new path
      * @return The URLWrapper
@@ -260,7 +259,7 @@ public class URLWrapper {
     }
 
     /**
-     * @return The query of the URL. e.g. {@code q=hello}
+     * @return The query of the URL (e.g. {@code q=hello})
      */
     public String getQuery() {
         return this.query;
@@ -268,15 +267,14 @@ public class URLWrapper {
 
     /**
      * @param defaultQuery The default query to return if none is set
-     * @return The query of the URL. e.g. {@code q=hello}
+     * @return The query of the URL (e.g. {@code q=hello})
      */
     public String getQueryOr(final String defaultQuery) {
         return this.query;
     }
 
     /**
-     * Set the query of the URL.<br>
-     * e.g. {@code q=hello}
+     * Set the query of the URL (e.g. {@code q=hello}).
      *
      * @param query The new query
      * @return The URLWrapper
@@ -314,22 +312,22 @@ public class URLWrapper {
     }
 
     /**
-     * @return The user info of the URL. e.g. {@code user:password}
+     * @return The user info of the URL (e.g. {@code user:password})
      */
     public String getUserInfo() {
         return this.userInfo;
     }
 
     /**
-     * @return The user info of the URL. e.g. {@code user:password}
+     * @param defaultUserInfo The default user info to return if none is set
+     * @return The user info of the URL (e.g. {@code user:password})
      */
     public String getUserInfoOr(final String defaultUserInfo) {
         return this.userInfo == null ? defaultUserInfo : this.userInfo;
     }
 
     /**
-     * Set the user info of the URL.<br>
-     * e.g. {@code user:password}
+     * Set the user info of the URL (e.g. {@code user:password}).
      *
      * @param userInfo The new user info
      * @return The URLWrapper
@@ -347,22 +345,22 @@ public class URLWrapper {
     }
 
     /**
-     * @return The fragment of the URL. e.g. {@code fragment}
+     * @return The fragment of the URL (e.g. {@code fragment})
      */
     public String getFragment() {
         return this.fragment;
     }
 
     /**
-     * @return The fragment of the URL. e.g. {@code fragment}
+     * @param defaultFragment The default fragment to return if none is set
+     * @return The fragment of the URL (e.g. {@code fragment})
      */
     public String getFragmentOr(final String defaultFragment) {
         return this.fragment == null ? defaultFragment : this.fragment;
     }
 
     /**
-     * Set the fragment of the URL.<br>
-     * e.g. {@code fragment}
+     * Set the fragment of the URL (e.g. {@code fragment}).
      *
      * @param fragment The new fragment
      * @return The URLWrapper

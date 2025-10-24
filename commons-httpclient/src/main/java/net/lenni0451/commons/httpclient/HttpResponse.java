@@ -122,6 +122,7 @@ public class HttpResponse extends HeaderStore<HttpResponse> {
      * If the content is not encoded, or uses an unsupported encoding, the original content will be returned.<br>
      * The {@link HttpHeaders#CONTENT_ENCODING} header is renamed to {@code Original-Content-Encoding} if the content has been decoded.
      *
+     * @param decoderProvider The provider for content decoders
      * @return The decoded content
      */
     public HttpContent getDecodedContent(final DecoderProvider decoderProvider) {

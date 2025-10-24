@@ -33,7 +33,7 @@ public class SequentialInputStream extends InputStream {
     /**
      * Create a new SequentialInputStream with the given initial capacity and default growth factor.
      *
-     * @param initialCapacity The initial capacity of the internal buffer (must be >= 0)
+     * @param initialCapacity The initial capacity of the internal buffer (must be {@literal >=} 0)
      */
     public SequentialInputStream(final int initialCapacity) {
         this(initialCapacity, DEFAULT_GROWTH_FACTOR);
@@ -42,7 +42,7 @@ public class SequentialInputStream extends InputStream {
     /**
      * Create a new SequentialInputStream with the given growth factor and default initial capacity.
      *
-     * @param growthFactor The growth factor of the internal buffer when it needs to grow (must be >= 1)
+     * @param growthFactor The growth factor of the internal buffer when it needs to grow (must be {@literal >=} 1)
      */
     public SequentialInputStream(final float growthFactor) {
         this(DEFAULT_INITIAL_CAPACITY, growthFactor);
@@ -51,8 +51,8 @@ public class SequentialInputStream extends InputStream {
     /**
      * Create a new SequentialInputStream with the given initial capacity and growth factor.
      *
-     * @param initialCapacity The initial capacity of the internal buffer (must be >= 0)
-     * @param growthFactor    The growth factor of the internal buffer when it needs to grow (must be >= 1)
+     * @param initialCapacity The initial capacity of the internal buffer (must be {@literal >=} 0)
+     * @param growthFactor    The growth factor of the internal buffer when it needs to grow (must be {@literal >=} 1)
      */
     public SequentialInputStream(final int initialCapacity, final float growthFactor) {
         if (initialCapacity < 0) throw new IllegalArgumentException("initialCapacity must be >= 0");

@@ -273,7 +273,7 @@ public class HttpHeaders {
      * The file may define a policy to grant clients, such as Adobe's Flash Player (now obsolete), Adobe Acrobat, Microsoft Silverlight (now obsolete), or Apache Flex,
      * permission to handle data across domains that would otherwise be restricted due to the <a href="https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy">Same-Origin Policy</a>.
      *
-     * @see <a href="https://www.adobe.com/devnet-docs/acrobatetk/tools/AppSec/CrossDomain_PolicyFile_Specification.pdf>Cross-domain Policy File Specification</a>
+     * @see <a href="https://www.adobe.com/devnet-docs/acrobatetk/tools/AppSec/CrossDomain_PolicyFile_Specification.pdf">Cross-domain Policy File Specification</a>
      */
     public static final String X_PERMITTED_CROSS_DOMAIN_POLICIES = "X-Permitted-Cross-Domain-Policies";
     /**
