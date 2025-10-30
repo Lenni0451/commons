@@ -9,6 +9,7 @@ import net.lenni0451.commons.httpclient.content.impl.StringContent;
 import net.lenni0451.commons.httpclient.content.impl.URLEncodedFormContent;
 import net.lenni0451.commons.httpclient.exceptions.RetryExceededException;
 import net.lenni0451.commons.httpclient.requests.HttpRequest;
+import net.lenni0451.commons.httpclient.retry.RetryConfig;
 import net.lenni0451.commons.httpclient.server.TestWebServer;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -107,7 +108,7 @@ class HttpClientTest {
     @ParameterizedTest
     @MethodSource(DATA_SOURCE)
     void headerRetry(final HttpClient client) throws IOException {
-        client.setRetryHandler(new RetryHandler(0, 4/*1 initial request + 4 retries*/));
+        client.setRetryHandler(new RetryConfig(0, 4/*1 initial request + 4 retries*/));
         HttpResponse response = client.get(baseUrl + "/retryCookie").execute();
         assertEquals(StatusCodes.OK, response.getStatusCode());
         assertEquals("OK", response.getContent().getAsString());
@@ -124,9 +125,9 @@ class HttpClientTest {
     @ParameterizedTest
     @MethodSource(DATA_SOURCE)
     void failingHeaderRetry(final HttpClient client) throws IOException {
-        client.setRetryHandler(new RetryHandler(Integer.MAX_VALUE, Integer.MAX_VALUE));
+        client.setRetryHandler(new RetryConfig(Integer.MAX_VALUE, Integer.MAX_VALUE));
         HttpRequest request = client.get(baseUrl + "/retryCookie");
-        request.setRetryHandler(new RetryHandler(0, 1));
+        request.setRetryHandler(new RetryConfig(0, 1));
         assertThrows(RetryExceededException.class, request::execute);
     }
 

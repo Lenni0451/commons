@@ -3,8 +3,8 @@ package net.lenni0451.commons.httpclient.requests;
 import net.lenni0451.commons.httpclient.HeaderStore;
 import net.lenni0451.commons.httpclient.HttpClient;
 import net.lenni0451.commons.httpclient.HttpResponse;
-import net.lenni0451.commons.httpclient.RetryHandler;
 import net.lenni0451.commons.httpclient.handler.HttpResponseHandler;
+import net.lenni0451.commons.httpclient.retry.RetryConfig;
 import net.lenni0451.commons.httpclient.utils.ResettableStorage;
 
 import javax.annotation.Nonnull;
@@ -23,7 +23,7 @@ public class HttpRequest extends HeaderStore<HttpRequest> {
     private boolean streamedResponse;
     private FollowRedirects followRedirects = FollowRedirects.NOT_SET;
     private final ResettableStorage<CookieManager> cookieManager = new ResettableStorage<>();
-    private final ResettableStorage<RetryHandler> retryHandler = new ResettableStorage<>();
+    private final ResettableStorage<RetryConfig> retryHandler = new ResettableStorage<>();
     private final ResettableStorage<Boolean> ignoreInvalidSSL = new ResettableStorage<>();
     private WeakReference<HttpClient> boundClient;
 
@@ -178,18 +178,18 @@ public class HttpRequest extends HeaderStore<HttpRequest> {
      * @throws IllegalStateException If the retry handler is not set
      */
     @Nonnull
-    public RetryHandler getRetryHandler() {
+    public RetryConfig getRetryHandler() {
         return this.retryHandler.get();
     }
 
     /**
      * Set the retry handler to use for this request.
      *
-     * @param retryHandler The retry handler to use
+     * @param retryConfig The retry handler to use
      * @return This instance for chaining
      */
-    public HttpRequest setRetryHandler(@Nonnull final RetryHandler retryHandler) {
-        this.retryHandler.set(retryHandler);
+    public HttpRequest setRetryHandler(@Nonnull final RetryConfig retryConfig) {
+        this.retryHandler.set(retryConfig);
         return this;
     }
 

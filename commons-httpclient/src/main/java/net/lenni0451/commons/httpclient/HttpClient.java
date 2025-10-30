@@ -1,12 +1,13 @@
 package net.lenni0451.commons.httpclient;
 
-import net.lenni0451.commons.httpclient.constants.HttpHeaders;
 import net.lenni0451.commons.httpclient.exceptions.RetryExceededException;
 import net.lenni0451.commons.httpclient.executor.ExecutorType;
 import net.lenni0451.commons.httpclient.executor.RequestExecutor;
 import net.lenni0451.commons.httpclient.handler.HttpResponseHandler;
 import net.lenni0451.commons.httpclient.proxy.ProxyHandler;
 import net.lenni0451.commons.httpclient.requests.HttpRequest;
+import net.lenni0451.commons.httpclient.retry.RetryAction;
+import net.lenni0451.commons.httpclient.retry.RetryConfig;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -15,10 +16,6 @@ import java.io.IOException;
 import java.net.CookieManager;
 import java.net.ProtocolException;
 import java.net.UnknownHostException;
-import java.time.Instant;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.Optional;
 import java.util.function.Function;
 
 public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBuilder {
@@ -29,7 +26,7 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
     private boolean followRedirects = true;
     private int connectTimeout = 10_000;
     private int readTimeout = 10_000;
-    private RetryHandler retryHandler = new RetryHandler();
+    private RetryConfig retryConfig = new RetryConfig();
     private ProxyHandler proxyHandler = new ProxyHandler();
     private boolean ignoreInvalidSSL = false;
 
@@ -152,18 +149,18 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
      * @return The retry handler
      */
     @Nonnull
-    public RetryHandler getRetryHandler() {
-        return this.retryHandler;
+    public RetryConfig getRetryHandler() {
+        return this.retryConfig;
     }
 
     /**
      * Set the retry handler for all requests.
      *
-     * @param retryHandler The retry handler
+     * @param retryConfig The retry handler
      * @return This instance for chaining
      */
-    public HttpClient setRetryHandler(@Nonnull final RetryHandler retryHandler) {
-        this.retryHandler = retryHandler;
+    public HttpClient setRetryHandler(@Nonnull final RetryConfig retryConfig) {
+        this.retryConfig = retryConfig;
         return this;
     }
 
@@ -242,56 +239,38 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
      * @throws IllegalStateException  If the maximum retry count was exceeded but no exception was thrown
      */
     public HttpResponse execute(final HttpRequest request) throws IOException {
-        RetryHandler retryHandler = request.isRetryHandlerSet() ? request.getRetryHandler() : this.retryHandler;
+        RetryConfig retryConfig = request.isRetryHandlerSet() ? request.getRetryHandler() : this.retryConfig;
 
-        for (int connects = 0; connects <= retryHandler.getMaxConnectRetries(); connects++) {
+        for (int connects = 0; connects <= retryConfig.getMaxConnectRetries(); connects++) {
             try {
                 HttpResponse response = null;
-                for (int headers = 0; headers <= retryHandler.getMaxHeaderRetries(); headers++) {
+                for (int headers = 0; headers <= retryConfig.getMaxResponseRetries(); headers++) {
                     response = this.executor.execute(request);
-                    Optional<String> retryAfter = response.getFirstHeader(HttpHeaders.RETRY_AFTER);
-                    if (retryAfter.isPresent()) {
-                        if (headers >= retryHandler.getMaxHeaderRetries()) break;
-                        Long delay = this.parseSecondsOrHttpDate(retryAfter.get());
-                        if (delay == null) {
-                            //An invalid retry after header. Treat as no retry
-                            return response;
-                        }
-                        if (delay > 0) {
-                            Thread.sleep(delay);
-                        }
+                    RetryAction retryAction = retryConfig.getRetryHandler().shouldRetry(response);
+                    if (retryAction.shouldRetry()) {
+                        retryAction.sleep();
                     } else {
                         return response;
                     }
                 }
-                if (response == null) throw new IllegalStateException("Response not received but no exception was thrown");
-                if (retryHandler.getMaxHeaderRetries() == 0) return response;
-                else throw new RetryExceededException(response);
+                if (response == null) {
+                    throw new IllegalStateException("Response not received but no exception was thrown");
+                }
+                if (retryConfig.getMaxResponseRetries() == 0) {
+                    return response;
+                } else {
+                    throw new RetryExceededException(response);
+                }
             } catch (InterruptedException e) {
                 throw new IOException(e);
             } catch (UnknownHostException | SSLException | ProtocolException e) {
                 //No need to retry these as they are not going to change
                 throw e;
             } catch (IOException e) {
-                if (connects >= retryHandler.getMaxConnectRetries()) throw e;
+                if (connects >= retryConfig.getMaxConnectRetries()) throw e;
             }
         }
         throw new IllegalStateException("Connect retry failed but no exception was thrown");
-    }
-
-    @Nullable
-    private Long parseSecondsOrHttpDate(final String value) {
-        try {
-            Instant date = Instant.from(DateTimeFormatter.RFC_1123_DATE_TIME.parse(value));
-            return date.toEpochMilli() - Instant.now().toEpochMilli();
-        } catch (DateTimeParseException ignored) {
-        }
-        try {
-            int seconds = Integer.parseInt(value);
-            return (long) seconds * 1000;
-        } catch (NumberFormatException ignored) {
-        }
-        return null;
     }
 
     @Override
