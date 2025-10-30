@@ -14,6 +14,7 @@ import org.jetbrains.annotations.ApiStatus;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.*;
@@ -21,6 +22,49 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
 
 public class HttpResponse extends HeaderStore<HttpResponse> {
+
+    private static final Map<String, InputStreamMapper> DEFAULT_DECODERS = new HashMap<>();
+
+    static {
+        DEFAULT_DECODERS.put("identity", inputStream -> inputStream);
+        DEFAULT_DECODERS.put("gzip", GZIPInputStream::new);
+        DEFAULT_DECODERS.put("x-gzip", GZIPInputStream::new); //Deprecated, earlier name for gzip
+        DEFAULT_DECODERS.put("deflate", InflaterInputStream::new);
+        DEFAULT_DECODERS.put("br", getExistingDecoder(
+                //brotli4j - com.aayushatharva.brotli4j:brotli4j
+                "com.aayushatharva.brotli4j.decoder.BrotliInputStream",
+                //brotli - org.brotli:dec
+                "org.brotli.dec.BrotliInputStream"
+        ));
+        DEFAULT_DECODERS.put("zstd", getExistingDecoder(
+                //aircompressor - io.airlift:aircompressor
+                "io.airlift.compress.zstd.ZstdInputStream",
+                //aircompressor - io.airlift:aircompressor-v3
+                "io.airlift.compress.v3.zstd.ZstdInputStream",
+                //zsdt-jni - com.github.luben:zstd-jni
+                "com.github.luben.zstd.ZstdInputStream"
+        ));
+    }
+
+    @Nullable
+    private static InputStreamMapper getExistingDecoder(final String... decoderClasses) {
+        for (String decoderClass : decoderClasses) {
+            try {
+                Class<? extends InputStream> clazz = Class.forName(decoderClass).asSubclass(InputStream.class);
+                Constructor<? extends InputStream> constructor = clazz.getDeclaredConstructor(InputStream.class);
+                return inputStream -> {
+                    try {
+                        return constructor.newInstance(inputStream);
+                    } catch (Throwable t) {
+                        throw new IOException("Failed to create decoder input stream of type " + decoderClass, t);
+                    }
+                };
+            } catch (Throwable ignored) {
+            }
+        }
+        return null;
+    }
+
 
     private final URL url;
     private final int statusCode;
@@ -96,24 +140,28 @@ public class HttpResponse extends HeaderStore<HttpResponse> {
      *     <li>gzip (also x-gzip)</li>
      *     <li>deflate</li>
      * </ul>
+     * Library support for the following encodings is also included, if the respective library is available on the classpath:
+     * <ul>
+     *     <li>brotli
+     *         <ul>
+     *             <li>com.aayushatharva.brotli4j:brotli4j</li>
+     *             <li>org.brotli:dec</li>
+     *         </ul>
+     *     </li>
+     *     <li>zstd
+     *         <ul>
+     *             <li>io.airlift:aircompressor</li>
+     *             <li>io.airlift:aircompressor-v3</li>
+     *             <li>com.github.luben:zstd-jni</li>
+     *         </ul>
+     *     </li>
+     * </ul>
      *
      * @return The decoded content
      * @see #getDecodedContent(DecoderProvider)
      */
     public HttpContent getDecodedContent() {
-        return this.getDecodedContent(encoding -> {
-            switch (encoding.toLowerCase(Locale.ROOT)) {
-                case "identity":
-                    return inputStream -> inputStream;
-                case "gzip":
-                case "x-gzip": //Deprecated, earlier name for gzip
-                    return GZIPInputStream::new;
-                case "deflate":
-                    return InflaterInputStream::new;
-                default: // Unsupported encoding, return original content
-                    return null;
-            }
-        });
+        return this.getDecodedContent(encoding -> DEFAULT_DECODERS.get(encoding.toLowerCase(Locale.ROOT)));
     }
 
     /**
