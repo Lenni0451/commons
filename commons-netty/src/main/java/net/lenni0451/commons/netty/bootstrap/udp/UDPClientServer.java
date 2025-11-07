@@ -5,7 +5,9 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.DatagramChannel;
 import io.netty.util.AttributeKey;
-import net.lenni0451.commons.netty.UDPChannelType;
+import lombok.Getter;
+import net.lenni0451.commons.netty.channel.EventLoops;
+import net.lenni0451.commons.netty.channel.UDPChannelType;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -18,9 +20,11 @@ public class UDPClientServer {
     public static final AttributeKey<UDPClientServer> ATTRIBUTE_CLIENT_SERVER = AttributeKey.valueOf("commons-netty UDPClientServer");
 
     protected final ChannelInitializer<DatagramChannel> channelInitializer;
+    @Getter
     protected final UDPChannelType channelType;
+    @Getter
     protected final Bootstrap bootstrap;
-
+    @Getter
     protected ChannelFuture channelFuture;
 
     /**
@@ -45,19 +49,12 @@ public class UDPClientServer {
     }
 
     /**
-     * @return The channel type
-     */
-    public UDPChannelType getChannelType() {
-        return this.channelType;
-    }
-
-    /**
      * Configure the bootstrap channel, event group and options.
      */
     protected void configureBootstrap() {
         this.bootstrap
-                .group(this.channelType.getClientLoopGroup())
-                .channel(this.channelType.getChannelClass())
+                .group(EventLoops.udpClientEventLoop(this.channelType))
+                .channel(this.channelType.channelClass())
                 .attr(ATTRIBUTE_CLIENT_SERVER, this)
                 .handler(this.channelInitializer);
     }
@@ -96,20 +93,6 @@ public class UDPClientServer {
         this.configureBootstrap();
         this.channelFuture = this.bootstrap.connect(address);
         if (sync) this.channelFuture.syncUninterruptibly();
-    }
-
-    /**
-     * @return The bootstrap used to create the client/server
-     */
-    public Bootstrap getBootstrap() {
-        return this.bootstrap;
-    }
-
-    /**
-     * @return Get the connected channel future
-     */
-    public ChannelFuture getChannelFuture() {
-        return this.channelFuture;
     }
 
     /**

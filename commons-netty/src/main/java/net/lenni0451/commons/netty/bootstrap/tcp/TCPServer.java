@@ -3,12 +3,15 @@ package net.lenni0451.commons.netty.bootstrap.tcp;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
-import net.lenni0451.commons.netty.TCPChannelType;
+import lombok.Getter;
 import net.lenni0451.commons.netty.bootstrap.types.ReliableServer;
+import net.lenni0451.commons.netty.channel.EventLoops;
+import net.lenni0451.commons.netty.channel.TCPChannelType;
 
 /**
  * A simple TCP server implementation.
  */
+@Getter
 public class TCPServer extends ReliableServer {
 
     private final TCPChannelType channelType;
@@ -33,18 +36,11 @@ public class TCPServer extends ReliableServer {
         this.channelType = channelType;
     }
 
-    /**
-     * @return The channel type
-     */
-    public TCPChannelType getChannelType() {
-        return this.channelType;
-    }
-
     @Override
     protected void configureBootstrap() {
         this.bootstrap
-                .group(this.channelType.getServerParentLoopGroup(), this.channelType.getServerChildLoopGroup())
-                .channel(this.channelType.getServerChannel())
+                .group(EventLoops.tcpServerParentEventLoop(this.channelType), EventLoops.tcpServerChildEventLoop(this.channelType))
+                .channel(this.channelType.serverChannelClass())
                 .option(ChannelOption.SO_BACKLOG, 128)
                 .childOption(ChannelOption.TCP_NODELAY, true)
                 .childOption(ChannelOption.SO_KEEPALIVE, true)

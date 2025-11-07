@@ -4,6 +4,7 @@ import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
+import lombok.Getter;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -14,8 +15,9 @@ import java.net.SocketAddress;
 public abstract class ReliableServer {
 
     protected final ChannelInitializer<Channel> channelInitializer;
+    @Getter
     protected final ServerBootstrap bootstrap;
-
+    @Getter
     protected ChannelFuture channelFuture;
 
     public ReliableServer(final ChannelInitializer<Channel> channelInitializer) {
@@ -49,20 +51,6 @@ public abstract class ReliableServer {
         this.configureBootstrap();
         this.channelFuture = this.bootstrap.bind(bindAddress);
         if (sync) this.channelFuture.syncUninterruptibly();
-    }
-
-    /**
-     * @return The bootstrap used to create the server
-     */
-    public ServerBootstrap getBootstrap() {
-        return this.bootstrap;
-    }
-
-    /**
-     * @return Get the bound channel future
-     */
-    public ChannelFuture getChannelFuture() {
-        return this.channelFuture;
     }
 
     /**

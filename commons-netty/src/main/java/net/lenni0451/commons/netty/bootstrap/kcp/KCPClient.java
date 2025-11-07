@@ -5,13 +5,18 @@ import io.jpower.kcp.netty.UkcpClientChannel;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
-import net.lenni0451.commons.netty.LazyGroups;
+import lombok.Getter;
+import lombok.Setter;
 import net.lenni0451.commons.netty.bootstrap.types.ReliableClient;
+import net.lenni0451.commons.netty.channel.EventLoops;
+import net.lenni0451.commons.netty.channel.TCPChannelType;
 
 /**
  * A simple KCP client implementation.<br>
  * Requires {@code io.jpower.kcp:kcp-netty} as dependency.
  */
+@Getter
+@Setter
 public class KCPClient extends ReliableClient {
 
     private int connectTimeout = 5_000;
@@ -25,26 +30,10 @@ public class KCPClient extends ReliableClient {
         super(channelInitializer);
     }
 
-    /**
-     * @return The connect timeout in milliseconds
-     */
-    public int getConnectTimeout() {
-        return this.connectTimeout;
-    }
-
-    /**
-     * Set the connect timeout in milliseconds.
-     *
-     * @param connectTimeout The connect timeout
-     */
-    public void setConnectTimeout(final int connectTimeout) {
-        this.connectTimeout = connectTimeout;
-    }
-
     @Override
     protected void configureBootstrap() {
         this.bootstrap
-                .group(LazyGroups.NIO_CLIENT_LOOP_GROUP.get())
+                .group(EventLoops.tcpClientEventLoop(TCPChannelType.NIO))
                 .channel(UkcpClientChannel.class)
                 .option(UkcpChannelOption.UKCP_NODELAY, true)
                 .option(UkcpChannelOption.UKCP_INTERVAL, 20)

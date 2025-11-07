@@ -3,12 +3,17 @@ package net.lenni0451.commons.netty.bootstrap.tcp;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
-import net.lenni0451.commons.netty.TCPChannelType;
+import lombok.Getter;
+import lombok.Setter;
 import net.lenni0451.commons.netty.bootstrap.types.ReliableClient;
+import net.lenni0451.commons.netty.channel.EventLoops;
+import net.lenni0451.commons.netty.channel.TCPChannelType;
 
 /**
  * A simple TCP client implementation.
  */
+@Getter
+@Setter
 public class TCPClient extends ReliableClient {
 
     private final TCPChannelType channelType;
@@ -34,34 +39,11 @@ public class TCPClient extends ReliableClient {
         this.channelType = channelType;
     }
 
-    /**
-     * @return The channel type
-     */
-    public TCPChannelType getChannelType() {
-        return this.channelType;
-    }
-
-    /**
-     * @return The connect timeout in milliseconds
-     */
-    public int getConnectTimeout() {
-        return this.connectTimeout;
-    }
-
-    /**
-     * Set the connect timeout in milliseconds.
-     *
-     * @param connectTimeout The connect timeout
-     */
-    public void setConnectTimeout(final int connectTimeout) {
-        this.connectTimeout = connectTimeout;
-    }
-
     @Override
     protected void configureBootstrap() {
         this.bootstrap
-                .group(this.channelType.getClientLoopGroup())
-                .channel(this.channelType.getClientChannel())
+                .group(EventLoops.tcpClientEventLoop(this.channelType))
+                .channel(this.channelType.clientChannelClass())
                 .option(ChannelOption.TCP_NODELAY, true)
                 .option(ChannelOption.SO_KEEPALIVE, true)
                 .option(ChannelOption.IP_TOS, 0x18)
