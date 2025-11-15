@@ -30,6 +30,18 @@ class GsonObjectTest {
     }
 
     @Test
+    @Order(0)
+    void addAll() {
+        GsonObject object = new GsonObject();
+        object.addAll(OBJECT);
+        assertEquals(OBJECT.size(), object.size());
+
+        object = new GsonObject();
+        object.addAll(OBJECT.getJsonObject());
+        assertEquals(OBJECT.size(), object.size());
+    }
+
+    @Test
     @Order(1)
     void has() {
         Map<HasMethod, Predicate<String>> hasMethods = new HashMap<>();
@@ -210,6 +222,18 @@ class GsonObjectTest {
         for (Map.Entry<String, GsonElement> entry : OBJECT) {
             assertEquals(entry.getValue(), map.get(entry.getKey()));
         }
+    }
+
+    @Test
+    @Order(2)
+    void asMapWithMapper() {
+        GsonObject object = new GsonObject();
+        object.add("key1", "value1");
+        object.add("key2", "value2");
+        Map<String, String> map = object.asMap(GsonElement::asString);
+        assertEquals(2, map.size());
+        assertEquals("value1", map.get("key1"));
+        assertEquals("value2", map.get("key2"));
     }
 
     @Test

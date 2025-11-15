@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -49,6 +50,16 @@ public class GsonObject extends GsonElement implements Iterable<Map.Entry<String
 
     public GsonObject add(final String key, @Nullable final String s) {
         this.object.addProperty(key, s);
+        return this;
+    }
+
+    public GsonObject addAll(final JsonObject other) {
+        other.asMap().forEach(this.object::add);
+        return this;
+    }
+
+    public GsonObject addAll(final GsonObject other) {
+        other.getJsonObject().asMap().forEach(this.object::add);
         return this;
     }
 
@@ -337,6 +348,14 @@ public class GsonObject extends GsonElement implements Iterable<Map.Entry<String
         Map<String, GsonElement> map = new HashMap<>();
         for (Map.Entry<String, JsonElement> entry : this.object.entrySet()) {
             map.put(entry.getKey(), GsonElement.wrap(entry.getValue()));
+        }
+        return map;
+    }
+
+    public <T> Map<String, T> asMap(final Function<GsonElement, T> valueMapper) {
+        Map<String, T> map = new HashMap<>();
+        for (Map.Entry<String, JsonElement> entry : this.object.entrySet()) {
+            map.put(entry.getKey(), valueMapper.apply(GsonElement.wrap(entry.getValue())));
         }
         return map;
     }

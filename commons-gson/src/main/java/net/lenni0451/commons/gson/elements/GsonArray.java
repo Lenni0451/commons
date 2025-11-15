@@ -181,7 +181,7 @@ public class GsonArray extends GsonElement implements Iterable<GsonElement> {
         return list;
     }
 
-    public <T extends GsonElement> List<T> asList(final Function<GsonElement, T> mapper) {
+    public <T> List<T> asList(final Function<GsonElement, T> mapper) {
         List<T> list = new ArrayList<>();
         for (JsonElement element : this.array) {
             list.add(mapper.apply(GsonElement.wrap(element)));
