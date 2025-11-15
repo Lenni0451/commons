@@ -108,7 +108,7 @@ class HttpClientTest {
     @ParameterizedTest
     @MethodSource(DATA_SOURCE)
     void headerRetry(final HttpClient client) throws IOException {
-        client.setRetryHandler(new RetryConfig(0, 4/*1 initial request + 4 retries*/));
+        client.setRetryConfig(new RetryConfig(0, 4/*1 initial request + 4 retries*/));
         HttpResponse response = client.get(baseUrl + "/retryCookie").execute();
         assertEquals(StatusCodes.OK, response.getStatusCode());
         assertEquals("OK", response.getContent().getAsString());
@@ -125,7 +125,7 @@ class HttpClientTest {
     @ParameterizedTest
     @MethodSource(DATA_SOURCE)
     void failingHeaderRetry(final HttpClient client) throws IOException {
-        client.setRetryHandler(new RetryConfig(Integer.MAX_VALUE, Integer.MAX_VALUE));
+        client.setRetryConfig(new RetryConfig(Integer.MAX_VALUE, Integer.MAX_VALUE));
         HttpRequest request = client.get(baseUrl + "/retryCookie");
         request.setRetryHandler(new RetryConfig(0, 1));
         assertThrows(RetryExceededException.class, request::execute);

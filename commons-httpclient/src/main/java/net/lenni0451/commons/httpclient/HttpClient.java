@@ -8,6 +8,7 @@ import net.lenni0451.commons.httpclient.proxy.ProxyHandler;
 import net.lenni0451.commons.httpclient.requests.HttpRequest;
 import net.lenni0451.commons.httpclient.retry.RetryAction;
 import net.lenni0451.commons.httpclient.retry.RetryConfig;
+import org.jetbrains.annotations.ApiStatus;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -159,6 +160,16 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
      * @param retryConfig The retry handler
      * @return This instance for chaining
      */
+    public HttpClient setRetryConfig(@Nonnull final RetryConfig retryConfig) {
+        this.retryConfig = retryConfig;
+        return this;
+    }
+
+    /**
+     * Deprecated, use {@link #setRetryConfig(RetryConfig)} instead.
+     */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval //10.05.2026
     public HttpClient setRetryHandler(@Nonnull final RetryConfig retryConfig) {
         this.retryConfig = retryConfig;
         return this;
