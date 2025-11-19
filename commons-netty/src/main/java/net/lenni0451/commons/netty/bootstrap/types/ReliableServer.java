@@ -54,6 +54,13 @@ public abstract class ReliableServer {
     }
 
     /**
+     * @return The bound channel
+     */
+    public Channel getChannel() {
+        return this.channelFuture.channel();
+    }
+
+    /**
      * Close the bound channel future.
      */
     public void close() {

@@ -54,6 +54,13 @@ public abstract class ReliableClient {
     }
 
     /**
+     * @return The connected channel
+     */
+    public Channel getChannel() {
+        return this.channelFuture.channel();
+    }
+
+    /**
      * Close the connected channel future.
      */
     public void close() {

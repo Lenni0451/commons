@@ -1,6 +1,7 @@
 package net.lenni0451.commons.netty.bootstrap.udp;
 
 import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.DatagramChannel;
@@ -93,6 +94,13 @@ public class UDPClientServer {
         this.configureBootstrap();
         this.channelFuture = this.bootstrap.connect(address);
         if (sync) this.channelFuture.syncUninterruptibly();
+    }
+
+    /**
+     * @return The connected channel
+     */
+    public Channel getChannel() {
+        return this.channelFuture.channel();
     }
 
     /**
