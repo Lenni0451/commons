@@ -19,7 +19,7 @@ asm-commons = { module = "org.ow2.asm:asm-commons", version.ref = "asm" }
 asm-tree = { module = "org.ow2.asm:asm-tree", version.ref = "asm" }
 asm-analysis = { module = "org.ow2.asm:asm-analysis", version.ref = "asm" }
 
-netty = { module = "io.netty:netty-all", version = "4.2.8.Final" }
+netty = { module = "io.netty:netty-all", version = "4.2.9.Final" }
 netty-raknet = { module = "dev.kastle.netty:netty-transport-raknet", version = "1.4.0" }
 netty-kcp = { module = "io.jpower.kcp:kcp-netty", version = "1.5.2" }
 
