@@ -100,6 +100,54 @@ public class GsonArray extends GsonElement implements Iterable<GsonElement> {
         return GsonElement.wrap(this.array.get(index));
     }
 
+    public GsonObject getObject(final int index) {
+        return this.get(index).asObject();
+    }
+
+    public GsonArray getArray(final int index) {
+        return this.get(index).asArray();
+    }
+
+    public GsonPrimitive getPrimitive(final int index) {
+        return this.get(index).asPrimitive();
+    }
+
+    public boolean getBoolean(final int index) {
+        return this.get(index).asBoolean();
+    }
+
+    public byte getByte(final int index) {
+        return this.get(index).asByte();
+    }
+
+    public short getShort(final int index) {
+        return this.get(index).asShort();
+    }
+
+    public int getInt(final int index) {
+        return this.get(index).asInt();
+    }
+
+    public long getLong(final int index) {
+        return this.get(index).asLong();
+    }
+
+    public float getFloat(final int index) {
+        return this.get(index).asFloat();
+    }
+
+    public double getDouble(final int index) {
+        return this.get(index).asDouble();
+    }
+
+    public Number getNumber(final int index) {
+        return this.get(index).asNumber();
+    }
+
+    public String getString(final int index) {
+        return this.get(index).asString();
+    }
+
     public GsonElement remove(final int index) {
         JsonElement previous = this.array.remove(index);
         if (previous == null) return null;
