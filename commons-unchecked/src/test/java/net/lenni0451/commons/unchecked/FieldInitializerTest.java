@@ -21,7 +21,9 @@ class FieldInitializerTest {
     @Test
     void firstOf() {
         String result = assertDoesNotThrow(() -> FieldInitializer.firstOf(
-                () -> {throw new Exception("fail1");},
+                () -> {
+                    throw new Exception("fail1");
+                },
                 () -> null,
                 () -> "success",
                 () -> "fail2"
@@ -29,9 +31,13 @@ class FieldInitializerTest {
         assertEquals("success", result);
 
         assertThrows(IllegalStateException.class, () -> FieldInitializer.firstOf(
-                () -> {throw new Exception("fail1");},
+                () -> {
+                    throw new Exception("fail1");
+                },
                 () -> null,
-                () -> {throw new Exception("fail2");}
+                () -> {
+                    throw new Exception("fail2");
+                }
         ).get());
     }
 
@@ -73,7 +79,9 @@ class FieldInitializerTest {
 
     @Test
     void handleException() {
-        assertThrows(Exception.class, () -> FieldInitializer.attempt(() -> {throw new IllegalArgumentException();}).handleException(t -> new Exception()).get());
+        assertThrows(Exception.class, () -> FieldInitializer.attempt(() -> {
+            throw new IllegalArgumentException();
+        }).handleException(t -> new Exception()).get());
 
         String result = assertDoesNotThrow(() -> FieldInitializer.of("test").handleException(t -> new Exception()).get());
         assertEquals("test", result);
@@ -81,7 +89,9 @@ class FieldInitializerTest {
 
     @Test
     void silent() {
-        String result = assertDoesNotThrow(() -> FieldInitializer.<String>attempt(() -> {throw new Exception();}).silent().get());
+        String result = assertDoesNotThrow(() -> FieldInitializer.<String>attempt(() -> {
+            throw new Exception();
+        }).silent().get());
         assertNull(result);
 
         result = assertDoesNotThrow(() -> FieldInitializer.of("test").silent().get());
