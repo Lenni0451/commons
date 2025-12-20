@@ -46,6 +46,7 @@ This is done to allow you to choose the version of the library you want to use (
 | `logging`     | Basic logging api with wrappers for other libraries.                            | -                |
 | `netty`       | Handlers and client/server implementations using netty.                         | Netty            |
 | `swing`       | Utilities making creating UIs with swing easier.                                | -                |
+| `unchecked`   | Classes to make working with checked exceptions easier.                         | -                |
 
 Special modules:
 | Module     | Description                                      |
