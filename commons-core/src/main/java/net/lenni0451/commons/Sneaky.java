@@ -2,7 +2,6 @@ package net.lenni0451.commons;
 
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
-import org.jetbrains.annotations.ApiStatus;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -45,23 +44,23 @@ public class Sneaky {
     }
 
     /**
-     * Use {@link SneakyRunnable#tryRun()} instead.
+     * Run code that throws checked exceptions without having to declare them in the method signature.
+     *
+     * @param runnable The code to run
      */
-    @Deprecated
-    @SneakyThrows
-    @ApiStatus.ScheduledForRemoval //23.12.2025
     public static void sneak(final SneakyRunnable runnable) {
-        runnable.run();
+        runnable.tryRun();
     }
 
     /**
-     * Use {@link SneakySupplier#tryGet()} instead.
+     * Run code that throws checked exceptions without having to declare them in the method signature and return a value.
+     *
+     * @param supplier The code to run
+     * @param <O>      The type of the value returned by the code
+     * @return The value returned by the code
      */
-    @Deprecated
-    @SneakyThrows
-    @ApiStatus.ScheduledForRemoval //23.12.2025
     public static <O> O sneak(final SneakySupplier<O> supplier) {
-        return supplier.get();
+        return supplier.tryGet();
     }
 
     /**
