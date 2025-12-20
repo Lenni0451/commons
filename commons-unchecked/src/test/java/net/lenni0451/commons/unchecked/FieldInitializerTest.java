@@ -51,6 +51,19 @@ class FieldInitializerTest {
     }
 
     @Test
+    void peek() {
+        StringBuilder sb = new StringBuilder();
+        String result = assertDoesNotThrow(() -> FieldInitializer.of("test").peek(sb::append).get());
+        assertEquals("test", result);
+        assertEquals("test", sb.toString());
+
+        sb.setLength(0);
+        result = assertDoesNotThrow(() -> FieldInitializer.<String>of(null).peek(sb::append).get());
+        assertNull(result);
+        assertEquals("", sb.toString());
+    }
+
+    @Test
     void or() {
         String result = assertDoesNotThrow(() -> FieldInitializer.<String>of(null).or(() -> "test").get());
         assertEquals("test", result);

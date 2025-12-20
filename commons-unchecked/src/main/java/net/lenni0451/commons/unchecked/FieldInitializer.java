@@ -3,6 +3,7 @@ package net.lenni0451.commons.unchecked;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import net.lenni0451.commons.unchecked.function.ThrowingConsumer;
 import net.lenni0451.commons.unchecked.function.ThrowingFunction;
 import net.lenni0451.commons.unchecked.function.ThrowingSupplier;
 
@@ -81,6 +82,22 @@ public class FieldInitializer<T> {
             T value = this.supplier.get();
             if (value == null) return null;
             return mapper.apply(value);
+        });
+    }
+
+    /**
+     * Peek at the value of this FieldInitializer without modifying it.
+     *
+     * @param consumer The consumer to accept the value
+     * @return A new FieldInitializer with the peeked value
+     */
+    public FieldInitializer<T> peek(final ThrowingConsumer<T> consumer) {
+        return attempt(() -> {
+            T value = this.supplier.get();
+            if (value != null) {
+                consumer.accept(value);
+            }
+            return value;
         });
     }
 
