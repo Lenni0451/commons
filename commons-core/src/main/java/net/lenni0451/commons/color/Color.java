@@ -856,10 +856,10 @@ public class Color {
     @Override
     public String toString() {
         return "Color{" +
-                "r=" + this.r +
-                ", g=" + this.g +
-                ", b=" + this.b +
-                ", a=" + this.a +
+                "r=" + (this.r & 0xFF) +
+                ", g=" + (this.g & 0xFF) +
+                ", b=" + (this.b & 0xFF) +
+                ", a=" + (this.a & 0xFF) +
                 '}';
     }
 
