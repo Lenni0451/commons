@@ -34,17 +34,6 @@ public class Color {
     }
 
     /**
-     * Create a color from an int.<br>
-     * The int must be in the format: 0xBBGGRR
-     *
-     * @param bgr The int
-     * @return The created color
-     */
-    public static Color fromBGR(final int bgr) {
-        return fromRGB(bgr & 255, (bgr >> 8) & 255, (bgr >> 16) & 255);
-    }
-
-    /**
      * Create a color from red, green and blue values.<br>
      * The values must be between 0 and 255.
      *
@@ -69,6 +58,21 @@ public class Color {
     }
 
     /**
+     * Create a color from red, green, blue and alpha values.<br>
+     * The values must be between 0 and 255.
+     *
+     * @param r The red value
+     * @param g The green value
+     * @param b The blue value
+     * @param a The alpha value
+     * @return The created color
+     */
+    public static Color fromRGBA(final int r, final int g, final int b, final int a) {
+        verify(r, g, b, a);
+        return directRGBA(r, g, b, a);
+    }
+
+    /**
      * Create a color from an int.<br>
      * The int must be in the format: 0xAARRGGBB
      *
@@ -77,6 +81,17 @@ public class Color {
      */
     public static Color fromARGB(final int argb) {
         return fromRGBA((argb >> 16) & 255, (argb >> 8) & 255, argb & 255, (argb >> 24) & 255);
+    }
+
+    /**
+     * Create a color from an int.<br>
+     * The int must be in the format: 0xBBGGRR
+     *
+     * @param bgr The int
+     * @return The created color
+     */
+    public static Color fromBGR(final int bgr) {
+        return fromRGB(bgr & 255, (bgr >> 8) & 255, (bgr >> 16) & 255);
     }
 
     /**
@@ -99,21 +114,6 @@ public class Color {
      */
     public static Color fromABGR(final int abgr) {
         return fromRGBA(abgr & 255, (abgr >> 8) & 255, (abgr >> 16) & 255, (abgr >> 24) & 255);
-    }
-
-    /**
-     * Create a color from red, green, blue and alpha values.<br>
-     * The values must be between 0 and 255.
-     *
-     * @param r The red value
-     * @param g The green value
-     * @param b The blue value
-     * @param a The alpha value
-     * @return The created color
-     */
-    public static Color fromRGBA(final int r, final int g, final int b, final int a) {
-        verify(r, g, b, a);
-        return directRGBA(r, g, b, a);
     }
 
     /**
@@ -149,19 +149,6 @@ public class Color {
     }
 
     /**
-     * Create a color from a float array.<br>
-     * The array must have a length of 3.<br>
-     * The array must contain the values in the order: b, g, r<br>
-     * The values must be between 0 and 1.
-     *
-     * @param bgr The float array
-     * @return The created color
-     */
-    public static Color fromBGRF(final float[] bgr) {
-        return fromRGBF(bgr[2], bgr[1], bgr[0]);
-    }
-
-    /**
      * Create a color from red, green and blue values.<br>
      * The values must be between 0 and 1.
      *
@@ -188,6 +175,26 @@ public class Color {
     }
 
     /**
+     * Create a color from red, green, blue and alpha values.<br>
+     * The values must be between 0 and 1.
+     *
+     * @param r The red value
+     * @param g The green value
+     * @param b The blue value
+     * @param a The alpha value
+     * @return The created color
+     */
+    public static Color fromRGBAF(final float r, final float g, final float b, final float a) {
+        verify(r, g, b, a);
+        return directRGBA(
+                (int) (r * 255) & 255,
+                (int) (g * 255) & 255,
+                (int) (b * 255) & 255,
+                (int) (a * 255) & 255
+        );
+    }
+
+    /**
      * Create a color from a float array.<br>
      * The array must have a length of 4.<br>
      * The array must contain the values in the order: a, r, g, b<br>
@@ -198,6 +205,19 @@ public class Color {
      */
     public static Color fromARGBF(final float[] argb) {
         return fromRGBAF(argb[1], argb[2], argb[3], argb[0]);
+    }
+
+    /**
+     * Create a color from a float array.<br>
+     * The array must have a length of 3.<br>
+     * The array must contain the values in the order: b, g, r<br>
+     * The values must be between 0 and 1.
+     *
+     * @param bgr The float array
+     * @return The created color
+     */
+    public static Color fromBGRF(final float[] bgr) {
+        return fromRGBF(bgr[2], bgr[1], bgr[0]);
     }
 
     /**
@@ -224,26 +244,6 @@ public class Color {
      */
     public static Color fromABGRF(final float[] abgr) {
         return fromRGBAF(abgr[3], abgr[2], abgr[1], abgr[0]);
-    }
-
-    /**
-     * Create a color from red, green, blue and alpha values.<br>
-     * The values must be between 0 and 1.
-     *
-     * @param r The red value
-     * @param g The green value
-     * @param b The blue value
-     * @param a The alpha value
-     * @return The created color
-     */
-    public static Color fromRGBAF(final float r, final float g, final float b, final float a) {
-        verify(r, g, b, a);
-        return directRGBA(
-                (int) (r * 255) & 255,
-                (int) (g * 255) & 255,
-                (int) (b * 255) & 255,
-                (int) (a * 255) & 255
-        );
     }
 
     /**
