@@ -61,9 +61,10 @@ public class Color {
     {{/each}}
     {{#each channel_formats}}
     {{#set arg_name=name}}
+    {{#var "array_size"}}{{#each args}}{{#iterIsLast}}{{index}}{{/iterIsLast}}{{/each}}{{/var}}
     /**
      * Create a color from a float array.<br>
-     * The array must have a length of {{#each args}}{{#iterIsLast}}{{index}}{{/iterIsLast}}{{/each}}.<br>
+     * The array must have a length of {{var "array_size"}}.<br>
      * The array must contain the values in the order: {{#each args}}{{.short}}{{#iterHasNext}}, {{/iterHasNext}}{{/each}}<br>
      * The values must be between 0 and 1 (inclusive).
      *
@@ -71,6 +72,7 @@ public class Color {
      * @return The created color
      */
     public static Color from{{upper name}}F(final float[] {{lower arg_name}}) {
+        if ({{arg_name}}.length != {{var "array_size"}}) throw new IllegalArgumentException("Array must have a size of {{var "array_size"}}");
         return from{{upper name}}F({{#each args}}{{lower arg_name}}[{{position}}]{{#iterHasNext}}, {{/iterHasNext}}{{/each}});
     }
     {{/set}}
