@@ -1,0 +1,393 @@
+{
+    "template": "Color.mustache",
+    "target": "net/lenni0451/commons/color/Color.java",
+    "variables": {
+        "constants": [
+            {
+                "name": "TRANSPARENT",
+                "rgba": [
+                    0,
+                    0,
+                    0,
+                    0
+                ]
+            },
+            {
+                "name": "BLACK",
+                "rgb": [
+                    0,
+                    0,
+                    0
+                ]
+            },
+            {
+                "name": "LIGHT_GRAY",
+                "rgb": [
+                    192,
+                    192,
+                    192
+                ]
+            },
+            {
+                "name": "GRAY",
+                "rgb": [
+                    128,
+                    128,
+                    128
+                ]
+            },
+            {
+                "name": "DARK_GRAY",
+                "rgb": [
+                    64,
+                    64,
+                    64
+                ]
+            },
+            {
+                "name": "WHITE",
+                "rgb": [
+                    255,
+                    255,
+                    255
+                ]
+            },
+            {
+                "name": "RED",
+                "rgb": [
+                    255,
+                    0,
+                    0
+                ]
+            },
+            {
+                "name": "GREEN",
+                "rgb": [
+                    0,
+                    255,
+                    0
+                ]
+            },
+            {
+                "name": "BLUE",
+                "rgb": [
+                    0,
+                    0,
+                    255
+                ]
+            },
+            {
+                "name": "ORANGE",
+                "rgb": [
+                    255,
+                    200,
+                    0
+                ]
+            },
+            {
+                "name": "YELLOW",
+                "rgb": [
+                    255,
+                    255,
+                    0
+                ]
+            },
+            {
+                "name": "CYAN",
+                "rgb": [
+                    0,
+                    255,
+                    255
+                ]
+            },
+            {
+                "name": "PINK",
+                "rgb": [
+                    255,
+                    175,
+                    175
+                ]
+            },
+            {
+                "name": "MAGENTA",
+                "rgb": [
+                    255,
+                    0,
+                    255
+                ]
+            }
+        ],
+        "channel_formats": [
+            {
+                "name": "rgb",
+                "args": [
+                    {
+                        "short": "r",
+                        "name": "red"
+                    },
+                    {
+                        "short": "g",
+                        "name": "green"
+                    },
+                    {
+                        "short": "b",
+                        "name": "blue"
+                    }
+                ],
+                "constructor": [
+                    "r",
+                    "g",
+                    "b"
+                ],
+                "offset": [
+                    {
+                        "name": "r",
+                        "value": 16
+                    },
+                    {
+                        "name": "g",
+                        "value": 8
+                    },
+                    {
+                        "name": "b",
+                        "value": 0
+                    }
+                ]
+            },
+            {
+                "name": "rgba",
+                "args": [
+                    {
+                        "short": "r",
+                        "name": "red"
+                    },
+                    {
+                        "short": "g",
+                        "name": "green"
+                    },
+                    {
+                        "short": "b",
+                        "name": "blue"
+                    },
+                    {
+                        "short": "a",
+                        "name": "alpha"
+                    }
+                ],
+                "constructor": [
+                    "r",
+                    "g",
+                    "b",
+                    "a"
+                ],
+                "offset": [
+                    {
+                        "name": "r",
+                        "value": 24
+                    },
+                    {
+                        "name": "g",
+                        "value": 16
+                    },
+                    {
+                        "name": "b",
+                        "value": 8
+                    },
+                    {
+                        "name": "a",
+                        "value": 0
+                    }
+                ]
+            },
+            {
+                "name": "argb",
+                "args": [
+                    {
+                        "short": "a",
+                        "name": "alpha"
+                    },
+                    {
+                        "short": "r",
+                        "name": "red"
+                    },
+                    {
+                        "short": "g",
+                        "name": "green"
+                    },
+                    {
+                        "short": "b",
+                        "name": "blue"
+                    }
+                ],
+                "constructor": [
+                    "r",
+                    "g",
+                    "b",
+                    "a"
+                ],
+                "offset": [
+                    {
+                        "name": "a",
+                        "value": 24
+                    },
+                    {
+                        "name": "r",
+                        "value": 16
+                    },
+                    {
+                        "name": "g",
+                        "value": 8
+                    },
+                    {
+                        "name": "b",
+                        "value": 0
+                    }
+                ]
+            },
+            {
+                "name": "bgr",
+                "args": [
+                    {
+                        "short": "b",
+                        "name": "blue"
+                    },
+                    {
+                        "short": "g",
+                        "name": "green"
+                    },
+                    {
+                        "short": "r",
+                        "name": "red"
+                    }
+                ],
+                "constructor": [
+                    "r",
+                    "g",
+                    "b"
+                ],
+                "offset": [
+                    {
+                        "name": "b",
+                        "value": 16
+                    },
+                    {
+                        "name": "g",
+                        "value": 8
+                    },
+                    {
+                        "name": "r",
+                        "value": 0
+                    }
+                ]
+            },
+            {
+                "name": "bgra",
+                "args": [
+                    {
+                        "short": "b",
+                        "name": "blue"
+                    },
+                    {
+                        "short": "g",
+                        "name": "green"
+                    },
+                    {
+                        "short": "r",
+                        "name": "red"
+                    },
+                    {
+                        "short": "a",
+                        "name": "alpha"
+                    }
+                ],
+                "constructor": [
+                    "r",
+                    "g",
+                    "b",
+                    "a"
+                ],
+                "offset": [
+                    {
+                        "name": "b",
+                        "value": 24
+                    },
+                    {
+                        "name": "g",
+                        "value": 16
+                    },
+                    {
+                        "name": "r",
+                        "value": 8
+                    },
+                    {
+                        "name": "a",
+                        "value": 0
+                    }
+                ]
+            },
+            {
+                "name": "abgr",
+                "args": [
+                    {
+                        "short": "a",
+                        "name": "alpha"
+                    },
+                    {
+                        "short": "b",
+                        "name": "blue"
+                    },
+                    {
+                        "short": "g",
+                        "name": "green"
+                    },
+                    {
+                        "short": "r",
+                        "name": "red"
+                    }
+                ],
+                "constructor": [
+                    "r",
+                    "g",
+                    "b",
+                    "a"
+                ],
+                "offset": [
+                    {
+                        "name": "a",
+                        "value": 24
+                    },
+                    {
+                        "name": "b",
+                        "value": 16
+                    },
+                    {
+                        "name": "g",
+                        "value": 8
+                    },
+                    {
+                        "name": "r",
+                        "value": 0
+                    }
+                ]
+            }
+        ],
+        "channels": [
+            {
+                "short": "r",
+                "name": "red"
+            },
+            {
+                "short": "g",
+                "name": "green"
+            },
+            {
+                "short": "b",
+                "name": "blue"
+            },
+            {
+                "short": "a",
+                "name": "alpha"
+            }
+        ]
+    }
+}

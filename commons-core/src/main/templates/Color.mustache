@@ -1,0 +1,545 @@
+package net.lenni0451.commons.color;
+
+import net.lenni0451.commons.math.MathUtils;
+
+import java.util.Arrays;
+
+public class Color {
+
+    {{#each constants}}
+    {{#if rgb}}
+    public static final Color {{name}} = Color.fromRGB({{#each rgb}}{{.}}{{#iterHasNext}}, {{/iterHasNext}}{{/each}});
+    {{/if}}
+    {{#if rgba}}
+    public static final Color {{name}} = Color.fromRGBA({{#each rgba}}{{.}}{{#iterHasNext}}, {{/iterHasNext}}{{/each}});
+    {{/if}}
+    {{/each}}
+
+    {{#each channel_formats}}
+    /**
+     * Create a color from an int.<br>
+     * The int must be in the format: 0x{{#each args}}{{upper .short}}{{upper .short}}{{/each}}
+     *
+     * @param {{lower name}} The int
+     * @return The created color
+     */
+    {{#set arg_name=name}}
+    public static Color from{{upper name}}(final int {{lower name}}) {
+        return direct{{upper name}}({{#each offset}}({{lower arg_name}} >> {{.value}}) & 255{{#iterHasNext}}, {{/iterHasNext}}{{/each}});
+    }
+    {{/set}}
+
+    /**
+     * Create a color from {{#each args}}{{^iterIsFirst}}{{#iterIsLast}} and {{/iterIsLast}}{{^iterIsLast}}, {{/iterIsLast}}{{/iterIsFirst}}{{.name}}{{/each}} values.<br>
+     * The values must be between 0 and 255 (inclusive).
+     *
+     {{#each args}}
+     * @param {{.short}} The {{.name}} value
+     {{/each}}
+     * @return The created color
+     */
+    public static Color from{{upper name}}({{#each args}}final int {{.short}}{{#iterHasNext}}, {{/iterHasNext}}{{/each}}) {
+        {{#each args}}
+        if ({{.short}} < 0 || {{.short}} > 255) throw new IllegalArgumentException("Channel {{.name}} must be between 0 and 255 (inclusive)");
+        {{/each}}
+        return direct{{upper name}}({{#each args}}{{.short}}{{#iterHasNext}}, {{/iterHasNext}}{{/each}});
+    }
+
+    /**
+     * Directly create a color from {{#each args}}{{^iterIsFirst}}{{#iterIsLast}} and {{/iterIsLast}}{{^iterIsLast}}, {{/iterIsLast}}{{/iterIsFirst}}{{.name}}{{/each}} values.<br>
+     * This method does not perform bounds checking.
+     *
+     {{#each args}}
+     * @param {{.short}} The {{.name}} value
+     {{/each}}
+     * @return The created color
+     */
+    public static Color direct{{upper name}}({{#each args}}final int {{.short}}{{#iterHasNext}}, {{/iterHasNext}}{{/each}}) {
+        return new Color({{#each constructor}}(byte) ({{.}} & 255){{#iterHasNext}}, {{/iterHasNext}}{{/each}});
+    }
+
+    {{/each}}
+    {{#each channel_formats}}
+    {{#set arg_name=name}}
+    /**
+     * Create a color from a float array.<br>
+     * The array must have a length of {{#each args}}{{#iterIsLast}}{{index}}{{/iterIsLast}}{{/each}}.<br>
+     * The array must contain the values in the order: {{#each args}}{{.short}}{{#iterHasNext}}, {{/iterHasNext}}{{/each}}<br>
+     * The values must be between 0 and 1 (inclusive).
+     *
+     * @param {{lower arg_name}} The float array
+     * @return The created color
+     */
+    public static Color from{{upper name}}F(final float[] {{lower arg_name}}) {
+        return from{{upper name}}F({{#each args}}{{lower arg_name}}[{{position}}]{{#iterHasNext}}, {{/iterHasNext}}{{/each}});
+    }
+    {{/set}}
+
+    /**
+     * Create a color from {{#each args}}{{^iterIsFirst}}{{#iterIsLast}} and {{/iterIsLast}}{{^iterIsLast}}, {{/iterIsLast}}{{/iterIsFirst}}{{.name}}{{/each}} values.<br>
+     * The values must be between 0 and 1 (inclusive).
+     *
+     {{#each args}}
+     * @param {{.short}} The {{.name}} value
+     {{/each}}
+     * @return The created color
+     */
+    public static Color from{{upper name}}F({{#each args}}final float {{.short}}{{#iterHasNext}}, {{/iterHasNext}}{{/each}}) {
+        {{#each args}}
+        if ({{.short}} < 0 || {{.short}} > 1) throw new IllegalArgumentException("Channel {{.name}} must be between 0 and 1 (inclusive)");
+        {{/each}}
+        return direct{{upper name}}F({{#each args}}{{.short}}{{#iterHasNext}}, {{/iterHasNext}}{{/each}});
+    }
+
+    /**
+     * Directly create a color from {{#each args}}{{^iterIsFirst}}{{#iterIsLast}} and {{/iterIsLast}}{{^iterIsLast}}, {{/iterIsLast}}{{/iterIsFirst}}{{.name}}{{/each}} values.<br>
+     * This method does not perform bounds checking.
+     *
+     {{#each args}}
+     * @param {{.short}} The {{.name}} value
+     {{/each}}
+     * @return The created color
+     */
+    public static Color direct{{upper name}}F({{#each args}}final float {{.short}}{{#iterHasNext}}, {{/iterHasNext}}{{/each}}) {
+        return new Color({{#each constructor}}(byte) ((int) ({{.}} * 255) & 255){{#iterHasNext}}, {{/iterHasNext}}{{/each}});
+    }
+
+    {{/each}}
+    /**
+     * Create a color from a float array.<br>
+     * The array must have a length of 3.<br>
+     * The array must contain the values in the order: h, s, b<br>
+     * The values must be between 0 and 1 (inclusive).
+     *
+     * @param hsb The float array
+     * @return The created color
+     */
+    public static Color fromHSB(final float[] hsb) {
+        return fromHSB(hsb[0], hsb[1], hsb[2]);
+    }
+
+    /**
+     * Create a color from HSB values.<br>
+     * The values must be between 0 and 1.
+     *
+     * @param hue        The hue value
+     * @param saturation The saturation value
+     * @param brightness The brightness value
+     * @return The created color
+     */
+    public static Color fromHSB(final float hue, final float saturation, final float brightness) {
+        if (saturation == 0) return fromRGBF(brightness, brightness, brightness);
+        float r;
+        float g;
+        float b;
+        float h = (float) ((hue - Math.floor(hue)) * 6);
+        float f = h - (float) Math.floor(h);
+        float p = brightness * (1 - saturation);
+        float q = brightness * (1 - saturation * f);
+        float t = brightness * (1 - saturation * (1 - f));
+        switch ((int) h) {
+            case 0:
+                r = brightness;
+                g = t;
+                b = p;
+                break;
+            case 1:
+                r = q;
+                g = brightness;
+                b = p;
+                break;
+            case 2:
+                r = p;
+                g = brightness;
+                b = t;
+                break;
+            case 3:
+                r = p;
+                g = q;
+                b = brightness;
+                break;
+            case 4:
+                r = t;
+                g = p;
+                b = brightness;
+                break;
+            case 5:
+                r = brightness;
+                g = p;
+                b = q;
+                break;
+            default:
+                throw new IllegalStateException("Unable to convert HSB to RGB. Input:" + hue + ", " + saturation + ", " + brightness);
+        }
+        return fromRGBF(r, g, b);
+    }
+
+    /**
+     * Create a color from an AWT color.<br>
+     * The alpha value will be included in the created color.
+     *
+     * @param color The AWT color to convert
+     * @return The created color
+     */
+    public static Color fromAWT(final java.awt.Color color) {
+        return fromARGB(color.getRGB());
+    }
+
+
+    /**
+     * Get a color calculated by the current time.<br>
+     * Calling this method subsequently will generate an RGB rainbow color effect.<br>
+     * The offset depends on the used divider. With a divider of {@code 7.5F} the color will be the same with the offset of {@code 0} and {@code 7500}.<br>
+     * The higher the divider the slower and smoother the color will change.
+     *
+     * @param offset  The offset added to the current time
+     * @param divider The divider for the current time
+     * @return The calculated color
+     * @see ColorUtils#getRainbowColor(int, float)
+     */
+    public static Color getRainbowColor(final int offset, final float divider) {
+        long l = System.currentTimeMillis() + offset;
+        l %= (int) (1000 * divider);
+        return Color.fromHSB(l / divider / 1000F, 1F, 1F);
+    }
+
+    /**
+     * Interpolate between two colors with a progress.<br>
+     * The progress is a value between 0 and 1.
+     *
+     * @param progress The progress between the two colors
+     * @param color1   The first color
+     * @param color2   The second color
+     * @return The interpolated color
+     * @see ColorUtils#interpolate(float, java.awt.Color, java.awt.Color)
+     */
+    public static Color interpolate(final float progress, final Color color1, final Color color2) {
+        return directRGBA(
+                MathUtils.clamp((int) (color1.getRed() + (color2.getRed() - color1.getRed()) * progress), 0, 255),
+                MathUtils.clamp((int) (color1.getGreen() + (color2.getGreen() - color1.getGreen()) * progress), 0, 255),
+                MathUtils.clamp((int) (color1.getBlue() + (color2.getBlue() - color1.getBlue()) * progress), 0, 255),
+                MathUtils.clamp((int) (color1.getAlpha() + (color2.getAlpha() - color1.getAlpha()) * progress), 0, 255)
+        );
+    }
+
+    /**
+     * Interpolate between multiple colors with a progress.<br>
+     * The progress is a value between 0 and 1.<br>
+     * The colors and steps must have the same length.
+     *
+     * @param progress The progress between the colors
+     * @param colors   The colors to interpolate between
+     * @param steps    The steps between the colors
+     * @return The interpolated color
+     * @see ColorUtils#interpolate(float, java.awt.Color[], float[])
+     */
+    public static Color interpolate(final float progress, final Color[] colors, final float[] steps) {
+        if (colors.length != steps.length) throw new IllegalArgumentException("Colors and steps must have the same length");
+        if (colors.length == 0) throw new IllegalArgumentException("Colors and steps must have a length greater than 0");
+
+        if (colors.length == 1) return colors[0];
+        if (progress <= steps[0]) return colors[0];
+        if (progress >= steps[steps.length - 1]) return colors[colors.length - 1];
+        for (int i = 0; i < steps.length; i++) {
+            if (progress < steps[i]) {
+                float stepProgress = (progress - steps[i - 1]) / (steps[i] - steps[i - 1]);
+                return interpolate(stepProgress, colors[i - 1], colors[i]);
+            }
+        }
+        return colors[colors.length - 1];
+    }
+
+    /**
+     * Interpolate between multiple colors with a progress.<br>
+     * The progress is a value between 0 and 1.<br>
+     * The colors must have a length greater than 0.
+     *
+     * @param progress The progress between the colors
+     * @param colors   The colors to interpolate between
+     * @return The interpolated color
+     * @see ColorUtils#interpolate(float, java.awt.Color...)
+     */
+    public static Color interpolate(final float progress, final Color... colors) {
+        if (colors.length == 0) throw new IllegalArgumentException("Colors must have a length greater than 0");
+        if (colors.length == 1) return colors[0];
+        if (colors.length == 2) return interpolate(progress, colors[0], colors[1]);
+
+        float step = 1F / (colors.length - 1);
+        float[] steps = new float[colors.length];
+        for (int i = 0; i < colors.length; i++) steps[i] = step * i;
+        return interpolate(progress, colors, steps);
+    }
+
+
+    {{#each channels}}
+    private final byte {{.short}};
+    {{/each}}
+
+    private Color(final byte r, final byte g, final byte b) {
+        this(r, g, b, (byte) -1);
+    }
+
+    private Color({{#each channels}}final byte {{.short}}{{#iterHasNext}}, {{/iterHasNext}}{{/each}}) {
+        {{#each channels}}
+        this.{{.short}} = {{.short}};
+        {{/each}}
+    }
+
+    {{#each channels}}
+    /**
+     * @return The {{.name}} value between 0 and 255
+     */
+    public int get{{capitalize .name}}() {
+        return this.{{.short}} & 255;
+    }
+
+    /**
+     * @return The {{.name}} value between 0 and 1
+     */
+    public float get{{capitalize .name}}F() {
+        return (this.{{.short}} & 255) / 255F;
+    }
+
+    /**
+     * Get a new color with a different {{.name}} value.
+     *
+     * @param {{.short}} The new {{.name}} value between 0 and 255
+     * @return The new color
+     */
+    public Color with{{capitalize .name}}(final int {{.short}}) {
+        if (this.{{.short}} == {{.short}}) return this;
+        if ({{.short}} < 0 || {{.short}} > 255) throw new IllegalArgumentException("Channel {{.name}} must be between 0 and 255 (inclusive)");
+        {{#set changed=.short}}
+        return new Color({{#each channels}}{{#isEq changed .short}}(byte) ({{changed}} & 255){{/isEq}}{{#isNotEq changed .short}}this.{{.short}}{{/isNotEq}}{{#iterHasNext}}, {{/iterHasNext}}{{/each}});
+        {{/set}}
+    }
+
+    /**
+     * Get a new color with a different {{.name}} value.
+     *
+     * @param {{.short}} The new {{.name}} value between 0 and 1
+     * @return The new color
+     */
+    public Color with{{capitalize .name}}F(final int {{.short}}) {
+        if (this.{{.short}} == {{.short}}) return this;
+        if ({{.short}} < 0 || {{.short}} > 1) throw new IllegalArgumentException("Channel {{.name}} must be between 0 and 1 (inclusive)");
+        {{#set changed=.short}}
+        return new Color({{#each channels}}{{#isEq changed .short}}(byte) (({{changed}} * 255) & 255){{/isEq}}{{#isNotEq changed .short}}this.{{.short}}{{/isNotEq}}{{#iterHasNext}}, {{/iterHasNext}}{{/each}});
+        {{/set}}
+    }
+
+    {{/each}}
+    {{#each channel_formats}}
+    /**
+     * @return The color as an int in the format: 0x{{#each args}}{{upper .short}}{{upper .short}}{{/each}}
+     */
+    public int to{{upper name}}() {
+        return {{#each offset}}((this.{{.name}} & 255) << {{.value}}){{#iterHasNext}} | {{/iterHasNext}}{{/each}};
+    }
+
+    /**
+     * @return The color as a float array with the values in the order: {{#each args}}{{.short}}{{#iterHasNext}}, {{/iterHasNext}}{{/each}}
+     */
+    public float[] to{{upper name}}F() {
+        {{=[[ ]]=}}
+        return new float[]{[[#each args]](this.[[.short]] & 255) / 255F[[#iterHasNext]], [[/iterHasNext]][[/each]]};
+        [[={{ }}=]]
+    }
+
+    {{/each}}
+    /**
+     * @return The color as a float array with the values in the order: h, s, b
+     */
+    public float[] toHSB() {
+        float r = this.getRedF();
+        float g = this.getGreenF();
+        float b = this.getBlueF();
+        float max = Math.max(r, Math.max(g, b));
+        float min = Math.min(r, Math.min(g, b));
+        float delta = max - min;
+        float h;
+        float s;
+        float v = max;
+        if (max == 0) {
+            h = 0;
+            s = 0;
+        } else {
+            s = delta / max;
+            if (r == max) h = (g - b) / delta;
+            else if (g == max) h = 2 + (b - r) / delta;
+            else h = 4 + (r - g) / delta;
+        }
+        h /= 6;
+        if (h < 0) h++;
+        return new float[]{h, s, v};
+    }
+
+    /**
+     * @return The color as an AWT color
+     */
+    public java.awt.Color toAWT() {
+        return new java.awt.Color(this.toARGB(), true);
+    }
+
+    /**
+     * @return This color brightened by 0.7
+     */
+    public Color brighter() {
+        return this.brighter(0.7F);
+    }
+
+    /**
+     * Brighten this color by the given factor.
+     *
+     * @param factor The factor to brighten this color by
+     * @return The new color
+     */
+    public Color brighter(final float factor) {
+        int r = this.getRed();
+        int g = this.getGreen();
+        int b = this.getBlue();
+        int a = this.getAlpha();
+
+        int gray = (int) (1.0 / (1.0 - factor));
+        if (r == 0 && g == 0 && b == 0) return directRGBA(gray, gray, gray, a);
+        if (r > 0 && r < gray) r = gray;
+        if (g > 0 && g < gray) g = gray;
+        if (b > 0 && b < gray) b = gray;
+
+        return directRGBA(
+                MathUtils.clamp((int) (r / factor), 0, 255),
+                MathUtils.clamp((int) (g / factor), 0, 255),
+                MathUtils.clamp((int) (b / factor), 0, 255),
+                a
+        );
+    }
+
+    /**
+     * @return This color darkened by 0.7
+     */
+    public Color darker() {
+        return this.darker(0.7F);
+    }
+
+    /**
+     * Darken this color by the given factor.
+     *
+     * @param factor The factor to darken this color by
+     * @return The new color
+     */
+    public Color darker(final float factor) {
+        return directRGBA(
+                MathUtils.clamp((int) (this.getRed() * factor), 0, 255),
+                MathUtils.clamp((int) (this.getGreen() * factor), 0, 255),
+                MathUtils.clamp((int) (this.getBlue() * factor), 0, 255),
+                this.getAlpha()
+        );
+    }
+
+    /**
+     * Invert this color.<br>
+     * The alpha value will not be changed.
+     *
+     * @return The inverted color
+     */
+    public Color invert() {
+        return directRGBA(255 - this.getRed(), 255 - this.getGreen(), 255 - this.getBlue(), this.getAlpha());
+    }
+
+    /**
+     * Multiply this color with a factor.<br>
+     * The alpha value will not be changed.
+     *
+     * @param multiplier The factor to multiply with
+     * @return The multiplied color
+     */
+    public Color multiply(final float multiplier) {
+        return directRGBA(
+                MathUtils.clamp((int) (this.getRed() * multiplier), 0, 255),
+                MathUtils.clamp((int) (this.getGreen() * multiplier), 0, 255),
+                MathUtils.clamp((int) (this.getBlue() * multiplier), 0, 255),
+                this.getAlpha()
+        );
+    }
+
+    /**
+     * Multiply this colors alpha value with a factor.<br>
+     * The other values will not be changed.
+     *
+     * @param multiplier The factor to multiply with
+     * @return The multiplied color
+     */
+    public Color multiplyAlpha(final float multiplier) {
+        return directRGBA(
+                this.getRed(),
+                this.getGreen(),
+                this.getBlue(),
+                MathUtils.clamp((int) (this.getAlpha() * multiplier), 0, 255)
+        );
+    }
+
+    /**
+     * Multiply this color with a factor.
+     *
+     * @param multiplier The factor to multiply with
+     * @return The multiplied color
+     */
+    public Color multiplyAll(final float multiplier) {
+        return directRGBA(
+                MathUtils.clamp((int) (this.getRed() * multiplier), 0, 255),
+                MathUtils.clamp((int) (this.getGreen() * multiplier), 0, 255),
+                MathUtils.clamp((int) (this.getBlue() * multiplier), 0, 255),
+                MathUtils.clamp((int) (this.getAlpha() * multiplier), 0, 255)
+        );
+    }
+
+    /**
+     * Multiply this color with another color.<br>
+     * The values of this color will be multiplied with the float values of the other color.
+     *
+     * @param color The color to multiply with
+     * @return The multiplied color
+     */
+    public Color multiply(final Color color) {
+        return directRGBA(
+                MathUtils.clamp((int) (this.getRed() * color.getRedF()), 0, 255),
+                MathUtils.clamp((int) (this.getGreen() * color.getGreenF()), 0, 255),
+                MathUtils.clamp((int) (this.getBlue() * color.getBlueF()), 0, 255),
+                MathUtils.clamp((int) (this.getAlpha() * color.getAlphaF()), 0, 255)
+        );
+    }
+
+    /**
+     * Calculate the distance between this color and another color.
+     *
+     * @param color The other color
+     * @return The distance between the colors
+     */
+    public int distance(final Color color) {
+        return Math.abs(this.getRed() - color.getRed())
+                + Math.abs(this.getGreen() - color.getGreen())
+                + Math.abs(this.getBlue() - color.getBlue());
+    }
+
+
+    @Override
+    public String toString() {
+        return "Color{" + {{#each channels}}"{{^iterIsFirst}}, {{/iterIsFirst}}{{.short}}" + (this.{{.short}} & 255) + {{/each}}'}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Color color = (Color) o;
+        return {{#each channels}}this.{{.short}} == color.{{.short}}{{#iterHasNext}} && {{/iterHasNext}}{{/each}};
+    }
+
+    @Override
+    public int hashCode() {
+        {{=[[ ]]=}}
+        return Arrays.hashCode(new byte[]{[[#each channels]]this.[[.short]][[#iterHasNext]], [[/iterHasNext]][[/each]]});
+        [[={{ }}=]]
+    }
+
+}
