@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiPredicate;
 
 import static net.lenni0451.commons.asm.Types.*;
 
@@ -32,7 +33,8 @@ public class MappingsFiller {
     }
 
     /**
-     * Fill all super members of all classes in the mappings.
+     * Fill all super members of all classes in the mappings.<br>
+     * Exceptions during the filling process will be printed to the standard error output, but the process will continue.
      *
      * @param mappings          The mappings
      * @param classInfoProvider The class info provider
@@ -40,13 +42,33 @@ public class MappingsFiller {
      * @see #fillSuperMembers(ClassNode, Set, Mappings)
      */
     public static void fillAllSuperMembers(final Mappings mappings, final ClassInfoProvider classInfoProvider, final Set<String> classes) {
+        fillAllSuperMembers(mappings, classInfoProvider, classes, (clazz, t) -> {
+            System.err.println("Failed to fill super members for class: " + clazz);
+            t.printStackTrace(System.err);
+            return true;
+        });
+    }
+
+    /**
+     * Fill all super members of all classes in the mappings.
+     *
+     * @param mappings          The mappings
+     * @param classInfoProvider The class info provider
+     * @param classes           The classes to fill the super members for
+     * @param onError           The error predicate receiving the class name and the throwable if an error occurs.
+     *                          Returning {@code true} will continue with the next class, {@code false} will rethrow the exception.
+     * @see #fillSuperMembers(ClassNode, Set, Mappings)
+     */
+    public static void fillAllSuperMembers(final Mappings mappings, final ClassInfoProvider classInfoProvider, final Set<String> classes, final BiPredicate<String, Throwable> onError) {
         for (String clazz : classes) {
             try {
                 ClassInfo classInfo = classInfoProvider.of(clazz);
                 Set<ClassInfo> resolvedSuperClasses = classInfo.getRecursiveSuperClasses();
                 fillSuperMembers(classInfo, resolvedSuperClasses, mappings);
             } catch (Throwable t) {
-                t.printStackTrace();
+                if (!onError.test(clazz, t)) {
+                    throw t;
+                }
             }
         }
     }
