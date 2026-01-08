@@ -309,7 +309,6 @@ public class Color {
      * @return The new color
      */
     public Color with{{capitalize .name}}(final int {{.short}}) {
-        if (this.{{.short}} == {{.short}}) return this;
         if ({{.short}} < 0 || {{.short}} > 255) throw new IllegalArgumentException("Channel {{.name}} must be between 0 and 255 (inclusive)");
         {{#set changed=.short}}
         return new Color({{#each channels}}{{#isEq changed .short}}(byte) ({{changed}} & 255){{/isEq}}{{#isNotEq changed .short}}this.{{.short}}{{/isNotEq}}{{#iterHasNext}}, {{/iterHasNext}}{{/each}});
@@ -322,11 +321,10 @@ public class Color {
      * @param {{.short}} The new {{.name}} value between 0 and 1
      * @return The new color
      */
-    public Color with{{capitalize .name}}F(final int {{.short}}) {
-        if (this.{{.short}} == {{.short}}) return this;
+    public Color with{{capitalize .name}}F(final float {{.short}}) {
         if ({{.short}} < 0 || {{.short}} > 1) throw new IllegalArgumentException("Channel {{.name}} must be between 0 and 1 (inclusive)");
         {{#set changed=.short}}
-        return new Color({{#each channels}}{{#isEq changed .short}}(byte) (({{changed}} * 255) & 255){{/isEq}}{{#isNotEq changed .short}}this.{{.short}}{{/isNotEq}}{{#iterHasNext}}, {{/iterHasNext}}{{/each}});
+        return new Color({{#each channels}}{{#isEq changed .short}}(byte) ({{changed}} * 255){{/isEq}}{{#isNotEq changed .short}}this.{{.short}}{{/isNotEq}}{{#iterHasNext}}, {{/iterHasNext}}{{/each}});
         {{/set}}
     }
 
