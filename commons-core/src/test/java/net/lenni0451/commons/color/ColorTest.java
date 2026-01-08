@@ -42,6 +42,7 @@ class ColorTest {
     void with() {
         this.checkColor(Color.BLACK.withRed(1).withGreen(2).withBlue(3).withAlpha(4), 1, 2, 3, 4);
         this.checkColor(Color.BLACK.withRedF(1).withGreenF(0).withBlueF(1).withAlphaF(0), 255, 0, 255, 0);
+        this.checkColor(Color.BLACK.withRedF(0).withGreenF(0.25F).withBlueF(0.5F).withAlphaF(0.75F), 0, 63, 127, 191);
     }
 
     @Test
