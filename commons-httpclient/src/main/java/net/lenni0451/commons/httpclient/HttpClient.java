@@ -35,7 +35,7 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
      * Create a new http client with the default executor.
      */
     public HttpClient() {
-        this(ExecutorType.AUTO);
+        this(ExecutorType.DEFAULT);
     }
 
     /**
@@ -147,22 +147,31 @@ public class HttpClient extends HeaderStore<HttpClient> implements HttpRequestBu
     }
 
     /**
-     * @return The retry handler
+     * @return The retry config for all requests
      */
-    @Nonnull
-    public RetryConfig getRetryHandler() {
+    public RetryConfig getRetryConfig() {
         return this.retryConfig;
     }
 
     /**
-     * Set the retry handler for all requests.
+     * Set the retry config for all requests.
      *
-     * @param retryConfig The retry handler
+     * @param retryConfig The retry config
      * @return This instance for chaining
      */
     public HttpClient setRetryConfig(@Nonnull final RetryConfig retryConfig) {
         this.retryConfig = retryConfig;
         return this;
+    }
+
+    /**
+     * Deprecated, use {@link #getRetryConfig()} instead.
+     */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval //14.06.2026
+    @Nonnull
+    public RetryConfig getRetryHandler() {
+        return this.retryConfig;
     }
 
     /**
