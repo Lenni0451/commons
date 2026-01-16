@@ -168,7 +168,7 @@ public class ProxyHandler {
      */
     public SingleProxySelector getProxySelector() {
         if (!this.isProxySet()) throw new IllegalStateException("Proxy is not set");
-        return new SingleProxySelector(this.toJavaProxy(), this.username, this.password);
+        return new SingleProxySelector(this.toJavaProxy());
     }
 
     /**

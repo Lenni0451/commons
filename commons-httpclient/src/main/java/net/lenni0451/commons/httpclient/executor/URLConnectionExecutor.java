@@ -5,6 +5,7 @@ import net.lenni0451.commons.httpclient.HttpResponse;
 import net.lenni0451.commons.httpclient.content.HttpContent;
 import net.lenni0451.commons.httpclient.proxy.ProxyHandler;
 import net.lenni0451.commons.httpclient.proxy.SingleProxySelector;
+import net.lenni0451.commons.httpclient.proxy.ThreadedProxyAuthenticator;
 import net.lenni0451.commons.httpclient.requests.HttpContentRequest;
 import net.lenni0451.commons.httpclient.requests.HttpRequest;
 import net.lenni0451.commons.httpclient.utils.IgnoringTrustManager;
@@ -27,7 +28,7 @@ import java.util.Map;
  * Limitations:
  * <ul>
  *     <li>Only supports HTTP/1.1</li>
- *     <li>Proxies are static and can't be used multithreaded</li>
+ *     <li>Proxy authentication is static and might interfere with concurrent requests using different proxy credentials</li>
  * </ul>
  */
 public class URLConnectionExecutor extends RequestExecutor {
@@ -42,13 +43,19 @@ public class URLConnectionExecutor extends RequestExecutor {
         CookieManager cookieManager = this.getCookieManager(request);
         ProxyHandler proxyHandler = this.client.getProxyHandler();
         SingleProxySelector proxySelector = null;
-        if (proxyHandler.isProxySet()) proxySelector = proxyHandler.getProxySelector();
+        if (proxyHandler.isProxySet()) {
+            proxySelector = proxyHandler.getProxySelector();
+        }
         try {
-            if (proxySelector != null) proxySelector.set(false);
+            if (proxyHandler.isProxySet() && proxyHandler.isAuthenticationSet()) {
+                ThreadedProxyAuthenticator.setAuthentication(proxyHandler.getUsername(), proxyHandler.getPassword());
+            }
             HttpURLConnection connection = this.openConnection(request, cookieManager, proxySelector == null ? null : proxyHandler);
             return this.executeRequest(connection, cookieManager, request);
         } finally {
-            if (proxySelector != null) proxySelector.reset(false);
+            if (proxyHandler.isProxySet() && proxyHandler.isAuthenticationSet()) {
+                ThreadedProxyAuthenticator.clearAuthentication();
+            }
         }
     }
 
