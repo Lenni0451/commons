@@ -11,9 +11,7 @@ import net.lenni0451.commons.asm.mappings.meta.ParameterMetaMapping;
 import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -27,6 +25,7 @@ public class TinyV2MappingsLoader extends MappingsLoader {
     private final String fromNamespace;
     private final String toNamespace;
     private final List<ClassMetaMapping> metaMappings = new ArrayList<>();
+    private final Map<String, String> properties = new LinkedHashMap<>();
     private boolean parseMeta = false;
     private ClassMetaMapping currentClassMeta = null;
     private FieldMetaMapping currentFieldMeta = null;
@@ -77,6 +76,18 @@ public class TinyV2MappingsLoader extends MappingsLoader {
         return this.metaMappings;
     }
 
+    /**
+     * Get the properties defined in the tiny mappings.<br>
+     * Properties without a value will have {@code null} as value.<br>
+     * <b>This loader will be initialized if this method is called. See {@link #getMappings()} for more information.</b>
+     *
+     * @return The properties
+     */
+    public Map<String, String> getProperties() {
+        this.getMappings(); //Ensure mappings are loaded
+        return this.properties;
+    }
+
     @Override
     protected Mappings load(List<String> lines) {
         Mappings mappings = new Mappings();
@@ -101,6 +112,14 @@ public class TinyV2MappingsLoader extends MappingsLoader {
                 toIndex = namespaces.indexOf(this.toNamespace);
                 if (fromIndex == -1) throw new IllegalStateException("Namespace '" + this.fromNamespace + "' not found in tiny mappings (available: " + namespaces + ")");
                 if (toIndex == -1) throw new IllegalStateException("Namespace '" + this.toNamespace + "' not found in tiny mappings (available: " + namespaces + ")");
+            } else if (currentClass == null && line.startsWith("\t")) {
+                if (parts.length == 1) {
+                    this.properties.put(parts[0], null);
+                } else if (parts.length == 2) {
+                    this.properties.put(parts[0], parts[1]);
+                } else {
+                    throw new IllegalStateException("Property with too many parts: " + line);
+                }
             } else if (line.startsWith("c\t")) { //Class mapping
                 String baseName = parts[1];
                 currentClass = parts[1 + fromIndex];
