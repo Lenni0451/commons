@@ -102,7 +102,7 @@ class HttpClientTest {
     @ParameterizedTest
     @MethodSource(DATA_SOURCE)
     void connectFail(final HttpClient client) {
-        assertThrows(IOException.class, () -> client.get("http://" + System.currentTimeMillis()).execute());
+        assertThrows(IOException.class, () -> client.get("http://127.0.0.1:0").execute());
     }
 
     @ParameterizedTest
