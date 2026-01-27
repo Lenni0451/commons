@@ -1,44 +1,20 @@
 package net.lenni0451.commons.io.stream;
 
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.Delegate;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.InputStream;
 
 @RequiredArgsConstructor
 public class DelegatingInputStream extends InputStream {
 
+    @Delegate
     private final InputStream inputStream;
 
     @Override
     public int read() throws IOException {
         return this.inputStream.read();
-    }
-
-    @Override
-    public int read(@Nonnull byte[] b) throws IOException {
-        return this.inputStream.read(b);
-    }
-
-    @Override
-    public int read(@Nonnull byte[] b, int off, int len) throws IOException {
-        return this.inputStream.read(b, off, len);
-    }
-
-    @Override
-    public long skip(long n) throws IOException {
-        return this.inputStream.skip(n);
-    }
-
-    @Override
-    public int available() throws IOException {
-        return this.inputStream.available();
-    }
-
-    @Override
-    public void close() throws IOException {
-        this.inputStream.close();
     }
 
 }
