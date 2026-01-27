@@ -15,6 +15,8 @@ class SequentialInputStreamTest {
                 try {
                     running[0] = true;
                     byte[] buffer = new byte[1024];
+                    assertEquals(3, sis.skip(3)); //Skip "abc"
+                    assertEquals(11, sis.available());
                     int count = sis.read(buffer);
                     assertEquals(11, count);
                     assertEquals("Hello World", new String(buffer, 0, count));
@@ -27,11 +29,10 @@ class SequentialInputStreamTest {
             reader.start();
             while (!running[0]) Thread.yield(); //Wait for the reader to start
             Thread.sleep(500); //Wait a bit to ensure the reader is really waiting
-            sis.append("Hello World".getBytes());
+            sis.append("abcHello World".getBytes());
             while (running[0]) Thread.yield(); //Wait for the reader to finish
             if (readerException[0] != null) throw readerException[0]; //Rethrow any exception from the reader
         }
     }
-
 
 }

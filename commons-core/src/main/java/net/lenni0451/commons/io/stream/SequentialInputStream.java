@@ -159,6 +159,37 @@ public class SequentialInputStream extends InputStream {
     }
 
     /**
+     * Skip over and discard n bytes of data from this input stream.<br>
+     * This method will block if no data is available until new data is appended or the stream is closed.
+     *
+     * @param n The number of bytes to be skipped
+     * @return The actual number of bytes skipped
+     * @throws IOException If an I/O error occurs
+     */
+    @Override
+    public long skip(final long n) throws IOException {
+        synchronized (this.lock) {
+            this.waitForData();
+            if (this.pos >= this.limit) return 0; //Closed
+            int bytesToSkip = (int) Math.min(n, this.limit - this.pos);
+            this.pos += bytesToSkip;
+            return bytesToSkip;
+        }
+    }
+
+    /**
+     * Get the approximate number of bytes that can be read from the stream without blocking.<br>
+     * This method is not synchronized to allow non-blocking calls.<br>
+     * The calculated value is not guaranteed to be accurate, don't rely on it for critical logic.
+     *
+     * @return The approximate number of bytes that can be read from the stream
+     */
+    @Override
+    public int available() {
+        return this.limit - this.pos;
+    }
+
+    /**
      * Close the stream.<br>
      * Any blocked read operations will be unblocked and return -1 if no more data is available.
      */
