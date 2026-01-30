@@ -60,7 +60,7 @@ public class ThreadScheduler {
     }
 
     /**
-     * Repeat a task with a fixed delay.
+     * Repeat a task at a fixed rate.
      *
      * @param task        The task to execute
      * @param repeatDelay The delay between each execution in milliseconds
@@ -71,7 +71,7 @@ public class ThreadScheduler {
     }
 
     /**
-     * Repeat a task with a fixed delay.
+     * Repeat a task at a fixed rate.
      *
      * @param task        The task to execute
      * @param startDelay  The delay before the first execution in milliseconds
@@ -83,7 +83,7 @@ public class ThreadScheduler {
     }
 
     /**
-     * Repeat a task with a fixed delay.
+     * Repeat a task at a fixed rate.
      *
      * @param task        The task to execute
      * @param repeatDelay The delay between each execution
@@ -95,7 +95,7 @@ public class ThreadScheduler {
     }
 
     /**
-     * Repeat a task with a fixed delay.
+     * Repeat a task at a fixed rate.
      *
      * @param task        The task to execute
      * @param startDelay  The delay before the first execution
@@ -104,7 +104,33 @@ public class ThreadScheduler {
      * @return The {@link ScheduledFuture} of the task
      */
     public ScheduledFuture<?> repeat(final Runnable task, final long startDelay, final long repeatDelay, final TimeUnit timeUnit) {
+        return this.repeatAtRate(task, startDelay, repeatDelay, timeUnit);
+    }
+
+    /**
+     * Repeat a task at a fixed rate.
+     *
+     * @param task        The task to execute
+     * @param startDelay  The delay before the first execution
+     * @param repeatDelay The delay between each execution
+     * @param timeUnit    The time unit of the delay
+     * @return The {@link ScheduledFuture} of the task
+     */
+    public ScheduledFuture<?> repeatAtRate(final Runnable task, final long startDelay, final long repeatDelay, final TimeUnit timeUnit) {
         return this.executor.scheduleAtFixedRate(this.wrapExecute(task), startDelay, repeatDelay, timeUnit);
+    }
+
+    /**
+     * Repeat a task with a fixed delay between the end of the last execution and the start of the next.
+     *
+     * @param task        The task to execute
+     * @param startDelay  The delay before the first execution
+     * @param repeatDelay The delay between each execution
+     * @param timeUnit    The time unit of the delay
+     * @return The {@link ScheduledFuture} of the task
+     */
+    public ScheduledFuture<?> repeatWithDelay(final Runnable task, final long startDelay, final long repeatDelay, final TimeUnit timeUnit) {
+        return this.executor.scheduleWithFixedDelay(this.wrapExecute(task), startDelay, repeatDelay, timeUnit);
     }
 
     /**
