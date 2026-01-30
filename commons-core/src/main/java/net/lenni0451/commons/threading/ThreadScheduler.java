@@ -1,6 +1,7 @@
 package net.lenni0451.commons.threading;
 
 import java.util.concurrent.*;
+import java.util.function.Function;
 
 /**
  * A thread scheduler that can execute tasks with a delay or repeat them.<br>
@@ -8,9 +9,9 @@ import java.util.concurrent.*;
  */
 public class ThreadScheduler {
 
-    private final boolean taskThreads;
     private final ThreadFactory threadFactory;
     private final ScheduledExecutorService executor;
+    private final boolean taskThreads;
 
     /**
      * Create a new task scheduler.
@@ -19,9 +20,35 @@ public class ThreadScheduler {
      * @param taskThreads Whether the scheduler should use a new thread for each task
      */
     public ThreadScheduler(final boolean daemon, final boolean taskThreads) {
+        this(
+                ThreadFactoryImpl.of("ThreadScheduler #").daemon(daemon),
+                Executors::newSingleThreadScheduledExecutor,
+                taskThreads
+        );
+    }
+
+    /**
+     * Create a new task scheduler.
+     *
+     * @param threadFactory The thread factory to use
+     * @param executor      The scheduled executor service to use
+     * @param taskThreads   Whether the scheduler should use a new thread for each task
+     */
+    public ThreadScheduler(final ThreadFactory threadFactory, final ScheduledExecutorService executor, final boolean taskThreads) {
+        this(threadFactory, factory -> executor, taskThreads);
+    }
+
+    /**
+     * Create a new task scheduler.
+     *
+     * @param threadFactory The thread factory to use
+     * @param executor      The function to create the scheduled executor service
+     * @param taskThreads   Whether the scheduler should use a new thread for each task
+     */
+    public ThreadScheduler(final ThreadFactory threadFactory, final Function<ThreadFactory, ScheduledExecutorService> executor, final boolean taskThreads) {
+        this.threadFactory = threadFactory;
+        this.executor = executor.apply(threadFactory);
         this.taskThreads = taskThreads;
-        this.threadFactory = ThreadFactoryImpl.of("ThreadScheduler #").daemon(daemon);
-        this.executor = Executors.newSingleThreadScheduledExecutor(this.threadFactory);
     }
 
     /**
