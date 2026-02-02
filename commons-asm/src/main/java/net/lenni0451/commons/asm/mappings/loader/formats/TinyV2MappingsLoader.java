@@ -129,6 +129,7 @@ public class TinyV2MappingsLoader extends MappingsLoader {
             } else if (line.startsWith("c\t")) { //Class mapping
                 String baseName = parts[1];
                 currentClass = parts[1 + fromIndex];
+                if (currentClass.isEmpty()) currentClass = baseName;
                 String toName = parts[1 + toIndex];
                 if (toName.isEmpty()) toName = currentClass;
 
@@ -206,6 +207,10 @@ public class TinyV2MappingsLoader extends MappingsLoader {
 
     private void finalizeMemberMappings(final Mappings mappings, final Mappings baseToSource, final List<UnmappedMember> unmappedMembers) {
         for (UnmappedMember member : unmappedMembers) {
+            if (member.name.isEmpty() || member.toName.isEmpty()) {
+                //Skip all fields and methods without a name in the from or to namespace
+                continue;
+            }
             if (member.method) {
                 mappings.addMethodMapping(member.owner, member.name, baseToSource.mapMethodDesc(member.descriptor), member.toName);
             } else {
@@ -217,21 +222,23 @@ public class TinyV2MappingsLoader extends MappingsLoader {
     private void finalizeMetaMappings(final Mappings baseToTarget) {
         List<ClassMetaMapping> remappedMetaMappings = new ArrayList<>();
         for (ClassMetaMapping classMeta : this.metaMappings) {
-            remappedMetaMappings.add(classMeta);
-
             List<FieldMetaMapping> fieldMetas = new ArrayList<>();
             for (FieldMetaMapping field : classMeta.getFields()) {
-                fieldMetas.add(field.withDescriptor(baseToTarget.mapDesc(field.getDescriptor())));
+                if (!field.getName().isEmpty()) {
+                    fieldMetas.add(field.withDescriptor(baseToTarget.mapDesc(field.getDescriptor())));
+                }
             }
-            classMeta.getFields().clear();
-            classMeta.getFields().addAll(fieldMetas);
+            classMeta = classMeta.withFields(fieldMetas);
 
             List<MethodMetaMapping> methodMetas = new ArrayList<>();
             for (MethodMetaMapping method : classMeta.getMethods()) {
-                methodMetas.add(method.withDescriptor(baseToTarget.mapMethodDesc(method.getDescriptor())));
+                if (!method.getName().isEmpty()) {
+                    methodMetas.add(method.withDescriptor(baseToTarget.mapMethodDesc(method.getDescriptor())));
+                }
             }
-            classMeta.getMethods().clear();
-            classMeta.getMethods().addAll(methodMetas);
+            classMeta = classMeta.withMethods(methodMetas);
+
+            remappedMetaMappings.add(classMeta);
         }
         this.metaMappings.clear();
         this.metaMappings.addAll(remappedMetaMappings);
