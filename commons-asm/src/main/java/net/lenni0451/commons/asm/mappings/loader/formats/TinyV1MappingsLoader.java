@@ -1,9 +1,13 @@
 package net.lenni0451.commons.asm.mappings.loader.formats;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 import net.lenni0451.commons.asm.mappings.Mappings;
 import net.lenni0451.commons.asm.mappings.loader.MappingsLoader;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Path;
@@ -18,6 +22,7 @@ public class TinyV1MappingsLoader extends MappingsLoader {
 
     private final String fromNamespace;
     private final String toNamespace;
+    private final List<Property> properties = new ArrayList<>();
 
     public TinyV1MappingsLoader(final InputStream inputStream, final String fromNamespace, final String toNamespace) {
         super(inputStream);
@@ -35,6 +40,18 @@ public class TinyV1MappingsLoader extends MappingsLoader {
         super(path);
         this.fromNamespace = fromNamespace;
         this.toNamespace = toNamespace;
+    }
+
+    /**
+     * Get the properties defined in the tiny mappings.<br>
+     * Properties without a value will have {@code null} as value.<br>
+     * <b>This loader will be initialized if this method is called. See {@link #getMappings()} for more information.</b>
+     *
+     * @return The properties
+     */
+    public List<Property> getProperties() {
+        this.getMappings(); //Ensure mappings are loaded
+        return this.properties;
     }
 
     @Override
@@ -77,6 +94,15 @@ public class TinyV1MappingsLoader extends MappingsLoader {
                 String toName = parts[3 + toIndex];
 
                 unmappedMembers.add(new UnmappedMember(true, owner, fromName, descriptor, toName));
+            } else if (line.startsWith("# ")) {
+                String[] propertyParts = line.substring(2).split(" ");
+                if (propertyParts.length == 1) {
+                    this.properties.add(new Property(propertyParts[0]));
+                } else if (propertyParts.length >= 2) {
+                    this.properties.add(new Property(propertyParts[0], propertyParts[1]));
+                } else {
+                    throw new IllegalStateException("Property with too many parts: " + line);
+                }
             } else {
                 throw new IllegalStateException("Unknown line: " + line);
             }
@@ -103,6 +129,20 @@ public class TinyV1MappingsLoader extends MappingsLoader {
         private final String name;
         private final String descriptor;
         private final String toName;
+    }
+
+    @Getter
+    @ToString
+    @EqualsAndHashCode
+    @AllArgsConstructor
+    public static class Property {
+        private final String name;
+        @Nullable
+        private final String value;
+
+        public Property(final String name) {
+            this(name, null);
+        }
     }
 
 }
