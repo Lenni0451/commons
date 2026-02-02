@@ -1,6 +1,9 @@
 package net.lenni0451.commons.asm.mappings.loader.formats;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 import net.lenni0451.commons.asm.mappings.Mappings;
 import net.lenni0451.commons.asm.mappings.loader.MappingsLoader;
 import net.lenni0451.commons.asm.mappings.meta.ClassMetaMapping;
@@ -8,10 +11,13 @@ import net.lenni0451.commons.asm.mappings.meta.FieldMetaMapping;
 import net.lenni0451.commons.asm.mappings.meta.MethodMetaMapping;
 import net.lenni0451.commons.asm.mappings.meta.ParameterMetaMapping;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Pattern;
 
 /**
@@ -25,7 +31,7 @@ public class TinyV2MappingsLoader extends MappingsLoader {
     private final String fromNamespace;
     private final String toNamespace;
     private final List<ClassMetaMapping> metaMappings = new ArrayList<>();
-    private final Map<String, String> properties = new LinkedHashMap<>();
+    private final List<Property> properties = new ArrayList<>();
     private boolean parseMeta = false;
     private ClassMetaMapping currentClassMeta = null;
     private FieldMetaMapping currentFieldMeta = null;
@@ -83,7 +89,7 @@ public class TinyV2MappingsLoader extends MappingsLoader {
      *
      * @return The properties
      */
-    public Map<String, String> getProperties() {
+    public List<Property> getProperties() {
         this.getMappings(); //Ensure mappings are loaded
         return this.properties;
     }
@@ -112,11 +118,11 @@ public class TinyV2MappingsLoader extends MappingsLoader {
                 toIndex = namespaces.indexOf(this.toNamespace);
                 if (fromIndex == -1) throw new IllegalStateException("Namespace '" + this.fromNamespace + "' not found in tiny mappings (available: " + namespaces + ")");
                 if (toIndex == -1) throw new IllegalStateException("Namespace '" + this.toNamespace + "' not found in tiny mappings (available: " + namespaces + ")");
-            } else if (currentClass == null && line.startsWith("\t")) {
+            } else if (currentClass == null && line.startsWith("\t")) { //Property
                 if (parts.length == 1) {
-                    this.properties.put(parts[0], null);
+                    this.properties.add(new Property(parts[0]));
                 } else if (parts.length == 2) {
-                    this.properties.put(parts[0], parts[1]);
+                    this.properties.add(new Property(parts[0], parts[1]));
                 } else {
                     throw new IllegalStateException("Property with too many parts: " + line);
                 }
@@ -292,6 +298,20 @@ public class TinyV2MappingsLoader extends MappingsLoader {
         FIELD,
         METHOD,
         PARAMETER
+    }
+
+    @Getter
+    @ToString
+    @EqualsAndHashCode
+    @AllArgsConstructor
+    public static class Property {
+        private final String name;
+        @Nullable
+        private final String value;
+
+        public Property(final String name) {
+            this(name, null);
+        }
     }
 
 }
