@@ -168,7 +168,7 @@ public class TinyV2MappingsLoader extends MappingsLoader {
                 if (!this.parseMeta) continue;
                 if (this.currentMethodMeta == null) throw new IllegalStateException("Parameter mapping without method mapping");
                 int index = Integer.parseInt(parts[1]);
-                String name = parts[2];
+                String name = parts[2 + toIndex];
 
                 this.updateMeta(UpdateLevel.PARAMETER);
                 this.currentParameterMeta = new ParameterMetaMapping(index, name, EMPTY_JAVADOC);
