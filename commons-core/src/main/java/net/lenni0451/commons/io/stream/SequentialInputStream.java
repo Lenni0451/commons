@@ -3,6 +3,7 @@ package net.lenni0451.commons.io.stream;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Arrays;
 
 /**
@@ -66,6 +67,16 @@ public class SequentialInputStream extends InputStream {
     }
 
     /**
+     * Get an OutputStream that appends data to this SequentialInputStream.<br>
+     * <b>Closing the returned OutputStream will not close the SequentialInputStream!</b>
+     *
+     * @return An OutputStream that appends data to this SequentialInputStream
+     */
+    public OutputStream getAppendingOutputStream() {
+        return new AppendingOutputStream();
+    }
+
+    /**
      * @return If the stream is closed
      */
     public boolean isClosed() {
@@ -83,6 +94,20 @@ public class SequentialInputStream extends InputStream {
      * @throws IllegalStateException If the stream is closed
      */
     public void append(final byte[] bytes) {
+        this.append(bytes, 0, bytes.length);
+    }
+
+    /**
+     * Append data to the stream.<br>
+     * If the internal buffer is full, it will be resized according to the growth factor.
+     *
+     * @param bytes  The data to append
+     * @param offset The start offset in the data
+     * @param length The number of bytes to append
+     * @throws NullPointerException  If bytes is null
+     * @throws IllegalStateException If the stream is closed
+     */
+    public void append(final byte[] bytes, final int offset, final int length) {
         if (bytes == null) throw new NullPointerException("bytes");
         synchronized (this.lock) {
             if (this.closed) throw new IllegalStateException("Stream is closed");
@@ -91,11 +116,12 @@ public class SequentialInputStream extends InputStream {
                 this.limit -= this.pos;
                 this.pos = 0;
             }
-            if (this.available.length - this.limit < bytes.length) {
-                this.available = Arrays.copyOf(this.available, Math.max((int) ((this.limit + bytes.length) * this.growthFactor), 1024));
+            if (this.available.length - this.limit < length) {
+                int newLength = (int) ((this.limit + length) * this.growthFactor);
+                this.available = Arrays.copyOf(this.available, Math.max(newLength, 1024));
             }
-            System.arraycopy(bytes, 0, this.available, this.limit, bytes.length);
-            this.limit += bytes.length;
+            System.arraycopy(bytes, offset, this.available, this.limit, length);
+            this.limit += length;
             this.lock.notifyAll();
         }
     }
@@ -212,6 +238,19 @@ public class SequentialInputStream extends InputStream {
             this.error = error;
             this.closed = true;
             this.lock.notifyAll();
+        }
+    }
+
+
+    private class AppendingOutputStream extends OutputStream {
+        @Override
+        public void write(final int b) {
+            SequentialInputStream.this.append(new byte[]{(byte) (b & 0xFF)});
+        }
+
+        @Override
+        public void write(final byte[] b, final int off, final int len) {
+            SequentialInputStream.this.append(b, off, len);
         }
     }
 
