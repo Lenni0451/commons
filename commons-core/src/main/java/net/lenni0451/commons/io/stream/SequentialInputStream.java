@@ -13,7 +13,7 @@ import java.util.Arrays;
 public class SequentialInputStream extends InputStream {
 
     private static final int DEFAULT_INITIAL_CAPACITY = 0;
-    private static final float DEFAULT_GROWTH_FACTOR = 1;
+    private static final float DEFAULT_GROWTH_FACTOR = 1.5F;
 
     private final Object lock = new Object();
     private final float growthFactor;
@@ -91,8 +91,8 @@ public class SequentialInputStream extends InputStream {
                 this.limit -= this.pos;
                 this.pos = 0;
             }
-            if (this.limit + bytes.length > this.available.length) {
-                this.available = Arrays.copyOf(this.available, (int) ((this.limit + bytes.length) * this.growthFactor));
+            if (this.available.length - this.limit < bytes.length) {
+                this.available = Arrays.copyOf(this.available, Math.max((int) ((this.limit + bytes.length) * this.growthFactor), 1024));
             }
             System.arraycopy(bytes, 0, this.available, this.limit, bytes.length);
             this.limit += bytes.length;
