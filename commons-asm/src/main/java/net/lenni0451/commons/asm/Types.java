@@ -35,13 +35,41 @@ public class Types {
 
     /**
      * Parse the given object into a {@link Type}.<br>
-     * Supported types:<br>
-     * - {@link String} (Will be parsed as a type or object type)<br>
-     * - {@link Class}<br>
-     * - {@link Field} (The type of the field will be used)<br>
-     * - {@link Method}<br>
-     * - {@link Constructor}<br>
-     * - {@link Type} (Will be returned as is)
+     * Supported types:
+     * <table>
+     *     <tr>
+     *         <td>{@link String}</td>
+     *         <td>Type or object type</td>
+     *     </tr>
+     *     <tr>
+     *         <td>{@link Class}</td>
+     *         <td></td>
+     *     </tr>
+     *     <tr>
+     *         <td>{@link Field}</td>
+     *         <td>Type of the field</td>
+     *     </tr>
+     *     <tr>
+     *         <td>{@link FieldNode}</td>
+     *         <td>Descriptor of the field</td>
+     *     </tr>
+     *     <tr>
+     *         <td>{@link Method}</td>
+     *         <td>Method descriptor</td>
+     *     </tr>
+     *     <tr>
+     *         <td>{@link MethodNode}</td>
+     *         <td>Method descriptor</td>
+     *     </tr>
+     *     <tr>
+     *         <td>{@link Constructor}</td>
+     *         <td>Method descriptor</td>
+     *     </tr>
+     *     <tr>
+     *         <td>{@link Type}</td>
+     *         <td>Will be returned as is</td>
+     *     </tr>
+     * </table>
      *
      * @param ob The object to parse
      * @return The parsed type
@@ -67,12 +95,29 @@ public class Types {
 
     /**
      * Get the return type of the given object.<br>
-     * Supported types:<br>
-     * - {@link String} (Will be parsed as a method descriptor)<br>
-     * - {@link Method}<br>
-     * - {@link MethodNode}<br>
-     * - {@link MethodInsnNode}<br>
-     * - {@link Type} (Will be returned as is)
+     * Supported types:
+     * <table>
+     *     <tr>
+     *         <td>{@link String}</td>
+     *         <td>Method descriptor</td>
+     *     </tr>
+     *     <tr>
+     *         <td>{@link Method}</td>
+     *         <td></td>
+     *     </tr>
+     *     <tr>
+     *         <td>{@link MethodNode}</td>
+     *         <td></td>
+     *     </tr>
+     *     <tr>
+     *         <td>{@link MethodInsnNode}</td>
+     *         <td></td>
+     *     </tr>
+     *     <tr>
+     *         <td>{@link Type}</td>
+     *         <td>Will be returned as is</td>
+     *     </tr>
+     * </table>
      *
      * @param ob The object to get the return type from
      * @return The return type
@@ -88,11 +133,25 @@ public class Types {
 
     /**
      * Get the argument types of the given object.<br>
-     * Supported types:<br>
-     * - {@link String} (Will be parsed as a method descriptor)<br>
-     * - {@link Method}<br>
-     * - {@link MethodNode}<br>
-     * - {@link MethodInsnNode}
+     * Supported types:
+     * <table>
+     *     <tr>
+     *         <td>{@link String}</td>
+     *         <td>Method descriptor</td>
+     *     </tr>
+     *     <tr>
+     *         <td>{@link Method}</td>
+     *         <td></td>
+     *     </tr>
+     *     <tr>
+     *         <td>{@link MethodNode}</td>
+     *         <td></td>
+     *     </tr>
+     *     <tr>
+     *         <td>{@link MethodInsnNode}</td>
+     *         <td></td>
+     *     </tr>
+     * </table>
      *
      * @param ob The object to get the argument types from
      * @return The argument types
@@ -136,9 +195,27 @@ public class Types {
     }
 
     /**
-     * Get the descriptor of the given method.<br>
-     * If {@code returnType} is a {@link Method} or {@link Constructor} the descriptor will be generated from the method/constructor.<br>
-     * Otherwise the descriptor will be generated from the given arguments.<br>
+     * Get the method descriptor of the given method.
+     *
+     * @param method The method to get the descriptor from
+     * @return The method descriptor
+     */
+    public static String methodDescriptor(final Method method) {
+        return Type.getMethodDescriptor(method);
+    }
+
+    /**
+     * Get the method descriptor of the given constructor.
+     *
+     * @param constructor The constructor to get the descriptor from
+     * @return The method descriptor
+     */
+    public static String methodDescriptor(final Constructor<?> constructor) {
+        return Type.getConstructorDescriptor(constructor);
+    }
+
+    /**
+     * Get method the descriptor for the given types.<br>
      * See {@link #type(Object)} for supported types.
      *
      * @param returnType The return type of the method
@@ -146,16 +223,10 @@ public class Types {
      * @return The descriptor of the method
      */
     public static String methodDescriptor(final Object returnType, final Object... arguments) {
-        if (returnType instanceof Method) {
-            if (arguments.length != 0) throw new IllegalArgumentException("Expected arguments to be empty");
-            return Type.getMethodDescriptor((Method) returnType);
-        } else if (returnType instanceof Constructor) {
-            if (arguments.length != 0) throw new IllegalArgumentException("Expected arguments to be empty");
-            return Type.getConstructorDescriptor((Constructor<?>) returnType);
-        }
-
         StringBuilder out = new StringBuilder("(");
-        for (Object argument : arguments) out.append(typeDescriptor(argument));
+        for (Object argument : arguments) {
+            out.append(typeDescriptor(argument));
+        }
         out.append(")").append(typeDescriptor(returnType));
         return out.toString();
     }

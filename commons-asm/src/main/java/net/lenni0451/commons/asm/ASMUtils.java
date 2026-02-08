@@ -326,7 +326,9 @@ public class ASMUtils {
             //Generate a name for an array type
             //[[Ljava/lang/Object; -> objectArrayArray
             newName = type.getElementType().getClassName();
-            for (int j = 0; j < type.getDimensions(); j++) newName += "Array";
+            for (int j = 0; j < type.getDimensions(); j++) {
+                newName += "Array";
+            }
         } else {
             newName = type.getClassName();
         }
@@ -346,11 +348,17 @@ public class ASMUtils {
                 newName = newName.substring(0, 1).toLowerCase(Locale.ROOT) + newName.substring(1);
             }
         }
-        if (SourceVersion.isKeyword(newName)) newName = "_" + newName; //Prepend an underscore if the name is a keyword
+        if (SourceVersion.isKeyword(newName)) {
+            //Prepend an underscore if the name is a keyword
+            newName = "_" + newName;
+        }
 
         int index = 2; //Start at 2. The first variable does not have a number
         String name = newName;
-        while (doesExist.test(name)) name = newName + index++; //Append a number if the name already exists
+        while (doesExist.test(name)) {
+            //Append a number if the name already exists
+            name = newName + index++;
+        }
         return name;
     }
 
