@@ -6,10 +6,13 @@ import javax.annotation.WillNotClose;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Optional;
 
 @UtilityClass
 public class IOUtils {
+
+    public static final int DEFAULT_BUFFER_SIZE = 8192;
 
     /**
      * Read a resource from the classpath as bytes.<br>
@@ -59,17 +62,30 @@ public class IOUtils {
      * Read all bytes from a stream.<br>
      * The stream will not be closed.
      *
-     * @param is The InputStream to read from
-     * @return The bytes read from the InputStream
+     * @param is The input stream to read from
+     * @return The bytes read from the input stream
      * @throws IOException If an I/O error occurs
      */
-    @WillNotClose
-    public static byte[] readAll(final InputStream is) throws IOException {
+    public static byte[] readAll(@WillNotClose final InputStream is) throws IOException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        byte[] buf = new byte[1024];
-        int len;
-        while ((len = is.read(buf)) != -1) out.write(buf, 0, len);
+        transfer(is, out);
         return out.toByteArray();
+    }
+
+    /**
+     * Transfer all bytes from the input stream to the output stream.<br>
+     * Both streams will not be closed.
+     *
+     * @param is The input stream to read from
+     * @param os The output stream to write to
+     * @throws IOException If an I/O error occurs
+     */
+    public static void transfer(@WillNotClose final InputStream is, @WillNotClose final OutputStream os) throws IOException {
+        byte[] buf = new byte[DEFAULT_BUFFER_SIZE];
+        int len;
+        while ((len = is.read(buf)) >= 0) {
+            os.write(buf, 0, len);
+        }
     }
 
 }
