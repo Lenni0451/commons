@@ -6,6 +6,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * List of standard HTTP status codes.
+ * <br>
+ * <p>Descriptions are based on documentation from <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status">MDN Web Docs</a>
+ * by Mozilla Contributors, licensed under <a href="https://creativecommons.org/licenses/by-sa/2.5/">CC-BY-SA 2.5</a>.</p>
+ */
 @UtilityClass
 public class StatusCodes {
 

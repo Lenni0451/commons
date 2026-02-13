@@ -1,5 +1,11 @@
 package net.lenni0451.commons.httpclient.constants;
 
+/**
+ * List of standard HTTP headers.
+ * <br>
+ * <p>Descriptions are based on documentation from <a href="https://developer.mozilla.org/de/docs/Web/HTTP/Reference/Headers">MDN Web Docs</a>
+ * by Mozilla Contributors, licensed under <a href="https://creativecommons.org/licenses/by-sa/2.5/">CC-BY-SA 2.5</a>.</p>
+ */
 public class HttpHeaders {
 
     /**
