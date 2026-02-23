@@ -116,8 +116,13 @@ public class GsonObject extends GsonElement implements Iterable<Map.Entry<String
 
     @Nonnull
     public GsonElement req(final String key) {
+        return this.req(key, "No element found for key: " + key);
+    }
+
+    @Nonnull
+    public GsonElement req(final String key, final String message) {
         GsonElement element = this.get(key, null);
-        if (element == null) throw new NoSuchElementException("No element found for key: " + key);
+        if (element == null) throw new NoSuchElementException(message);
         return element;
     }
 
@@ -135,8 +140,13 @@ public class GsonObject extends GsonElement implements Iterable<Map.Entry<String
 
     @Nonnull
     public GsonObject reqObject(final String key) {
+        return this.reqObject(key, "No object found for key: " + key);
+    }
+
+    @Nonnull
+    public GsonObject reqObject(final String key, final String message) {
         GsonObject object = this.getObject(key, null);
-        if (object == null) throw new NoSuchElementException("No object found for key: " + key);
+        if (object == null) throw new NoSuchElementException(message);
         return object;
     }
 
@@ -154,8 +164,13 @@ public class GsonObject extends GsonElement implements Iterable<Map.Entry<String
 
     @Nonnull
     public GsonArray reqArray(final String key) {
+        return this.reqArray(key, "No array found for key: " + key);
+    }
+
+    @Nonnull
+    public GsonArray reqArray(final String key, final String message) {
         GsonArray array = this.getArray(key, null);
-        if (array == null) throw new NoSuchElementException("No array found for key: " + key);
+        if (array == null) throw new NoSuchElementException(message);
         return array;
     }
 
@@ -173,8 +188,13 @@ public class GsonObject extends GsonElement implements Iterable<Map.Entry<String
 
     @Nonnull
     public GsonPrimitive reqPrimitive(final String key) {
+        return this.reqPrimitive(key, "No primitive found for key: " + key);
+    }
+
+    @Nonnull
+    public GsonPrimitive reqPrimitive(final String key, final String message) {
         GsonPrimitive primitive = this.getPrimitive(key, null);
-        if (primitive == null) throw new NoSuchElementException("No primitive found for key: " + key);
+        if (primitive == null) throw new NoSuchElementException(message);
         return primitive;
     }
 
@@ -187,7 +207,11 @@ public class GsonObject extends GsonElement implements Iterable<Map.Entry<String
     }
 
     public boolean reqBoolean(final String key) {
-        if (!this.hasBoolean(key)) throw new NoSuchElementException("No boolean found for key: " + key);
+        return this.reqBoolean(key, "No boolean found for key: " + key);
+    }
+
+    public boolean reqBoolean(final String key, final String message) {
+        if (!this.hasBoolean(key)) throw new NoSuchElementException(message);
         return this.getBoolean(key);
     }
 
@@ -200,7 +224,11 @@ public class GsonObject extends GsonElement implements Iterable<Map.Entry<String
     }
 
     public byte reqByte(final String key) {
-        if (!this.hasNumber(key)) throw new NoSuchElementException("No byte found for key: " + key);
+        return this.reqByte(key, "No byte found for key: " + key);
+    }
+
+    public byte reqByte(final String key, final String message) {
+        if (!this.hasNumber(key)) throw new NoSuchElementException(message);
         return this.getByte(key);
     }
 
@@ -213,7 +241,11 @@ public class GsonObject extends GsonElement implements Iterable<Map.Entry<String
     }
 
     public short reqShort(final String key) {
-        if (!this.hasNumber(key)) throw new NoSuchElementException("No short found for key: " + key);
+        return this.reqShort(key, "No short found for key: " + key);
+    }
+
+    public short reqShort(final String key, final String message) {
+        if (!this.hasNumber(key)) throw new NoSuchElementException(message);
         return this.getShort(key);
     }
 
@@ -230,7 +262,11 @@ public class GsonObject extends GsonElement implements Iterable<Map.Entry<String
     }
 
     public int reqInt(final String key) {
-        if (!this.hasNumber(key)) throw new NoSuchElementException("No int found for key: " + key);
+        return this.reqInt(key, "No int found for key: " + key);
+    }
+
+    public int reqInt(final String key, final String message) {
+        if (!this.hasNumber(key)) throw new NoSuchElementException(message);
         return this.getInt(key);
     }
 
@@ -247,7 +283,11 @@ public class GsonObject extends GsonElement implements Iterable<Map.Entry<String
     }
 
     public long reqLong(final String key) {
-        if (!this.hasNumber(key)) throw new NoSuchElementException("No long found for key: " + key);
+        return this.reqLong(key, "No long found for key: " + key);
+    }
+
+    public long reqLong(final String key, final String message) {
+        if (!this.hasNumber(key)) throw new NoSuchElementException(message);
         return this.getLong(key);
     }
 
@@ -260,7 +300,11 @@ public class GsonObject extends GsonElement implements Iterable<Map.Entry<String
     }
 
     public float reqFloat(final String key) {
-        if (!this.hasNumber(key)) throw new NoSuchElementException("No float found for key: " + key);
+        return this.reqFloat(key, "No float found for key: " + key);
+    }
+
+    public float reqFloat(final String key, final String message) {
+        if (!this.hasNumber(key)) throw new NoSuchElementException(message);
         return this.getFloat(key);
     }
 
@@ -277,7 +321,11 @@ public class GsonObject extends GsonElement implements Iterable<Map.Entry<String
     }
 
     public double reqDouble(final String key) {
-        if (!this.hasNumber(key)) throw new NoSuchElementException("No double found for key: " + key);
+        return this.reqDouble(key, "No double found for key: " + key);
+    }
+
+    public double reqDouble(final String key, final String message) {
+        if (!this.hasNumber(key)) throw new NoSuchElementException(message);
         return this.getDouble(key);
     }
 
@@ -295,7 +343,12 @@ public class GsonObject extends GsonElement implements Iterable<Map.Entry<String
 
     @Nonnull
     public Number reqNumber(final String key) {
-        if (!this.hasNumber(key)) throw new NoSuchElementException("No number found for key: " + key);
+        return this.reqNumber(key, "No number found for key: " + key);
+    }
+
+    @Nonnull
+    public Number reqNumber(final String key, final String message) {
+        if (!this.hasNumber(key)) throw new NoSuchElementException(message);
         return this.getNumber(key);
     }
 
@@ -313,8 +366,13 @@ public class GsonObject extends GsonElement implements Iterable<Map.Entry<String
 
     @Nonnull
     public String reqString(final String key) {
+        return this.reqString(key, "No string found for key: " + key);
+    }
+
+    @Nonnull
+    public String reqString(final String key, final String message) {
         String value = this.getString(key, null);
-        if (value == null) throw new NoSuchElementException("No string found for key: " + key);
+        if (value == null) throw new NoSuchElementException(message);
         return value;
     }
 

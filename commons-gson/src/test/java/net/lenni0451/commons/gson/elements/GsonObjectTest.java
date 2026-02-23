@@ -82,7 +82,9 @@ class GsonObjectTest {
         assertFalse(OBJECT.opt("unknown").isPresent());
         assertTrue(OBJECT.opt("key0").isPresent());
         assertThrows(NoSuchElementException.class, () -> OBJECT.req("unknown"));
+        assertThrows(NoSuchElementException.class, () -> OBJECT.req("unknown", "Can't find key: unknown"));
         assertDoesNotThrow(() -> OBJECT.req("key0"));
+        assertDoesNotThrow(() -> OBJECT.req("key0", "Can't find key: key0"));
 
         assertNotNull(OBJECT.getObject("key0"));
         assertNotNull(OBJECT.getObject("key0", null));
@@ -92,7 +94,9 @@ class GsonObjectTest {
         assertFalse(OBJECT.optObject("unknown").isPresent());
         assertTrue(OBJECT.optObject("key0").isPresent());
         assertThrows(NoSuchElementException.class, () -> OBJECT.reqObject("unknown"));
+        assertThrows(NoSuchElementException.class, () -> OBJECT.reqObject("unknown", "Can't find key: unknown"));
         assertDoesNotThrow(() -> OBJECT.reqObject("key0"));
+        assertDoesNotThrow(() -> OBJECT.reqObject("key0", "Can't find key: key0"));
 
         assertNotNull(OBJECT.getArray("key1"));
         assertNotNull(OBJECT.getArray("key1", null));
@@ -102,7 +106,9 @@ class GsonObjectTest {
         assertFalse(OBJECT.optArray("unknown").isPresent());
         assertTrue(OBJECT.optArray("key1").isPresent());
         assertThrows(NoSuchElementException.class, () -> OBJECT.reqArray("unknown"));
+        assertThrows(NoSuchElementException.class, () -> OBJECT.reqArray("unknown", "Can't find key: unknown"));
         assertDoesNotThrow(() -> OBJECT.reqArray("key1"));
+        assertDoesNotThrow(() -> OBJECT.reqArray("key1", "Can't find key: key1"));
 
         assertNotNull(OBJECT.getPrimitive("key2"));
         assertNotNull(OBJECT.getPrimitive("key2", null));
@@ -112,28 +118,36 @@ class GsonObjectTest {
         assertFalse(OBJECT.optPrimitive("unknown").isPresent());
         assertTrue(OBJECT.optPrimitive("key2").isPresent());
         assertThrows(NoSuchElementException.class, () -> OBJECT.reqPrimitive("unknown"));
+        assertThrows(NoSuchElementException.class, () -> OBJECT.reqPrimitive("unknown", "Can't find key: unknown"));
         assertDoesNotThrow(() -> OBJECT.reqPrimitive("key2"));
+        assertDoesNotThrow(() -> OBJECT.reqPrimitive("key2", "Can't find key: key2"));
 
         assertTrue(OBJECT.getBoolean("key2"));
         assertTrue(OBJECT.getBoolean("key2", false));
         assertFalse(OBJECT.getBoolean("unknown"));
         assertTrue(OBJECT.getBoolean("unknown", true));
         assertThrows(NoSuchElementException.class, () -> OBJECT.reqBoolean("unknown"));
+        assertThrows(NoSuchElementException.class, () -> OBJECT.reqBoolean("unknown", "Can't find key: unknown"));
         assertDoesNotThrow(() -> OBJECT.reqBoolean("key2"));
+        assertDoesNotThrow(() -> OBJECT.reqBoolean("key2", "Can't find key: key2"));
 
         assertEquals(123, OBJECT.getByte("key3"));
         assertEquals(123, OBJECT.getByte("key3", (byte) 0));
         assertEquals(0, OBJECT.getByte("unknown"));
         assertEquals(0, OBJECT.getByte("unknown", (byte) 0));
         assertThrows(NoSuchElementException.class, () -> OBJECT.reqByte("unknown"));
+        assertThrows(NoSuchElementException.class, () -> OBJECT.reqByte("unknown", "Can't find key: unknown"));
         assertDoesNotThrow(() -> OBJECT.reqByte("key3"));
+        assertDoesNotThrow(() -> OBJECT.reqByte("key3", "Can't find key: key3"));
 
         assertEquals(123, OBJECT.getShort("key3"));
         assertEquals(123, OBJECT.getShort("key3", (short) 0));
         assertEquals(0, OBJECT.getShort("unknown"));
         assertEquals(0, OBJECT.getShort("unknown", (short) 0));
         assertThrows(NoSuchElementException.class, () -> OBJECT.reqShort("unknown"));
+        assertThrows(NoSuchElementException.class, () -> OBJECT.reqShort("unknown", "Can't find key: unknown"));
         assertDoesNotThrow(() -> OBJECT.reqShort("key3"));
+        assertDoesNotThrow(() -> OBJECT.reqShort("key3", "Can't find key: key3"));
 
         assertEquals(123, OBJECT.getInt("key3"));
         assertEquals(123, OBJECT.getInt("key3", 0));
@@ -142,7 +156,9 @@ class GsonObjectTest {
         assertFalse(OBJECT.optInt("unknown").isPresent());
         assertTrue(OBJECT.optInt("key3").isPresent());
         assertThrows(NoSuchElementException.class, () -> OBJECT.reqInt("unknown"));
+        assertThrows(NoSuchElementException.class, () -> OBJECT.reqInt("unknown", "Can't find key: unknown"));
         assertDoesNotThrow(() -> OBJECT.reqInt("key3"));
+        assertDoesNotThrow(() -> OBJECT.reqInt("key3", "Can't find key: key3"));
 
         assertEquals(123, OBJECT.getLong("key3"));
         assertEquals(123, OBJECT.getLong("key3", 0));
@@ -151,14 +167,18 @@ class GsonObjectTest {
         assertFalse(OBJECT.optLong("unknown").isPresent());
         assertTrue(OBJECT.optLong("key3").isPresent());
         assertThrows(NoSuchElementException.class, () -> OBJECT.reqLong("unknown"));
+        assertThrows(NoSuchElementException.class, () -> OBJECT.reqLong("unknown", "Can't find key: unknown"));
         assertDoesNotThrow(() -> OBJECT.reqLong("key3"));
+        assertDoesNotThrow(() -> OBJECT.reqLong("key3", "Can't find key: key3"));
 
         assertEquals(123, OBJECT.getFloat("key3"));
         assertEquals(123, OBJECT.getFloat("key3", 0));
         assertEquals(0, OBJECT.getFloat("unknown"));
         assertEquals(0, OBJECT.getFloat("unknown", 0));
         assertThrows(NoSuchElementException.class, () -> OBJECT.reqFloat("unknown"));
+        assertThrows(NoSuchElementException.class, () -> OBJECT.reqFloat("unknown", "Can't find key: unknown"));
         assertDoesNotThrow(() -> OBJECT.reqFloat("key3"));
+        assertDoesNotThrow(() -> OBJECT.reqFloat("key3", "Can't find key: key3"));
 
         assertEquals(123, OBJECT.getDouble("key3"));
         assertEquals(123, OBJECT.getDouble("key3", 0));
@@ -167,7 +187,9 @@ class GsonObjectTest {
         assertFalse(OBJECT.optDouble("unknown").isPresent());
         assertTrue(OBJECT.optDouble("key3").isPresent());
         assertThrows(NoSuchElementException.class, () -> OBJECT.reqDouble("unknown"));
+        assertThrows(NoSuchElementException.class, () -> OBJECT.reqDouble("unknown", "Can't find key: unknown"));
         assertDoesNotThrow(() -> OBJECT.reqDouble("key3"));
+        assertDoesNotThrow(() -> OBJECT.reqDouble("key3", "Can't find key: key3"));
 
         assertNotNull(OBJECT.getNumber("key3"));
         assertNotNull(OBJECT.getNumber("key3", 0));
@@ -176,7 +198,9 @@ class GsonObjectTest {
         assertFalse(OBJECT.optNumber("unknown").isPresent());
         assertTrue(OBJECT.optNumber("key3").isPresent());
         assertThrows(NoSuchElementException.class, () -> OBJECT.reqNumber("unknown"));
+        assertThrows(NoSuchElementException.class, () -> OBJECT.reqNumber("unknown", "Can't find key: unknown"));
         assertDoesNotThrow(() -> OBJECT.reqNumber("key3"));
+        assertDoesNotThrow(() -> OBJECT.reqNumber("key3", "Can't find key: key3"));
 
         assertNotNull(OBJECT.getString("key4"));
         assertNotNull(OBJECT.getString("key4", ""));
@@ -185,7 +209,9 @@ class GsonObjectTest {
         assertFalse(OBJECT.optString("unknown").isPresent());
         assertTrue(OBJECT.optString("key4").isPresent());
         assertThrows(NoSuchElementException.class, () -> OBJECT.reqString("unknown"));
+        assertThrows(NoSuchElementException.class, () -> OBJECT.reqString("unknown", "Can't find key: unknown"));
         assertDoesNotThrow(() -> OBJECT.reqString("key4"));
+        assertDoesNotThrow(() -> OBJECT.reqString("key4", "Can't find key: key4"));
     }
 
     @Test
