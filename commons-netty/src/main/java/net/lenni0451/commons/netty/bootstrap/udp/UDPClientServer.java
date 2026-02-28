@@ -74,6 +74,18 @@ public class UDPClientServer {
     }
 
     /**
+     * Bind the server to the given address.
+     *
+     * @param address The address to bind to
+     * @param sync    If the method should wait for the bind to complete
+     */
+    public void bind(final SocketAddress address, final boolean sync) {
+        this.configureBootstrap();
+        this.channelFuture = this.bootstrap.localAddress(address).bind();
+        if (sync) this.channelFuture.syncUninterruptibly();
+    }
+
+    /**
      * Connect the client to the given host and port.
      *
      * @param host The host to connect to
