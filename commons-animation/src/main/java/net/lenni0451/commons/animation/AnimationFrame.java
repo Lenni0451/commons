@@ -11,10 +11,10 @@ class AnimationFrame {
     private final EasingMode easingMode;
     private final float[] startValue;
     private final float[] endValue;
-    private final int duration;
+    private final long duration;
     private final EasingBehavior easingBehavior;
 
-    public AnimationFrame(final EasingFunction easingFunction, final EasingMode easingMode, final float[] startValue, final float[] endValue, final int duration, final EasingBehavior easingBehavior) {
+    public AnimationFrame(final EasingFunction easingFunction, final EasingMode easingMode, final float[] startValue, final float[] endValue, final long duration, final EasingBehavior easingBehavior) {
         this.easingFunction = easingFunction;
         this.easingMode = easingMode;
         this.startValue = startValue;
@@ -26,20 +26,20 @@ class AnimationFrame {
         if (startValue.length == 0) throw new IllegalArgumentException("The start and end value arrays must have at least one element!");
     }
 
-    public long getTimeLeft(final long startTime) {
-        return this.duration - (System.currentTimeMillis() - startTime);
+    public long getTimeLeft(final long startTime, final long currentTime) {
+        return this.duration - (currentTime - startTime);
     }
 
-    public float[] getValue(final long startTime) {
-        return this.getValue(this.easingMode, false, startTime);
+    public float[] getValue(final long startTime, final long currentTime) {
+        return this.getValue(this.easingMode, false, startTime, currentTime);
     }
 
-    public float[] getInvertedValue(final long startTime) {
-        return this.getValue(this.easingBehavior.equals(EasingBehavior.KEEP) ? this.easingMode : this.easingMode.invert(), true, startTime);
+    public float[] getInvertedValue(final long startTime, final long currentTime) {
+        return this.getValue(this.easingBehavior.equals(EasingBehavior.KEEP) ? this.easingMode : this.easingMode.invert(), true, startTime, currentTime);
     }
 
-    public float[] getValue(final EasingMode easingMode, final boolean reverseProgress, final long startTime) {
-        float progress = this.getEasingProgress(easingMode, startTime);
+    public float[] getValue(final EasingMode easingMode, final boolean reverseProgress, final long startTime, final long currentTime) {
+        float progress = this.getEasingProgress(easingMode, startTime, currentTime);
         if (reverseProgress) progress = 1 - progress;
         float[] result = new float[this.startValue.length];
         for (int i = 0; i < result.length; i++) {
@@ -48,8 +48,8 @@ class AnimationFrame {
         return result;
     }
 
-    public float getEasingProgress(final EasingMode easingMode, final long startTime) {
-        float progress = (float) (System.currentTimeMillis() - startTime) / this.duration;
+    public float getEasingProgress(final EasingMode easingMode, final long startTime, final long currentTime) {
+        float progress = (float) (currentTime - startTime) / this.duration;
         if (progress > 1) return 1;
         return easingMode.call(this.easingFunction, progress);
     }

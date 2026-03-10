@@ -12,7 +12,7 @@ public class AnimationFrameBuilder {
     private EasingMode easingMode;
     private float[] startValue;
     private float[] endValue;
-    private Integer duration;
+    private Long duration;
     private EasingBehavior easingBehavior;
 
     AnimationFrameBuilder() {
@@ -69,6 +69,17 @@ public class AnimationFrameBuilder {
      * @return The current builder instance
      */
     public AnimationFrameBuilder duration(@Nullable final Integer duration) {
+        this.duration = duration == null ? null : duration.longValue();
+        return this;
+    }
+
+    /**
+     * Set the duration for the frame.
+     *
+     * @param duration The duration
+     * @return The current builder instance
+     */
+    public AnimationFrameBuilder duration(@Nullable final Long duration) {
         this.duration = duration;
         return this;
     }

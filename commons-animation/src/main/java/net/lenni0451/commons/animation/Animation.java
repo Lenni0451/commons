@@ -1,5 +1,6 @@
 package net.lenni0451.commons.animation;
 
+import net.lenni0451.commons.animation.clock.TickClock;
 import net.lenni0451.commons.animation.easing.EasingFunction;
 import net.lenni0451.commons.animation.easing.EasingMode;
 
@@ -13,11 +14,10 @@ import java.util.function.Consumer;
  */
 public class Animation {
 
-    private static final float APPROXIMATION_PRECISION = 0.00001F;
-
     private final List<AnimationFrame> frames;
     private AnimationMode mode;
     private boolean frameByFrame;
+    private TickClock clock;
 
     private State state;
     private AnimationDirection direction;
@@ -32,9 +32,28 @@ public class Animation {
     public Animation(final AnimationMode mode) {
         this.frames = new ArrayList<>();
         this.mode = mode;
+        this.clock = TickClock.SYSTEM;
 
         this.state = State.PAUSED;
         this.direction = AnimationDirection.FORWARDS;
+    }
+
+    /**
+     * @return The clock used for the animation
+     */
+    public TickClock getClock() {
+        return this.clock;
+    }
+
+    /**
+     * Set the clock used for the animation.
+     *
+     * @param clock The clock
+     * @return The current animation instance
+     */
+    public Animation setClock(final TickClock clock) {
+        this.clock = clock;
+        return this;
     }
 
     /**
@@ -43,7 +62,7 @@ public class Animation {
      * The start value will be copied from the end value of the previous frame.<br>
      * <br>
      * Copying values from the previous frame only works if a previous frame exists.
-     * It is recommended to use {@link #frame(EasingFunction, EasingMode, float, float, Integer, EasingBehavior)} or {@link #frame(EasingFunction, EasingMode, float[], float[], Integer, EasingBehavior)} to add the first frame and ensure all values are set.
+     * It is recommended to use {@link #frame(EasingFunction, EasingMode, float, float, Long, EasingBehavior)} or {@link #frame(EasingFunction, EasingMode, float[], float[], Long, EasingBehavior)} to add the first frame and ensure all values are set.
      *
      * @param frameBuilder The builder for the frame
      * @return The current animation instance
@@ -72,6 +91,22 @@ public class Animation {
      * @return The current animation instance
      */
     public Animation frame(@Nullable final EasingFunction easingFunction, @Nullable final EasingMode easingMode, final float startValue, final float endValue, @Nullable final Integer duration, @Nullable final EasingBehavior easingBehavior) {
+        return this.frame(easingFunction, easingMode, startValue, endValue, duration == null ? null : duration.longValue(), easingBehavior);
+    }
+
+    /**
+     * Add a new frame to the animation.<br>
+     * Fields that are set to {@code null} will be copied from the previous frame.
+     *
+     * @param easingFunction The easing function for the frame
+     * @param easingMode     The easing mode for the frame
+     * @param startValue     The start value for the frame
+     * @param endValue       The end value for the frame
+     * @param duration       The duration for the frame
+     * @param easingBehavior The reverse behavior for the frame
+     * @return The current animation instance
+     */
+    public Animation frame(@Nullable final EasingFunction easingFunction, @Nullable final EasingMode easingMode, final float startValue, final float endValue, @Nullable final Long duration, @Nullable final EasingBehavior easingBehavior) {
         return this.frame(easingFunction, easingMode, new float[]{startValue}, new float[]{endValue}, duration, easingBehavior);
     }
 
@@ -88,6 +123,22 @@ public class Animation {
      * @return The current animation instance
      */
     public Animation frame(@Nullable final EasingFunction easingFunction, @Nullable final EasingMode easingMode, @Nullable final float[] startValue, @Nullable final float[] endValue, @Nullable final Integer duration, @Nullable final EasingBehavior easingBehavior) {
+        return this.frame(easingFunction, easingMode, startValue, endValue, duration == null ? null : duration.longValue(), easingBehavior);
+    }
+
+    /**
+     * Add a new frame to the animation.<br>
+     * Fields that are set to {@code null} will be copied from the previous frame.
+     *
+     * @param easingFunction The easing function for the frame
+     * @param easingMode     The easing mode for the frame
+     * @param startValue     The start value for the frame
+     * @param endValue       The end value for the frame
+     * @param duration       The duration for the frame
+     * @param easingBehavior The reverse behavior for the frame
+     * @return The current animation instance
+     */
+    public Animation frame(@Nullable final EasingFunction easingFunction, @Nullable final EasingMode easingMode, @Nullable final float[] startValue, @Nullable final float[] endValue, @Nullable final Long duration, @Nullable final EasingBehavior easingBehavior) {
         return this.frame(f -> f.easingFunction(easingFunction).easingMode(easingMode).start(startValue).end(endValue).duration(duration).easingBehavior(easingBehavior));
     }
 
@@ -191,40 +242,16 @@ public class Animation {
         this.direction = this.direction.getOpposite();
         if (this.isRunning()) {
             AnimationFrame frame = this.frames.get(this.currentFrame);
+            long currentTime = this.clock.getTime();
             if (frame.getEasingBehavior().equals(EasingBehavior.KEEP)) {
-                float easingProgress = frame.getEasingProgress(frame.getEasingMode(), this.startTime);
-                float inverseTimeProgress = this.approximateTimeProgress(frame.getEasingMode(), frame.getEasingFunction(), 1 - easingProgress);
-                this.startTime = System.currentTimeMillis() - (long) (inverseTimeProgress * frame.getDuration());
+                float easingProgress = frame.getEasingProgress(frame.getEasingMode(), this.startTime, currentTime);
+                float inverseTimeProgress = frame.getEasingFunction().getInverse(frame.getEasingMode(), 1 - easingProgress);
+                this.startTime = currentTime - (long) (inverseTimeProgress * frame.getDuration());
             } else {
-                this.startTime = System.currentTimeMillis() - frame.getTimeLeft(this.startTime);
+                this.startTime = currentTime - frame.getTimeLeft(this.startTime, currentTime);
             }
         }
         return this;
-    }
-
-    /**
-     * Approximate the time progress for the given wanted easing output.<br>
-     * This is required to reverse the animation in keep mode.
-     *
-     * @param easingMode     The easing mode
-     * @param easingFunction The easing function
-     * @param wantedOutput   The wanted output
-     * @return The approximated time progress
-     */
-    private float approximateTimeProgress(final EasingMode easingMode, final EasingFunction easingFunction, final float wantedOutput) {
-        float low = 0;
-        float high = 1;
-        float mid;
-        while (high - low > APPROXIMATION_PRECISION) {
-            mid = (low + high) / 2;
-            float output = easingMode.call(easingFunction, mid);
-            if (output < wantedOutput) {
-                low = mid;
-            } else {
-                high = mid;
-            }
-        }
-        return (low + high) / 2;
     }
 
     /**
@@ -269,7 +296,7 @@ public class Animation {
         if (this.frames.isEmpty()) throw new IllegalStateException("Can't start an animation without frames");
 
         this.state = State.RUNNING;
-        this.startTime = System.currentTimeMillis() - this.startTime;
+        this.startTime = this.clock.getTime() - this.startTime;
         this.stoppedValue = null;
         return this;
     }
@@ -286,7 +313,7 @@ public class Animation {
         this.stoppedValue = this.getValues();
         this.state = State.PAUSED;
         AnimationFrame frame = this.frames.get(this.currentFrame);
-        this.startTime = frame.getDuration() - frame.getTimeLeft(this.startTime);
+        this.startTime = frame.getDuration() - frame.getTimeLeft(this.startTime, this.clock.getTime());
         return this;
     }
 
@@ -312,6 +339,7 @@ public class Animation {
      * @return The current animation instance
      */
     public Animation finish() {
+        if (this.state.equals(State.FINISHED)) return this;
         this.state = State.FINISHED;
         this.startTime = 0;
         if (this.direction.equals(AnimationDirection.FORWARDS)) {
@@ -333,8 +361,7 @@ public class Animation {
      */
     public Animation finish(final AnimationDirection direction) {
         this.direction = direction;
-        this.finish();
-        return this;
+        return this.finish();
     }
 
     /**
@@ -369,12 +396,13 @@ public class Animation {
             else throw new IllegalStateException("Unknown Animation Direction: " + this.direction);
         }
 
+        long currentTime = this.clock.getTime();
         while (true) {
             AnimationFrame frame = this.frames.get(this.currentFrame);
-            long timeLeft = frame.getTimeLeft(this.startTime);
+            long timeLeft = frame.getTimeLeft(this.startTime, currentTime);
             if (timeLeft > 0) {
-                if (this.direction.equals(AnimationDirection.FORWARDS)) return frame.getValue(this.startTime);
-                else if (this.direction.equals(AnimationDirection.BACKWARDS)) return frame.getInvertedValue(this.startTime);
+                if (this.direction.equals(AnimationDirection.FORWARDS)) return frame.getValue(this.startTime, currentTime);
+                else if (this.direction.equals(AnimationDirection.BACKWARDS)) return frame.getInvertedValue(this.startTime, currentTime);
                 else throw new IllegalStateException("Unknown Animation Direction: " + this.direction);
             }
 
@@ -422,7 +450,7 @@ public class Animation {
                 this.stoppedValue = this.frames.get(this.currentFrame).getStartValue();
                 return this.stoppedValue;
             } else {
-                this.startTime = System.currentTimeMillis() + timeLeft;
+                this.startTime = currentTime + timeLeft;
             }
         }
     }

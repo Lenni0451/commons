@@ -22,4 +22,27 @@ public interface EasingFunction {
 
     float easeInOut(final float x);
 
+    /**
+     * Approximate the time progress for the given wanted easing output.
+     *
+     * @param easingMode   The easing mode
+     * @param wantedOutput The wanted output
+     * @return The approximated time progress
+     */
+    default float getInverse(final EasingMode easingMode, final float wantedOutput) {
+        float low = 0;
+        float high = 1;
+        float mid;
+        while (high - low > 0.00001F) {
+            mid = (low + high) / 2;
+            float output = easingMode.call(this, mid);
+            if (output < wantedOutput) {
+                low = mid;
+            } else {
+                high = mid;
+            }
+        }
+        return (low + high) / 2;
+    }
+
 }
