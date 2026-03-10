@@ -18,4 +18,12 @@ class URLEncodedFormContentTest {
         assertEquals(contentBytes.length, calculatedLength);
     }
 
+    @Test
+    void testEmpty() {
+        URLEncodedFormContent content = new URLEncodedFormContent();
+        assertEquals(0, content.getLength());
+        byte[] contentBytes = assertDoesNotThrow(content::getAsBytes);
+        assertEquals(0, contentBytes.length);
+    }
+
 }

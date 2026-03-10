@@ -64,6 +64,7 @@ public class URLEncodedFormContent extends HttpContent {
 
     @Override
     public int getLength() {
+        if (this.entries.isEmpty()) return 0;
         int length = this.entries.size() - 1; // & characters
         for (FormEntry entry : this.entries) {
             length += entry.getLength();

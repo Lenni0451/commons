@@ -11,6 +11,7 @@ import javax.annotation.Nullable;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -75,11 +76,11 @@ public class MultiPartFormContent extends HttpContent {
     @Override
     public int getLength() {
         if (this.unknownLength) return -1;
-        int boundaryLength = ("--" + this.boundary + "\r\n").getBytes().length;
+        int boundaryLength = ("--" + this.boundary + "\r\n").getBytes(StandardCharsets.UTF_8).length;
         int[] length = {0};
         for (FormPart part : this.parts) {
             length[0] += boundaryLength;
-            part.forEachHeader(header -> length[0] += header.getBytes().length);
+            part.forEachHeader(header -> length[0] += header.getBytes(StandardCharsets.UTF_8).length);
             length[0] += 2; // \r\n between headers and content
             length[0] += part.getContent().getLength();
             length[0] += 2; // \r\n after content
@@ -91,12 +92,12 @@ public class MultiPartFormContent extends HttpContent {
     @Override
     protected InputStream compute() throws IOException {
         Queue<InputStream> partialStreams = new ArrayDeque<>(this.parts.size() * 4 + 1); // estimate size, the headers will add some more streams
-        byte[] lineBreak = "\r\n".getBytes();
-        byte[] boundary = ("--" + this.boundary + "\r\n").getBytes();
-        byte[] finalBoundary = ("--" + this.boundary + "--").getBytes();
+        byte[] lineBreak = "\r\n".getBytes(StandardCharsets.UTF_8);
+        byte[] boundary = ("--" + this.boundary + "\r\n").getBytes(StandardCharsets.UTF_8);
+        byte[] finalBoundary = ("--" + this.boundary + "--").getBytes(StandardCharsets.UTF_8);
         for (FormPart part : this.parts) {
             partialStreams.add(new ByteArrayInputStream(boundary));
-            part.forEachHeader(header -> partialStreams.add(new ByteArrayInputStream(header.getBytes())));
+            part.forEachHeader(header -> partialStreams.add(new ByteArrayInputStream(header.getBytes(StandardCharsets.UTF_8))));
             partialStreams.add(new ByteArrayInputStream(lineBreak));
             partialStreams.add(part.getContent().getAsStream());
             partialStreams.add(new ByteArrayInputStream(lineBreak));

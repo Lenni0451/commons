@@ -37,6 +37,17 @@ class HttpContentTest {
     }
 
     @Test
+    void getAsBytesRange() {
+        HttpContent content = HttpContent.bytes(new byte[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}, 2, 5);
+        assertEquals(5, content.getLength());
+        byte[] bytes = assertDoesNotThrow(content::getAsBytes);
+        assertEquals(5, bytes.length);
+        for (int i = 0; i < 5; i++) {
+            assertEquals(i + 2, bytes[i]);
+        }
+    }
+
+    @Test
     void testGetAsString() {
         HttpContent content = HttpContent.string("Hello, World!");
         String str = assertDoesNotThrow(() -> content.getAsString(StandardCharsets.UTF_8));
