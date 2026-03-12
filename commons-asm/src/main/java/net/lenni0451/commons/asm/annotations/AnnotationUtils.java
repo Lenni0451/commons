@@ -27,7 +27,9 @@ public class AnnotationUtils {
     public static Map<String, Object> listToMap(@Nullable final List<Object> list) {
         Map<String, Object> map = new HashMap<>();
         if (list != null) {
-            for (int i = 0; i < list.size(); i += 2) map.put((String) list.get(i), list.get(i + 1));
+            for (int i = 0; i < list.size(); i += 2) {
+                map.put((String) list.get(i), list.get(i + 1));
+            }
         }
         return map;
     }
@@ -59,7 +61,9 @@ public class AnnotationUtils {
      */
     public static void forEachVisible(final ClassNode classNode, final Consumer<AnnotationNode> annotationConsumer) {
         if (classNode.visibleAnnotations != null) {
-            for (AnnotationNode annotation : classNode.visibleAnnotations) annotationConsumer.accept(annotation);
+            for (AnnotationNode annotation : classNode.visibleAnnotations) {
+                annotationConsumer.accept(annotation);
+            }
         }
     }
 
@@ -71,7 +75,9 @@ public class AnnotationUtils {
      */
     public static void forEachVisible(final FieldNode fieldNode, final Consumer<AnnotationNode> annotationConsumer) {
         if (fieldNode.visibleAnnotations != null) {
-            for (AnnotationNode annotation : fieldNode.visibleAnnotations) annotationConsumer.accept(annotation);
+            for (AnnotationNode annotation : fieldNode.visibleAnnotations) {
+                annotationConsumer.accept(annotation);
+            }
         }
     }
 
@@ -83,7 +89,9 @@ public class AnnotationUtils {
      */
     public static void forEachVisible(final MethodNode methodNode, final Consumer<AnnotationNode> annotationConsumer) {
         if (methodNode.visibleAnnotations != null) {
-            for (AnnotationNode annotation : methodNode.visibleAnnotations) annotationConsumer.accept(annotation);
+            for (AnnotationNode annotation : methodNode.visibleAnnotations) {
+                annotationConsumer.accept(annotation);
+            }
         }
     }
 
@@ -95,7 +103,9 @@ public class AnnotationUtils {
      */
     public static void forEachInvisible(final ClassNode classNode, final Consumer<AnnotationNode> annotationConsumer) {
         if (classNode.invisibleAnnotations != null) {
-            for (AnnotationNode annotation : classNode.invisibleAnnotations) annotationConsumer.accept(annotation);
+            for (AnnotationNode annotation : classNode.invisibleAnnotations) {
+                annotationConsumer.accept(annotation);
+            }
         }
     }
 
@@ -107,7 +117,9 @@ public class AnnotationUtils {
      */
     public static void forEachInvisible(final FieldNode fieldNode, final Consumer<AnnotationNode> annotationConsumer) {
         if (fieldNode.invisibleAnnotations != null) {
-            for (AnnotationNode annotation : fieldNode.invisibleAnnotations) annotationConsumer.accept(annotation);
+            for (AnnotationNode annotation : fieldNode.invisibleAnnotations) {
+                annotationConsumer.accept(annotation);
+            }
         }
     }
 
@@ -119,7 +131,9 @@ public class AnnotationUtils {
      */
     public static void forEachInvisible(final MethodNode methodNode, final Consumer<AnnotationNode> annotationConsumer) {
         if (methodNode.invisibleAnnotations != null) {
-            for (AnnotationNode annotation : methodNode.invisibleAnnotations) annotationConsumer.accept(annotation);
+            for (AnnotationNode annotation : methodNode.invisibleAnnotations) {
+                annotationConsumer.accept(annotation);
+            }
         }
     }
 
@@ -460,7 +474,9 @@ public class AnnotationUtils {
     public static Optional<AnnotationNode> findAnnotation(@Nullable final List<AnnotationNode> annotations, final String annotationDescriptor) {
         if (annotations == null) return Optional.empty();
         for (AnnotationNode annotation : annotations) {
-            if (annotation.desc.equals(annotationDescriptor)) return Optional.of(annotation);
+            if (annotation.desc.equals(annotationDescriptor)) {
+                return Optional.of(annotation);
+            }
         }
         return Optional.empty();
     }
@@ -490,10 +506,12 @@ public class AnnotationUtils {
         for (int i = 0; i < annotations.length; i++) {
             Optional<AnnotationNode> annotationNode = findAnnotation(annotations[i], annotationDescriptor);
             annotationNodes[i] = annotationNode.orElse(null);
-            if (annotationNode.isPresent()) found = true;
+            if (annotationNode.isPresent()) {
+                found = true;
+            }
         }
         if (!found) return Optional.empty();
-        else return Optional.of(annotationNodes);
+        return Optional.of(annotationNodes);
     }
 
 

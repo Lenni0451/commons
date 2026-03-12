@@ -183,9 +183,13 @@ public class InstructionComparator {
             if (obj1 == null || obj2 == null) return false;
 
             if (obj1 instanceof AbstractInsnNode && obj2 instanceof AbstractInsnNode) {
-                if (!this.equals((AbstractInsnNode) obj1, (AbstractInsnNode) obj2)) return false;
+                if (!this.equals((AbstractInsnNode) obj1, (AbstractInsnNode) obj2)) {
+                    return false;
+                }
             } else {
-                if (!Objects.equals(obj1, obj2)) return false;
+                if (!Objects.equals(obj1, obj2)) {
+                    return false;
+                }
             }
         }
         return true;

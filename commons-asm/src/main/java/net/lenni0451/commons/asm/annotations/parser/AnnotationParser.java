@@ -108,7 +108,9 @@ public class AnnotationParser {
             Object[] constants = enumClass.getEnumConstants();
             for (Object constant : constants) {
                 Enum<?> enumConstant = (Enum<?>) constant;
-                if (enumConstant.name().equals(array[1])) return enumConstant;
+                if (enumConstant.name().equals(array[1])) {
+                    return enumConstant;
+                }
             }
             throw new IllegalArgumentException("Unknown enum constant: " + array[1]);
         } else if (value instanceof AnnotationNode) {
@@ -129,7 +131,9 @@ public class AnnotationParser {
         if (!method.getReturnType().equals(returnValue)) return false;
         if (method.getParameterCount() != parameters.length) return false;
         for (int i = 0; i < parameters.length; i++) {
-            if (!method.getParameterTypes()[i].equals(parameters[i])) return false;
+            if (!method.getParameterTypes()[i].equals(parameters[i])) {
+                return false;
+            }
         }
         return true;
     }

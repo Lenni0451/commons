@@ -79,7 +79,9 @@ public class ASMUtils {
      */
     public static int freeVarIndex(final MethodNode methodNode) {
         int index = Modifiers.has(methodNode.access, Opcodes.ACC_STATIC) ? 0 : 1;
-        for (Type type : argumentTypes(methodNode)) index += type.getSize();
+        for (Type type : argumentTypes(methodNode)) {
+            index += type.getSize();
+        }
         for (AbstractInsnNode instruction : methodNode.instructions) {
             if (instruction instanceof VarInsnNode) {
                 VarInsnNode varInsnNode = (VarInsnNode) instruction;
@@ -160,9 +162,8 @@ public class ASMUtils {
             return new MethodInsnNode(Opcodes.INVOKESTATIC, internalName(Float.class), "valueOf", methodDescriptor(Float.class, float.class), false);
         } else if (primitive.equals(Type.DOUBLE_TYPE)) {
             return new MethodInsnNode(Opcodes.INVOKESTATIC, internalName(Double.class), "valueOf", methodDescriptor(Double.class, double.class), false);
-        } else {
-            return null;
         }
+        return null;
     }
 
     /**
@@ -173,14 +174,23 @@ public class ASMUtils {
      */
     @Nullable
     public static Number toNumber(@Nullable final AbstractInsnNode instruction) {
-        if (instruction == null) return null;
-        if (instruction.getOpcode() >= Opcodes.ICONST_M1 && instruction.getOpcode() <= Opcodes.ICONST_5) return instruction.getOpcode() - Opcodes.ICONST_0;
-        if (instruction.getOpcode() >= Opcodes.LCONST_0 && instruction.getOpcode() <= Opcodes.LCONST_1) return (long) (instruction.getOpcode() - Opcodes.LCONST_0);
-        if (instruction.getOpcode() >= Opcodes.FCONST_0 && instruction.getOpcode() <= Opcodes.FCONST_2) return (float) (instruction.getOpcode() - Opcodes.FCONST_0);
-        if (instruction.getOpcode() >= Opcodes.DCONST_0 && instruction.getOpcode() <= Opcodes.DCONST_1) return (double) (instruction.getOpcode() - Opcodes.DCONST_0);
-        if (instruction.getOpcode() == Opcodes.BIPUSH) return (byte) ((IntInsnNode) instruction).operand;
-        if (instruction.getOpcode() == Opcodes.SIPUSH) return (short) ((IntInsnNode) instruction).operand;
-        if (instruction.getOpcode() == Opcodes.LDC && ((LdcInsnNode) instruction).cst instanceof Number) return (Number) ((LdcInsnNode) instruction).cst;
+        if (instruction == null) {
+            return null;
+        } else if (instruction.getOpcode() >= Opcodes.ICONST_M1 && instruction.getOpcode() <= Opcodes.ICONST_5) {
+            return instruction.getOpcode() - Opcodes.ICONST_0;
+        } else if (instruction.getOpcode() >= Opcodes.LCONST_0 && instruction.getOpcode() <= Opcodes.LCONST_1) {
+            return (long) (instruction.getOpcode() - Opcodes.LCONST_0);
+        } else if (instruction.getOpcode() >= Opcodes.FCONST_0 && instruction.getOpcode() <= Opcodes.FCONST_2) {
+            return (float) (instruction.getOpcode() - Opcodes.FCONST_0);
+        } else if (instruction.getOpcode() >= Opcodes.DCONST_0 && instruction.getOpcode() <= Opcodes.DCONST_1) {
+            return (double) (instruction.getOpcode() - Opcodes.DCONST_0);
+        } else if (instruction.getOpcode() == Opcodes.BIPUSH) {
+            return (byte) ((IntInsnNode) instruction).operand;
+        } else if (instruction.getOpcode() == Opcodes.SIPUSH) {
+            return (short) ((IntInsnNode) instruction).operand;
+        } else if (instruction.getOpcode() == Opcodes.LDC && ((LdcInsnNode) instruction).cst instanceof Number) {
+            return (Number) ((LdcInsnNode) instruction).cst;
+        }
         return null;
     }
 
@@ -191,9 +201,13 @@ public class ASMUtils {
      * @return The instruction to push the integer
      */
     public static AbstractInsnNode intPush(final int i) {
-        if (i >= -1 && i <= 5) return new InsnNode(Opcodes.ICONST_0 + i);
-        if (i >= Byte.MIN_VALUE && i <= Byte.MAX_VALUE) return new IntInsnNode(Opcodes.BIPUSH, i);
-        if (i >= Short.MIN_VALUE && i <= Short.MAX_VALUE) return new IntInsnNode(Opcodes.SIPUSH, i);
+        if (i >= -1 && i <= 5) {
+            return new InsnNode(Opcodes.ICONST_0 + i);
+        } else if (i >= Byte.MIN_VALUE && i <= Byte.MAX_VALUE) {
+            return new IntInsnNode(Opcodes.BIPUSH, i);
+        } else if (i >= Short.MIN_VALUE && i <= Short.MAX_VALUE) {
+            return new IntInsnNode(Opcodes.SIPUSH, i);
+        }
         return new LdcInsnNode(i);
     }
 
@@ -204,8 +218,11 @@ public class ASMUtils {
      * @return The instruction to push the long
      */
     public static AbstractInsnNode longPush(final long l) {
-        if (l == 0) return new InsnNode(Opcodes.LCONST_0);
-        if (l == 1) return new InsnNode(Opcodes.LCONST_1);
+        if (l == 0) {
+            return new InsnNode(Opcodes.LCONST_0);
+        } else if (l == 1) {
+            return new InsnNode(Opcodes.LCONST_1);
+        }
         return new LdcInsnNode(l);
     }
 
@@ -216,9 +233,13 @@ public class ASMUtils {
      * @return The instruction to push the float
      */
     public static AbstractInsnNode floatPush(final float f) {
-        if (f == 0) return new InsnNode(Opcodes.FCONST_0);
-        if (f == 1) return new InsnNode(Opcodes.FCONST_1);
-        if (f == 2) return new InsnNode(Opcodes.FCONST_2);
+        if (f == 0) {
+            return new InsnNode(Opcodes.FCONST_0);
+        } else if (f == 1) {
+            return new InsnNode(Opcodes.FCONST_1);
+        } else if (f == 2) {
+            return new InsnNode(Opcodes.FCONST_2);
+        }
         return new LdcInsnNode(f);
     }
 
@@ -229,8 +250,11 @@ public class ASMUtils {
      * @return The instruction to push the double
      */
     public static AbstractInsnNode doublePush(final double d) {
-        if (d == 0) return new InsnNode(Opcodes.DCONST_0);
-        if (d == 1) return new InsnNode(Opcodes.DCONST_1);
+        if (d == 0) {
+            return new InsnNode(Opcodes.DCONST_0);
+        } else if (d == 1) {
+            return new InsnNode(Opcodes.DCONST_1);
+        }
         return new LdcInsnNode(d);
     }
 
@@ -323,8 +347,8 @@ public class ASMUtils {
     public static String generateVariableName(final Type type, final Predicate<String> doesExist) {
         String newName;
         if (type.getSort() == Type.ARRAY) {
-            //Generate a name for an array type
-            //[[Ljava/lang/Object; -> objectArrayArray
+            // Generate a name for an array type
+            // [[Ljava/lang/Object; -> objectArrayArray
             newName = type.getElementType().getClassName();
             for (int j = 0; j < type.getDimensions(); j++) {
                 newName += "Array";
@@ -333,30 +357,30 @@ public class ASMUtils {
             newName = type.getClassName();
         }
         if (type.getDescriptor().length() == 1) {
-            //Primitive types are just lowercased
+            // Primitive types are just lowercased
             newName = type.getDescriptor().toLowerCase(Locale.ROOT);
         } else {
             newName = newName.substring(newName.lastIndexOf('.') + 1); //Strip the package name
             newName = newName.substring(newName.lastIndexOf('$') + 1); //Strip the outer class name
             if (newName.toUpperCase(Locale.ROOT).equals(newName)) {
-                //If the name is all uppercase, just lowercase it
-                //e.g. UUID -> uuid
+                // If the name is all uppercase, just lowercase it
+                // e.g. UUID -> uuid
                 newName = newName.toLowerCase(Locale.ROOT);
             } else {
-                //Camel case the name
-                //e.g. ClassInfoProvider -> classInfoProvider
+                // Camel case the name
+                // e.g. ClassInfoProvider -> classInfoProvider
                 newName = newName.substring(0, 1).toLowerCase(Locale.ROOT) + newName.substring(1);
             }
         }
         if (SourceVersion.isKeyword(newName)) {
-            //Prepend an underscore if the name is a keyword
+            // Prepend an underscore if the name is a keyword
             newName = "_" + newName;
         }
 
-        int index = 2; //Start at 2. The first variable does not have a number
+        int index = 2; // Start at 2. The first variable does not have a number
         String name = newName;
         while (doesExist.test(name)) {
-            //Append a number if the name already exists
+            // Append a number if the name already exists
             name = newName + index++;
         }
         return name;

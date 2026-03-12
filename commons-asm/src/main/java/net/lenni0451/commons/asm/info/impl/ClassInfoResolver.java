@@ -51,10 +51,14 @@ public class ClassInfoResolver {
             ClassInfo current = queue.poll();
             if (!superClasses.add(current)) continue;
             ClassInfo superClass = current.getSuperClassInfo();
-            if (superClass != null) queue.add(superClass);
+            if (superClass != null) {
+                queue.add(superClass);
+            }
             Collections.addAll(queue, current.getInterfaceInfos());
         }
-        if (!includeSelf) superClasses.remove(classInfo);
+        if (!includeSelf) {
+            superClasses.remove(classInfo);
+        }
         return superClasses;
     }
 
