@@ -174,6 +174,10 @@ public class SequentialInputStream extends InputStream {
      */
     @Override
     public int read(@Nonnull byte[] b, int off, int len) throws IOException {
+        if (off < 0 || len < 0 || len > b.length - off) {
+            throw new IndexOutOfBoundsException();
+        }
+        if (len == 0) return 0;
         synchronized (this.lock) {
             this.waitForData();
             if (this.pos >= this.limit) return -1; //Closed
