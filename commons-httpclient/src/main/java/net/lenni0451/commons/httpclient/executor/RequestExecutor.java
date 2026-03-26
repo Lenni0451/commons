@@ -72,15 +72,9 @@ public abstract class RequestExecutor {
         if (request instanceof HttpContentRequest && includeContentHeaders) {
             HttpContent content = ((HttpContentRequest) request).getContent();
             if (content != null) {
-<<<<<<< fix/reactor-netty-streaming
-                headers.put(HttpHeaders.CONTENT_TYPE.toLowerCase(), Collections.singletonList(content.getType().toString()));
-                if (content.getLength() >= 0) {
-                    headers.put(HttpHeaders.CONTENT_LENGTH.toLowerCase(), Collections.singletonList(String.valueOf(content.getLength())));
-=======
                 headers.put(HttpHeaders.CONTENT_TYPE.toLowerCase(Locale.ROOT), Collections.singletonList(content.getType().toString()));
                 if (content.getLength() >= 0) {
                     headers.put(HttpHeaders.CONTENT_LENGTH.toLowerCase(Locale.ROOT), Collections.singletonList(String.valueOf(content.getLength())));
->>>>>>> main
                 }
             }
         }
