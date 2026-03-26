@@ -7,6 +7,7 @@ import net.lenni0451.commons.unchecked.function.ThrowingConsumer;
 import net.lenni0451.commons.unchecked.function.ThrowingFunction;
 import net.lenni0451.commons.unchecked.function.ThrowingSupplier;
 
+import javax.annotation.Nonnull;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -225,6 +226,7 @@ public class FieldInitializer<T> {
      * @param exceptionSupplier The exception supplier
      * @return The value
      */
+    @Nonnull
     @SneakyThrows
     public T require(final Supplier<Throwable> exceptionSupplier) {
         T value = this.supplier.tryGet();
