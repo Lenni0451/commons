@@ -13,10 +13,7 @@ import java.io.IOException;
 import java.net.CookieManager;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BiConsumer;
 
 public abstract class RequestExecutor {
@@ -65,7 +62,7 @@ public abstract class RequestExecutor {
                 Map<String, List<String>> cookieHeaders = cookieManager.get(request.getURL().toURI(), Collections.emptyMap());
                 for (Map.Entry<String, List<String>> entry : cookieHeaders.entrySet()) {
                     if (entry.getValue().isEmpty()) continue; //Skip empty headers
-                    headers.put(entry.getKey().toLowerCase(), entry.getValue());
+                    headers.put(entry.getKey().toLowerCase(Locale.ROOT), entry.getValue());
                 }
             } catch (URISyntaxException e) {
                 throw new IOException("Failed to parse URL as URI", e);
@@ -75,21 +72,27 @@ public abstract class RequestExecutor {
         if (request instanceof HttpContentRequest && includeContentHeaders) {
             HttpContent content = ((HttpContentRequest) request).getContent();
             if (content != null) {
+<<<<<<< fix/reactor-netty-streaming
                 headers.put(HttpHeaders.CONTENT_TYPE.toLowerCase(), Collections.singletonList(content.getType().toString()));
                 if (content.getLength() >= 0) {
                     headers.put(HttpHeaders.CONTENT_LENGTH.toLowerCase(), Collections.singletonList(String.valueOf(content.getLength())));
+=======
+                headers.put(HttpHeaders.CONTENT_TYPE.toLowerCase(Locale.ROOT), Collections.singletonList(content.getType().toString()));
+                if (content.getLength() >= 0) {
+                    headers.put(HttpHeaders.CONTENT_LENGTH.toLowerCase(Locale.ROOT), Collections.singletonList(String.valueOf(content.getLength())));
+>>>>>>> main
                 }
             }
         }
         //Add client headers
         for (Map.Entry<String, List<String>> entry : this.client.getHeaders().entrySet()) {
             if (entry.getValue().isEmpty()) continue; //Skip empty headers
-            headers.put(entry.getKey().toLowerCase(), entry.getValue());
+            headers.put(entry.getKey().toLowerCase(Locale.ROOT), entry.getValue());
         }
         //Add request headers
         for (Map.Entry<String, List<String>> entry : request.getHeaders().entrySet()) {
             if (entry.getValue().isEmpty()) continue; //Skip empty headers
-            headers.put(entry.getKey().toLowerCase(), entry.getValue());
+            headers.put(entry.getKey().toLowerCase(Locale.ROOT), entry.getValue());
         }
         return headers;
     }
