@@ -2,6 +2,8 @@ package net.lenni0451.commons.strings;
 
 import lombok.experimental.UtilityClass;
 
+import java.util.Locale;
+
 @UtilityClass
 public class StringUtils {
 
@@ -12,7 +14,7 @@ public class StringUtils {
      * @return The uppercase string
      */
     public static String uppercaseFirst(final String s) {
-        return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
+        return s.substring(0, 1).toUpperCase(Locale.ROOT) + s.substring(1).toLowerCase(Locale.ROOT);
     }
 
     /**

@@ -37,7 +37,7 @@ public abstract class HeaderStore<T extends HeaderStore<T>> {
      * @return The header or null if not set
      */
     public List<String> getHeader(final String name) {
-        return this.headers.get(name.toLowerCase());
+        return this.headers.get(name.toLowerCase(Locale.ROOT));
     }
 
     /**
