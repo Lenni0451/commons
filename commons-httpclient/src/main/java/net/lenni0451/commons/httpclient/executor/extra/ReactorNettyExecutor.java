@@ -16,6 +16,8 @@ import net.lenni0451.commons.httpclient.utils.IgnoringTrustManager;
 import net.lenni0451.commons.httpclient.utils.URLWrapper;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.publisher.SynchronousSink;
+import reactor.core.scheduler.Schedulers;
 import reactor.netty.ByteBufFlux;
 import reactor.netty.Connection;
 import reactor.netty.http.client.HttpClient.RequestSender;
@@ -119,7 +121,7 @@ public class ReactorNettyExecutor extends RequestExecutor {
         final int bufferSize = Math.max(1, content.getBufferSize());
         return Mono.fromCallable(content::getAsStream).flatMapMany(inputStream -> Flux.generate(
                 () -> new ContentStreamState(inputStream, new byte[bufferSize]),
-                (state, sink) -> {
+                (ContentStreamState state, SynchronousSink<ByteBuf> sink) -> {
                     try {
                         int read = state.inputStream.read(state.buffer);
                         if (read < 0) {
@@ -140,7 +142,7 @@ public class ReactorNettyExecutor extends RequestExecutor {
                     } catch (IOException ignored) {
                     }
                 }
-        ));
+        )).subscribeOn(Schedulers.boundedElastic());
     }
 
     private reactor.netty.http.client.HttpClient buildClient(final HttpRequest request, final CookieManager cookieManager) throws IOException {
