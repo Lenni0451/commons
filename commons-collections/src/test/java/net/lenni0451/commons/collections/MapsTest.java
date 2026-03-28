@@ -3,6 +3,7 @@ package net.lenni0451.commons.collections;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -17,6 +18,36 @@ class MapsTest {
         map.put("C", "B");
         map.put("B", "A");
         map = Maps.sort(map, (o1, o2) -> o1.getValue().compareToIgnoreCase(o2.getValue()));
+
+        int i = 0;
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            switch (i) {
+                case 0:
+                    assertEquals("B", entry.getKey());
+                    assertEquals("A", entry.getValue());
+                    break;
+                case 1:
+                    assertEquals("C", entry.getKey());
+                    assertEquals("B", entry.getValue());
+                    break;
+                case 2:
+                    assertEquals("A", entry.getKey());
+                    assertEquals("C", entry.getValue());
+                    break;
+                default:
+                    fail("Unexpected value: " + entry.getKey() + " (" + i + ")");
+            }
+            i++;
+        }
+    }
+
+    @Test
+    void sortInline() {
+        final Map<String, String> map = new LinkedHashMap<>();
+        map.put("B", "A");
+        map.put("C", "B");
+        map.put("A", "C");
+        Maps.sortInline(map, (o1, o2) -> o1.getValue().compareToIgnoreCase(o2.getValue()));
 
         int i = 0;
         for (Map.Entry<String, String> entry : map.entrySet()) {

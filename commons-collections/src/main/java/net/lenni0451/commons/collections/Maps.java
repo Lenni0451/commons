@@ -33,6 +33,21 @@ public class Maps {
     }
 
     /**
+     * Sort a map using the given comparator inline.<br>
+     * The map needs to be an ordered map (e.g., {@link LinkedHashMap}) to keep the order of the map. Otherwise, the order is not guaranteed.
+     *
+     * @param map        The map to sort
+     * @param comparator The comparator to use
+     * @param <K>        The key type
+     * @param <V>        The value type
+     */
+    public static <K, V> void sortInline(final Map<K, V> map, final Comparator<Map.Entry<K, V>> comparator) {
+        Map<K, V> sortedMap = sort(map, comparator);
+        map.clear();
+        map.putAll(sortedMap);
+    }
+
+    /**
      * Merge multiple maps into one.<br>
      * The maps are not modified.
      *
