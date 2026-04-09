@@ -235,7 +235,7 @@ public class MathUtils {
      * @param precision The precision
      * @return The rounded float
      */
-    public static float round(float value, int precision) {
+    public static float round(final float value, final int precision) {
         int scale = (int) Math.pow(10, precision);
         return (float) Math.round(value * scale) / scale;
     }
@@ -247,7 +247,7 @@ public class MathUtils {
      * @param precision The precision
      * @return The rounded floats
      */
-    public static float[] round(float[] values, int precision) {
+    public static float[] round(final float[] values, final int precision) {
         for (int i = 0; i < values.length; i++) values[i] = round(values[i], precision);
         return values;
     }
@@ -259,7 +259,7 @@ public class MathUtils {
      * @param precision The precision
      * @return The rounded double
      */
-    public static double round(double value, int precision) {
+    public static double round(final double value, final int precision) {
         int scale = (int) Math.pow(10, precision);
         return (double) Math.round(value * scale) / scale;
     }
@@ -271,7 +271,7 @@ public class MathUtils {
      * @param precision The precision
      * @return The rounded doubles
      */
-    public static double[] round(double[] values, int precision) {
+    public static double[] round(final double[] values, final int precision) {
         for (int i = 0; i < values.length; i++) values[i] = round(values[i], precision);
         return values;
     }
@@ -382,6 +382,30 @@ public class MathUtils {
     public static double log(final double value, final double base) {
         if (value <= 0 || base <= 1) throw new IllegalArgumentException("Value must be greater than 0 and base must be greater than 1");
         return Math.log(value) / Math.log(base);
+    }
+
+    /**
+     * Linearly interpolate between two values.
+     *
+     * @param a The start value
+     * @param b The end value
+     * @param t The interpolation factor between 0 and 1
+     * @return The interpolated value
+     */
+    public static float lerp(final float a, final float b, final float t) {
+        return a + (b - a) * t;
+    }
+
+    /**
+     * Linearly interpolate between two values.
+     *
+     * @param a The start value
+     * @param b The end value
+     * @param t The interpolation factor between 0 and 1
+     * @return The interpolated value
+     */
+    public static double lerp(final double a, final double b, final double t) {
+        return a + (b - a) * t;
     }
 
 }

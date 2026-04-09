@@ -245,4 +245,17 @@ class MathUtilsTest {
         assertThrows(IllegalArgumentException.class, () -> MathUtils.log(1, -2.5));
     }
 
+    @Test
+    void lerp() {
+        assertEquals(10.0F, MathUtils.lerp(10.0F, 20.0F, 0.0F), 0.0001F);
+        assertEquals(20.0F, MathUtils.lerp(10.0F, 20.0F, 1.0F), 0.0001F);
+        assertEquals(15.0F, MathUtils.lerp(10.0F, 20.0F, 0.5F), 0.0001F);
+        assertEquals(25.0F, MathUtils.lerp(10.0F, 20.0F, 1.5F), 0.0001F);
+
+        assertEquals(5.0, MathUtils.lerp(5.0, 15.0, 0.0), 0.000001);
+        assertEquals(15.0, MathUtils.lerp(5.0, 15.0, 1.0), 0.000001);
+        assertEquals(10.0, MathUtils.lerp(5.0, 15.0, 0.5), 0.000001);
+        assertEquals(0.0, MathUtils.lerp(5.0, 15.0, -0.5), 0.000001);
+    }
+
 }
