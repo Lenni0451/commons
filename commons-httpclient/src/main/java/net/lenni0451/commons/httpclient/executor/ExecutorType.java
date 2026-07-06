@@ -45,6 +45,26 @@ public enum ExecutorType {
             "reactor.netty.http.client.HttpClient",
             "net.lenni0451.commons.httpclient.executor.extra.ReactorNettyExecutor"
     ),
+    /**
+     * Use the OkHttp executor.<br>
+     * OkHttp needs to be added as a dependency to your project.
+     *
+     * @see net.lenni0451.commons.httpclient.executor.extra.OkHttpExecutor
+     */
+    OK_HTTP(
+            "okhttp3.OkHttpClient",
+            "net.lenni0451.commons.httpclient.executor.extra.OkHttpExecutor"
+    ),
+    /**
+     * Use the Ktor executor.<br>
+     * Ktor (including a client engine) needs to be added as a dependency to your project.
+     *
+     * @see net.lenni0451.commons.httpclient.executor.extra.KtorExecutor
+     */
+    KTOR(
+            "io.ktor.client.HttpClient",
+            "net.lenni0451.commons.httpclient.executor.extra.KtorExecutor"
+    ),
     ;
 
     public static final ExecutorType DEFAULT = Stream.of(ExecutorType.values()).filter(type -> !type.equals(AUTO)).filter(ExecutorType::isAvailable).findFirst()

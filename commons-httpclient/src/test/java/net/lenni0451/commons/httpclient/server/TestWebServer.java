@@ -5,13 +5,17 @@ import com.sun.net.httpserver.HttpServer;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class TestWebServer {
 
     private final HttpServer server;
+    private final ExecutorService executor = Executors.newCachedThreadPool();
 
     public TestWebServer() throws IOException {
         this.server = HttpServer.create();
+        this.server.setExecutor(this.executor);
 
         this.server.createContext("/echo", new ContentEchoHandler());
         this.server.createContext("/response", new ContentResponseHandler());
@@ -20,6 +24,14 @@ public class TestWebServer {
         this.server.createContext("/contentType", new ContentTypeEchoHandler());
         this.server.createContext("/redirect", new RedirectHandler());
         this.server.createContext("/constant", new ConstantContentHandler());
+        this.server.createContext("/headerEcho", new HeaderEchoHandler());
+        this.server.createContext("/multiHeader", new MultiHeaderHandler());
+        this.server.createContext("/gzip", new GzipHandler());
+        this.server.createContext("/slow", new SlowHandler());
+        this.server.createContext("/cookieEcho", new CookieEchoHandler());
+        this.server.createContext("/methodEcho", new MethodEchoHandler());
+        this.server.createContext("/queryEcho", new QueryEchoHandler());
+        this.server.createContext("/noContent", new NoContentHandler());
     }
 
     public int bind() throws IOException {
@@ -34,6 +46,7 @@ public class TestWebServer {
 
     public void stop() {
         this.server.stop(0);
+        this.executor.shutdownNow();
     }
 
 }

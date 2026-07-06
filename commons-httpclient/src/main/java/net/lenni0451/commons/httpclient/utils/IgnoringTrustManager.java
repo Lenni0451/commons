@@ -48,7 +48,8 @@ public class IgnoringTrustManager extends X509ExtendedTrustManager {
 
     @Override
     public X509Certificate[] getAcceptedIssuers() {
-        return null;
+        //The X509TrustManager contract requires a non-null array and some libraries (e.g. OkHttp) fail on null
+        return new X509Certificate[0];
     }
 
 }
