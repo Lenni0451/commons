@@ -63,7 +63,8 @@ public enum ExecutorType {
     ),
     /**
      * Use the Ktor executor.<br>
-     * Ktor (including a client engine) needs to be added as a dependency to your project.
+     * Ktor (including a client engine) needs to be added as a dependency to your project.<br>
+     * Note: only the presence of ktor-client-core is checked, a missing engine is only detected when the first request is executed.
      *
      * @see net.lenni0451.commons.httpclient.executor.extra.KtorExecutor
      */

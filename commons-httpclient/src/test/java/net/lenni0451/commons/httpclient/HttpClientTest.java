@@ -30,6 +30,12 @@ class HttpClientTest {
 
     private static TestWebServer server;
     private static String baseUrl;
+    //Deterministic payload shared across parameterized runs (Random with a fixed seed produces identical bytes)
+    private static final byte[] LARGE_PAYLOAD = new byte[256 * 1024];
+
+    static {
+        new Random(42).nextBytes(LARGE_PAYLOAD);
+    }
 
     @BeforeAll
     static void startServer() throws IOException {
@@ -277,8 +283,7 @@ class HttpClientTest {
     @ParameterizedTest
     @MethodSource(DATA_SOURCE)
     void largeContent(final HttpClient client) throws IOException {
-        byte[] payload = new byte[256 * 1024];
-        new Random(42).nextBytes(payload);
+        byte[] payload = LARGE_PAYLOAD;
         HttpResponse response = client.post(baseUrl + "/echo")
                 .setContent(new ByteArrayContent(payload))
                 .execute();
@@ -289,8 +294,7 @@ class HttpClientTest {
     @ParameterizedTest
     @MethodSource(DATA_SOURCE)
     void largeContentStreamed(final HttpClient client) throws IOException {
-        byte[] payload = new byte[256 * 1024];
-        new Random(42).nextBytes(payload);
+        byte[] payload = LARGE_PAYLOAD;
         HttpResponse response = client.post(baseUrl + "/echo")
                 .setContent(HttpContent.inputStream(ContentTypes.APPLICATION_OCTET_STREAM, new ByteArrayInputStream(payload), payload.length))
                 .setStreamedRequest(true)
@@ -348,6 +352,35 @@ class HttpClientTest {
                 .execute();
         assertEquals(StatusCodes.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertEquals("error", response.getContent().getAsString());
+    }
+
+    @ParameterizedTest
+    @MethodSource(DATA_SOURCE)
+    void contentTypeOverride(final HttpClient client) throws IOException {
+        //A user provided Content-Type header must win over the content's own type on every backend
+        HttpResponse response = client.post(baseUrl + "/contentType")
+                .setContent(new StringContent("body"))
+                .setHeader("Content-Type", "application/vnd.custom+json")
+                .execute();
+        assertEquals(StatusCodes.OK, response.getStatusCode());
+        assertEquals("application/vnd.custom+json", response.getContent().getAsString());
+    }
+
+    @ParameterizedTest
+    @MethodSource(DATA_SOURCE)
+    void quotedCharsetContentType(final HttpClient client) throws IOException {
+        //A response with a quoted charset (legal per RFC 9110) must not crash the content type parser
+        HttpResponse response = client.get(baseUrl + "/quotedCharset").execute();
+        assertEquals(StatusCodes.OK, response.getStatusCode());
+        assertEquals("quoted", response.getContent().getAsString());
+    }
+
+    @ParameterizedTest
+    @MethodSource(DATA_SOURCE)
+    void quotedCharsetContentTypeStreamed(final HttpClient client) throws IOException {
+        HttpResponse response = client.get(baseUrl + "/quotedCharset").setStreamedResponse(true).execute();
+        assertEquals(StatusCodes.OK, response.getStatusCode());
+        assertEquals("quoted", response.getContent().getAsString());
     }
 
     @ParameterizedTest

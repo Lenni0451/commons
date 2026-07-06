@@ -41,8 +41,12 @@ public class CloseListenerInputStream extends InputStream {
 
     @Override
     public void close() throws IOException {
-        this.inputStream.close();
-        this.closeListener.close();
+        //Always run the close listener, even if closing the wrapped stream fails, so backend resources are released
+        try {
+            this.inputStream.close();
+        } finally {
+            this.closeListener.close();
+        }
     }
 
 

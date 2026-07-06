@@ -32,6 +32,8 @@ public class TestWebServer {
         this.server.createContext("/methodEcho", new MethodEchoHandler());
         this.server.createContext("/queryEcho", new QueryEchoHandler());
         this.server.createContext("/noContent", new NoContentHandler());
+        this.server.createContext("/quotedCharset", new QuotedCharsetHandler());
+        this.server.createContext("/redirectCookie", new RedirectCookieHandler());
     }
 
     public int bind() throws IOException {

@@ -17,6 +17,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.CookieManager;
+import java.net.URL;
 import java.net.http.HttpClient.Redirect;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse.BodyHandlers;
@@ -40,7 +41,7 @@ import java.util.function.Consumer;
  * <ul>
  *     <li>Only supports HTTP proxies</li>
  *     <li>Only supports HTTP/1.1 and HTTP/2</li>
- *     <li>Client level settings (redirects, proxy, SSL, cookies, connect timeout) are not applied to user provided clients</li>
+ *     <li>User provided clients only receive the request headers, body, cookies and read timeout; redirect, SSL, proxy and connect timeout settings (client and request level) are not applied to them</li>
  * </ul>
  */
 public class HttpClientExecutor extends RequestExecutor {
@@ -88,15 +89,16 @@ public class HttpClientExecutor extends RequestExecutor {
     @Override
     public HttpResponse execute(@Nonnull final HttpRequest request) throws IOException {
         if (this.customHttpClient != null) {
-            //The lifecycle of user provided clients is managed by the user
-            return this.executeRequest(this.customHttpClient, request, null);
+            //The lifecycle of user provided clients is managed by the user; cookies are still applied per request via headers
+            return this.executeRequest(this.customHttpClient, request, null, this.getCookieManager(request));
         }
         ExecutorService executor = Executors.newCachedThreadPool();
         java.net.http.HttpClient httpClient = null;
         boolean close = true;
         try {
             httpClient = this.buildClient(request, executor);
-            HttpResponse response = this.executeRequest(httpClient, request, this.closeListener(executor, httpClient));
+            //Cookies are handled by the client's cookie handler, so they are not applied per request here
+            HttpResponse response = this.executeRequest(httpClient, request, this.closeListener(executor, httpClient), null);
             if (request.isStreamedResponse()) close = false; //Closing the http client would also close the input stream
             return response;
         } finally {
@@ -104,15 +106,21 @@ public class HttpClientExecutor extends RequestExecutor {
         }
     }
 
-    private HttpResponse executeRequest(final java.net.http.HttpClient httpClient, final HttpRequest request, @Nullable final CloseListenerInputStream.CloseListener closeListener) throws IOException {
-        java.net.http.HttpRequest httpRequest = this.buildRequest(request);
+    private HttpResponse executeRequest(final java.net.http.HttpClient httpClient, final HttpRequest request, @Nullable final CloseListenerInputStream.CloseListener closeListener, @Nullable final CookieManager cookieManager) throws IOException {
+        java.net.http.HttpRequest httpRequest = this.buildRequest(request, cookieManager);
         if (request.isStreamedResponse()) {
             java.net.http.HttpResponse<InputStream> response = this.send(httpClient, httpRequest, BodyHandlers.ofInputStream());
+            URL url = new URLWrapper(response.uri()).toURL();
+            Map<String, List<String>> headers = response.headers().map();
+            this.updateCookies(cookieManager, url, headers);
             InputStream inputStream = closeListener == null ? response.body() : new CloseListenerInputStream(response.body(), closeListener);
-            return new HttpResponse(new URLWrapper(response.uri()).toURL(), response.statusCode(), inputStream, response.headers().map());
+            return new HttpResponse(url, response.statusCode(), inputStream, headers);
         } else {
             java.net.http.HttpResponse<byte[]> response = this.send(httpClient, httpRequest, BodyHandlers.ofByteArray());
-            return new HttpResponse(new URLWrapper(response.uri()).toURL(), response.statusCode(), response.body(), response.headers().map());
+            URL url = new URLWrapper(response.uri()).toURL();
+            Map<String, List<String>> headers = response.headers().map();
+            this.updateCookies(cookieManager, url, headers);
+            return new HttpResponse(url, response.statusCode(), response.body(), headers);
         }
     }
 
@@ -146,7 +154,7 @@ public class HttpClientExecutor extends RequestExecutor {
         return builder.build();
     }
 
-    private java.net.http.HttpRequest buildRequest(final HttpRequest request) throws IOException {
+    private java.net.http.HttpRequest buildRequest(final HttpRequest request, @Nullable final CookieManager cookieManager) throws IOException {
         java.net.http.HttpRequest.Builder builder = java.net.http.HttpRequest.newBuilder();
         builder.uri(new URLWrapper(request.getURL()).toURI());
         builder.timeout(Duration.ofMillis(this.client.getReadTimeout()));
@@ -163,7 +171,8 @@ public class HttpClientExecutor extends RequestExecutor {
             bodyPublisher = BodyPublishers.noBody();
         }
         builder.method(request.getMethod(), bodyPublisher);
-        for (Map.Entry<String, List<String>> entry : this.getHeaders(request, null).entrySet()) {
+        //A non-null cookie manager is only passed for user provided clients (which have no cookie handler of their own)
+        for (Map.Entry<String, List<String>> entry : this.getHeaders(request, cookieManager).entrySet()) {
             if (entry.getKey().equalsIgnoreCase(HttpHeaders.CONTENT_LENGTH)) {
                 //Java 11 HttpClient does not allow manually setting the content length
                 continue;
