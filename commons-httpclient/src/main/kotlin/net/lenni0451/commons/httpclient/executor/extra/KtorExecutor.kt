@@ -1,6 +1,8 @@
 package net.lenni0451.commons.httpclient.executor.extra
 
+import io.ktor.client.HttpClientConfig
 import io.ktor.client.call.body
+import io.ktor.client.engine.HttpClientEngineFactory
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
@@ -34,15 +36,30 @@ import io.ktor.client.HttpClient as KtorClient
 /**
  * Executor that uses Ktor to execute requests.<br>
  * Make sure to add the dependency (including a client engine) to your project before using this executor.<br>
- * The engine is discovered from the classpath by Ktor itself.<br>
+ * By default the engine is discovered from the classpath by Ktor itself.<br>
+ * <br>
+ * The used Ktor client can be customized by passing an engine factory, a user provided client and/or a config block to the constructor.<br>
+ * Use it together with [HttpClient(Function)][HttpClient] (e.g. `HttpClient { KtorExecutor(it, engineFactory = CIO) }`).<br>
  * <br>
  * Limitations:
  * <ul>
  *     <li>Ignoring invalid SSL certificates is engine specific and therefore not supported</li>
  *     <li>Proxy support depends on the used engine</li>
+ *     <li>Engine configuration (e.g. the proxy) is not applied to user provided clients</li>
  * </ul>
+ *
+ * @param client        The http client
+ * @param engineFactory The engine factory to use instead of the classpath discovery
+ * @param baseClient    A user provided client which is used as the base for all requests (see [io.ktor.client.HttpClient.config]).
+ *                      It takes precedence over the engine factory. Its engine is shared and will not be closed by this executor.
+ * @param clientConfig  A config block that is applied to the client config after the default configuration
  */
-class KtorExecutor(client: HttpClient) : RequestExecutor(client) {
+class KtorExecutor @JvmOverloads constructor(
+    client: HttpClient,
+    private val engineFactory: HttpClientEngineFactory<*>? = null,
+    private val baseClient: KtorClient? = null,
+    private val clientConfig: (HttpClientConfig<*>.() -> Unit)? = null,
+) : RequestExecutor(client) {
 
     override fun execute(request: HttpRequest): HttpResponse {
         if (this.isIgnoreInvalidSSL(request)) {
@@ -87,7 +104,8 @@ class KtorExecutor(client: HttpClient) : RequestExecutor(client) {
         val connectTimeout = this.client.connectTimeout.toLong()
         val readTimeout = this.client.readTimeout.toLong()
         val proxyHandler = this.client.proxyHandler
-        return KtorClient {
+        val clientConfig = this.clientConfig
+        val configure: HttpClientConfig<*>.() -> Unit = {
             followRedirects = follow
             expectSuccess = false
             install(HttpTimeout) {
@@ -95,10 +113,17 @@ class KtorExecutor(client: HttpClient) : RequestExecutor(client) {
                 socketTimeoutMillis = readTimeout
             }
             if (proxyHandler.isProxySet) {
+                //The engine configuration is ignored by Ktor if a user provided client is used
                 engine {
                     proxy = proxyHandler.toJavaProxy()
                 }
             }
+            clientConfig?.invoke(this)
+        }
+        return when {
+            this.baseClient != null -> this.baseClient.config(configure)
+            this.engineFactory != null -> KtorClient(this.engineFactory, configure)
+            else -> KtorClient(configure)
         }
     }
 

@@ -20,10 +20,14 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * Executor that uses {@link HttpURLConnection} to execute requests.<br>
  * This executor is available on all Java versions and is the default executor if no other executor is available.<br>
+ * <br>
+ * The used {@link HttpURLConnection} can be customized by passing a connection customizer to the constructor.<br>
+ * Use it together with {@link HttpClient#HttpClient(java.util.function.Function)} (e.g. {@code new HttpClient(c -> new URLConnectionExecutor(c, myCustomizer))}).<br>
  * <br>
  * Limitations:
  * <ul>
@@ -33,8 +37,20 @@ import java.util.Map;
  */
 public class URLConnectionExecutor extends RequestExecutor {
 
+    @Nullable
+    private final Consumer<HttpURLConnection> connectionCustomizer;
+
     public URLConnectionExecutor(final HttpClient client) {
+        this(client, null);
+    }
+
+    /**
+     * @param client               The http client
+     * @param connectionCustomizer A customizer that is applied to the {@link HttpURLConnection} after the default configuration and before connecting
+     */
+    public URLConnectionExecutor(final HttpClient client, @Nullable final Consumer<HttpURLConnection> connectionCustomizer) {
         super(client);
+        this.connectionCustomizer = connectionCustomizer;
     }
 
     @Nonnull
@@ -72,6 +88,7 @@ public class URLConnectionExecutor extends RequestExecutor {
             httpsConnection.setSSLSocketFactory(IgnoringTrustManager.makeIgnoringSSLContext().getSocketFactory());
         }
         this.setupConnection(connection, cookieManager, request);
+        if (this.connectionCustomizer != null) this.connectionCustomizer.accept(connection);
         connection.connect();
         return connection;
     }

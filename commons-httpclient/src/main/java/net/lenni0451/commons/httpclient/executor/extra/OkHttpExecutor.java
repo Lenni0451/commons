@@ -31,10 +31,14 @@ import java.util.Deque;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 /**
  * Executor that uses OkHttp to execute requests.<br>
  * Make sure to add the dependency to your project before using this executor.<br>
+ * <br>
+ * The used {@link OkHttpClient} can be customized by passing a base client and/or a client customizer to the constructor.<br>
+ * Use it together with {@link HttpClient#HttpClient(java.util.function.Function)} (e.g. {@code new HttpClient(c -> new OkHttpExecutor(c, myOkHttpClient))}).<br>
  * <br>
  * Limitations:
  * <ul>
@@ -45,8 +49,42 @@ public class OkHttpExecutor extends RequestExecutor {
 
     private static final byte[] EMPTY_BODY = new byte[0];
 
+    @Nullable
+    private final OkHttpClient baseClient;
+    @Nullable
+    private final Consumer<OkHttpClient.Builder> clientCustomizer;
+
     public OkHttpExecutor(final HttpClient client) {
+        this(client, null, null);
+    }
+
+    /**
+     * @param client           The http client
+     * @param clientCustomizer A customizer that is applied to the {@link OkHttpClient.Builder} after the default configuration
+     */
+    public OkHttpExecutor(final HttpClient client, @Nullable final Consumer<OkHttpClient.Builder> clientCustomizer) {
+        this(client, null, clientCustomizer);
+    }
+
+    /**
+     * @param client     The http client
+     * @param baseClient A user provided client which is used as the base for all requests (see {@link OkHttpClient#newBuilder()}).
+     *                   Its resources (dispatcher, connection pool, ...) are shared and will not be closed by this executor.
+     */
+    public OkHttpExecutor(final HttpClient client, @Nullable final OkHttpClient baseClient) {
+        this(client, baseClient, null);
+    }
+
+    /**
+     * @param client           The http client
+     * @param baseClient       A user provided client which is used as the base for all requests (see {@link OkHttpClient#newBuilder()}).
+     *                         Its resources (dispatcher, connection pool, ...) are shared and will not be closed by this executor.
+     * @param clientCustomizer A customizer that is applied to the {@link OkHttpClient.Builder} after the default configuration
+     */
+    public OkHttpExecutor(final HttpClient client, @Nullable final OkHttpClient baseClient, @Nullable final Consumer<OkHttpClient.Builder> clientCustomizer) {
         super(client);
+        this.baseClient = baseClient;
+        this.clientCustomizer = clientCustomizer;
     }
 
     @Nonnull
@@ -87,7 +125,7 @@ public class OkHttpExecutor extends RequestExecutor {
 
     private OkHttpClient buildClient(final HttpRequest request) throws IOException {
         boolean followRedirects = this.isFollowRedirects(request);
-        OkHttpClient.Builder builder = new OkHttpClient.Builder()
+        OkHttpClient.Builder builder = (this.baseClient != null ? this.baseClient.newBuilder() : new OkHttpClient.Builder())
                 .connectTimeout(this.client.getConnectTimeout(), TimeUnit.MILLISECONDS)
                 .readTimeout(this.client.getReadTimeout(), TimeUnit.MILLISECONDS)
                 .writeTimeout(this.client.getReadTimeout(), TimeUnit.MILLISECONDS)
@@ -108,6 +146,7 @@ public class OkHttpExecutor extends RequestExecutor {
                 });
             }
         }
+        if (this.clientCustomizer != null) this.clientCustomizer.accept(builder);
         return builder.build();
     }
 
@@ -184,6 +223,8 @@ public class OkHttpExecutor extends RequestExecutor {
     }
 
     private void closeClient(final OkHttpClient httpClient) {
+        //Clients derived from a user provided client share its resources which must not be closed
+        if (this.baseClient != null) return;
         httpClient.dispatcher().executorService().shutdown();
         httpClient.connectionPool().evictAll();
     }

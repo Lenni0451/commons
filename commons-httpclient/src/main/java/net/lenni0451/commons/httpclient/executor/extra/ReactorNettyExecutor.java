@@ -26,6 +26,7 @@ import reactor.netty.tcp.SslProvider;
 import reactor.netty.transport.ProxyProvider;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
@@ -37,19 +38,54 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 /**
  * Executor that uses reactor-netty to execute requests.<br>
  * Make sure to add the dependency to your project before using this executor.<br>
  * <br>
+ * The used {@link reactor.netty.http.client.HttpClient} can be customized by passing a base client and/or a client customizer to the constructor.<br>
+ * Use it together with {@link HttpClient#HttpClient(java.util.function.Function)} (e.g. {@code new HttpClient(c -> new ReactorNettyExecutor(c, myReactorClient))}).<br>
  */
 public class ReactorNettyExecutor extends RequestExecutor {
 
     private static final byte[] EMPTY_BODY = new byte[0];
 
+    @Nullable
+    private final reactor.netty.http.client.HttpClient baseClient;
+    @Nullable
+    private final UnaryOperator<reactor.netty.http.client.HttpClient> clientCustomizer;
+
     public ReactorNettyExecutor(final HttpClient client) {
+        this(client, null, null);
+    }
+
+    /**
+     * @param client           The http client
+     * @param clientCustomizer A customizer that is applied to the {@link reactor.netty.http.client.HttpClient} after the default configuration
+     */
+    public ReactorNettyExecutor(final HttpClient client, @Nullable final UnaryOperator<reactor.netty.http.client.HttpClient> clientCustomizer) {
+        this(client, null, clientCustomizer);
+    }
+
+    /**
+     * @param client     The http client
+     * @param baseClient A user provided client which is used as the base for all requests instead of {@link reactor.netty.http.client.HttpClient#create()}
+     */
+    public ReactorNettyExecutor(final HttpClient client, @Nullable final reactor.netty.http.client.HttpClient baseClient) {
+        this(client, baseClient, null);
+    }
+
+    /**
+     * @param client           The http client
+     * @param baseClient       A user provided client which is used as the base for all requests instead of {@link reactor.netty.http.client.HttpClient#create()}
+     * @param clientCustomizer A customizer that is applied to the {@link reactor.netty.http.client.HttpClient} after the default configuration
+     */
+    public ReactorNettyExecutor(final HttpClient client, @Nullable final reactor.netty.http.client.HttpClient baseClient, @Nullable final UnaryOperator<reactor.netty.http.client.HttpClient> clientCustomizer) {
         super(client);
+        this.baseClient = baseClient;
+        this.clientCustomizer = clientCustomizer;
     }
 
     @Nonnull
@@ -147,7 +183,7 @@ public class ReactorNettyExecutor extends RequestExecutor {
 
     private reactor.netty.http.client.HttpClient buildClient(final HttpRequest request, final CookieManager cookieManager) throws IOException {
         Map<String, List<String>> requestHeaders = this.getHeaders(request, cookieManager);
-        reactor.netty.http.client.HttpClient httpClient = reactor.netty.http.client.HttpClient.create()
+        reactor.netty.http.client.HttpClient httpClient = (this.baseClient != null ? this.baseClient : reactor.netty.http.client.HttpClient.create())
                 .responseTimeout(Duration.ofMillis(this.client.getReadTimeout()))
                 .followRedirect(this.isFollowRedirects(request))
                 .headers(headers -> this.setHeaders(requestHeaders, headers::set, headers::add));
@@ -176,6 +212,7 @@ public class ReactorNettyExecutor extends RequestExecutor {
                 if (proxyHandler.getPassword() != null) builder.password(s -> proxyHandler.getPassword());
             });
         }
+        if (this.clientCustomizer != null) httpClient = this.clientCustomizer.apply(httpClient);
         return httpClient;
     }
 

@@ -8,6 +8,12 @@ import javax.annotation.Nullable;
 import java.lang.reflect.Constructor;
 import java.util.stream.Stream;
 
+/**
+ * The available executor types with their default configuration.<br>
+ * To customize an executor (e.g. use a user provided OkHttp/Ktor/reactor-netty/Java HttpClient instance or change engine parameters)
+ * instantiate it directly using {@link HttpClient#HttpClient(java.util.function.Function)}:<br>
+ * {@code new HttpClient(c -> new OkHttpExecutor(c, myOkHttpClient))}
+ */
 public enum ExecutorType {
 
     @Deprecated
