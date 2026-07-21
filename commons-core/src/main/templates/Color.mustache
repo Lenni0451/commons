@@ -382,16 +382,18 @@ public class Color {
     }
 
     /**
-     * @return This color brightened by 0.7
+     * @return This color brightened by 0.7 by scaling the RGB components.
+     * @see #brighter(float)
      */
     public Color brighter() {
         return this.brighter(0.7F);
     }
 
     /**
-     * Brighten this color by the given factor.
+     * Brighten this color by the given factor by scaling the RGB components.
+     * Unlike {@link #lighten(float)}, this does not blend towards white, but instead divides the non-zero color channels by the factor.
      *
-     * @param factor The factor to brighten this color by
+     * @param factor The factor to scale the color components by (typically 0.7)
      * @return The new color
      */
     public Color brighter(final float factor) {
@@ -415,16 +417,62 @@ public class Color {
     }
 
     /**
-     * @return This color darkened by 0.7
+     * Lighten this color by the given factor by blending it towards white.
+     * Unlike {@link #brighter(float)}, this performs a linear interpolation towards white (255, 255, 255).
+     *
+     * @param factor The factor to lighten this color by
+     * @return The new color
+     */
+    public Color lighten(final float factor) {
+        int r = this.getRed();
+        int g = this.getGreen();
+        int b = this.getBlue();
+        r += (int) ((255 - r) * factor);
+        g += (int) ((255 - g) * factor);
+        b += (int) ((255 - b) * factor);
+        return fromRGBA(
+                MathUtils.clamp(r, 0, 255),
+                MathUtils.clamp(g, 0, 255),
+                MathUtils.clamp(b, 0, 255),
+                this.getAlpha()
+        );
+    }
+
+    /**
+     * Darken this color by the given factor by blending it towards black.
+     * Unlike {@link #darker(float)}, this performs a linear interpolation towards black (0, 0, 0).
+     *
+     * @param factor The factor to darken this color by
+     * @return The new color
+     */
+    public Color darken(final float factor) {
+        int r = this.getRed();
+        int g = this.getGreen();
+        int b = this.getBlue();
+        r -= (int) (r * factor);
+        g -= (int) (g * factor);
+        b -= (int) (b * factor);
+        return fromRGBA(
+                MathUtils.clamp(r, 0, 255),
+                MathUtils.clamp(g, 0, 255),
+                MathUtils.clamp(b, 0, 255),
+                this.getAlpha()
+        );
+    }
+
+    /**
+     * @return This color darkened by 0.7 by scaling the RGB components.
+     * @see #darker(float)
      */
     public Color darker() {
         return this.darker(0.7F);
     }
 
     /**
-     * Darken this color by the given factor.
+     * Darken this color by the given factor by scaling the RGB components.
+     * Unlike {@link #darken(float)}, this does not perform linear interpolation towards black, but instead multiplies the color channels by the factor.
      *
-     * @param factor The factor to darken this color by
+     * @param factor The factor to scale the color components by (typically 0.7)
      * @return The new color
      */
     public Color darker(final float factor) {

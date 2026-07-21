@@ -98,6 +98,15 @@ class ColorTest {
     }
 
     @Test
+    void lighten() {
+        this.checkColor(Color.BLACK.lighten(0.5F), 127, 127, 127, 255);
+        this.checkColor(Color.WHITE.lighten(0.5F), 255, 255, 255, 255);
+        this.checkColor(Color.RED.lighten(0.5F), 255, 127, 127, 255);
+        this.checkColor(Color.fromRGB(100, 150, 200).lighten(0.0F), 100, 150, 200, 255);
+        this.checkColor(Color.fromRGB(100, 150, 200).withAlpha(120).lighten(1.0F), 255, 255, 255, 120);
+    }
+
+    @Test
     void darker() {
         java.awt.Color awtRed = new java.awt.Color(255, 0, 0);
         java.awt.Color awtGreen = new java.awt.Color(0, 255, 0);
@@ -106,6 +115,15 @@ class ColorTest {
         assertEquals(awtRed.darker().getRGB(), Color.RED.darker().toARGB());
         assertEquals(awtGreen.darker().getRGB(), Color.GREEN.darker().toARGB());
         assertEquals(awtBlue.darker().getRGB(), Color.BLUE.darker().toARGB());
+    }
+
+    @Test
+    void darken() {
+        this.checkColor(Color.WHITE.darken(0.5F), 128, 128, 128, 255);
+        this.checkColor(Color.BLACK.darken(0.5F), 0, 0, 0, 255);
+        this.checkColor(Color.RED.darken(0.5F), 128, 0, 0, 255);
+        this.checkColor(Color.fromRGB(100, 150, 200).darken(0.0F), 100, 150, 200, 255);
+        this.checkColor(Color.fromRGB(100, 150, 200).withAlpha(120).darken(1.0F), 0, 0, 0, 120);
     }
 
     @Test
