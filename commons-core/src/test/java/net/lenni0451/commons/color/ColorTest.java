@@ -62,6 +62,11 @@ class ColorTest {
         assertArrayEquals(F_ABGR, Color.fromABGRF(F_ABGR).toABGRF());
 
         assertEquals(Color.fromRGB(I_RGB), Color.fromHSB(Color.fromRGB(I_RGB).toHSB()));
+        assertArrayEquals(new float[]{0F, 0F, 1F}, Color.WHITE.toHSB());
+        assertArrayEquals(new float[]{0F, 0F, 0F}, Color.BLACK.toHSB());
+        assertArrayEquals(new float[]{0F, 0F, 127 / 255F}, Color.fromRGBF(0.5F, 0.5F, 0.5F).toHSB());
+        assertEquals(Color.WHITE, Color.fromHSB(Color.WHITE.toHSB()));
+        assertEquals(Color.BLACK, Color.fromHSB(Color.BLACK.toHSB()));
     }
 
     @Test
