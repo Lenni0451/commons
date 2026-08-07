@@ -20,7 +20,7 @@ public class ScrollPaneSizedPanel extends JPanel {
         Dimension preferred = super.getPreferredSize();
         JViewport viewport = this.scrollPane.getViewport();
         preferred.width = Math.min(preferred.width, viewport.getWidth());
-//        preferred.height = Math.min(preferred.height, viewport.getHeight());
+        // preferred.height = Math.min(preferred.height, viewport.getHeight());
         return preferred;
     }
 

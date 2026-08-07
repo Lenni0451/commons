@@ -17,11 +17,14 @@ public class BounceEasingFunction implements EasingFunction {
         if (x < 1 / D1) {
             return N1 * x * x;
         } else if (x < 2 / D1) {
-            return (float) (N1 * (x -= 1.5 / D1) * x + 0.75);
+            x -= 1.5 / D1;
+            return (float) (N1 * x * x + 0.75);
         } else if (x < 2.5 / D1) {
-            return (float) (N1 * (x -= 2.25 / D1) * x + 0.9375);
+            x -= 2.25 / D1;
+            return (float) (N1 * x * x + 0.9375);
         } else {
-            return (float) (N1 * (x -= 2.625 / D1) * x + 0.984375);
+            x -= 2.625 / D1;
+            return (float) (N1 * x * x + 0.984375);
         }
     }
 

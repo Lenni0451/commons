@@ -335,10 +335,10 @@ public class ColorConverter {
      * @return The int representation
      */
     public int to(final int r, final int g, final int b, final int a) {
-        return r << this.rShift |
-                g << this.gShift |
-                b << this.bShift |
-                (this.aShift == -1 ? 0 : a << this.aShift);
+        return r << this.rShift
+                | g << this.gShift
+                | b << this.bShift
+                | (this.aShift == -1 ? 0 : a << this.aShift);
     }
 
     /**
@@ -352,10 +352,10 @@ public class ColorConverter {
      * @return The int representation
      */
     public int to(final float r, final float g, final float b, final float a) {
-        return (int) (r * 255) << this.rShift |
-                (int) (g * 255) << this.gShift |
-                (int) (b * 255) << this.bShift |
-                (this.aShift == -1 ? 0 : (int) (a * 255) << this.aShift);
+        return (int) (r * 255) << this.rShift
+                | (int) (g * 255) << this.gShift
+                | (int) (b * 255) << this.bShift
+                | (this.aShift == -1 ? 0 : (int) (a * 255) << this.aShift);
     }
 
     /**

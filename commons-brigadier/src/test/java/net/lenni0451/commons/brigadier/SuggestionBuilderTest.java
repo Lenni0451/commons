@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SuggestionBuilderTest implements CommandBuilder<CommandExecutor> {
 
-    private static final CommandExecutor executor = new CommandExecutor();
+    private static final CommandExecutor EXECUTOR = new CommandExecutor();
 
     @Test
     void test() {
@@ -40,7 +40,7 @@ class SuggestionBuilderTest implements CommandBuilder<CommandExecutor> {
     }
 
     private void checkCompletions(final CommandDispatcher<CommandExecutor> dispatcher, final String command, final String... expectedCompletions) {
-        ParseResults<CommandExecutor> results = dispatcher.parse(command, executor);
+        ParseResults<CommandExecutor> results = dispatcher.parse(command, EXECUTOR);
         Suggestions suggestions = assertDoesNotThrow(() -> dispatcher.getCompletionSuggestions(results).get());
         List<String> completions = suggestions.getList().stream().map(Suggestion::getText).collect(Collectors.toList());
         for (String expectedCompletion : expectedCompletions) {

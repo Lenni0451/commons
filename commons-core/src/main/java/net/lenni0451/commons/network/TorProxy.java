@@ -17,10 +17,10 @@ import java.util.regex.Pattern;
  */
 public class TorProxy {
 
-    private static final Set<TorProxy> shutdownListener = Collections.newSetFromMap(new WeakHashMap<>());
+    private static final Set<TorProxy> SHUTDOWN_LISTENER = Collections.newSetFromMap(new WeakHashMap<>());
 
     static {
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> shutdownListener.stream().filter(TorProxy::isRunning).forEach(TorProxy::kill), "Tor Shutdown Hook"));
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> SHUTDOWN_LISTENER.stream().filter(TorProxy::isRunning).forEach(TorProxy::kill), "Tor Shutdown Hook"));
     }
 
 
@@ -61,7 +61,7 @@ public class TorProxy {
         this.port = this.getPort(port);
         this.controlPort = this.getPort(controlPort);
 
-        shutdownListener.add(this);
+        SHUTDOWN_LISTENER.add(this);
     }
 
     /**

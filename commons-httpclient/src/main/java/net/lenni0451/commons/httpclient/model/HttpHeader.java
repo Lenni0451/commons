@@ -27,10 +27,10 @@ public class HttpHeader {
 
     @Override
     public String toString() {
-        return "HttpHeader{" +
-                "name='" + this.name + '\'' +
-                ", value='" + this.value + '\'' +
-                '}';
+        return "HttpHeader{"
+                + "name='" + this.name + '\''
+                + ", value='" + this.value + '\''
+                + '}';
     }
 
     @Override
