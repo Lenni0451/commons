@@ -2,7 +2,6 @@ package net.lenni0451.commons.httpclient.model;
 
 import javax.annotation.Nullable;
 import java.nio.charset.Charset;
-import java.nio.charset.UnsupportedCharsetException;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
@@ -25,14 +24,22 @@ public class ContentType {
             String part = parts[i].trim();
             if (part.startsWith("charset=")) {
                 try {
-                    charset = Charset.forName(part.substring(8));
-                } catch (UnsupportedCharsetException ignored) {
+                    //IllegalArgumentException also covers IllegalCharsetNameException for malformed (e.g. quoted) charset values
+                    charset = Charset.forName(stripQuotes(part.substring(8)));
+                } catch (IllegalArgumentException ignored) {
                 }
             } else if (part.startsWith("boundary=")) {
                 boundary = part.substring(9);
             }
         }
         return new ContentType(type, charset, boundary);
+    }
+
+    private static String stripQuotes(final String value) {
+        if (value.length() >= 2 && value.charAt(0) == '"' && value.charAt(value.length() - 1) == '"') {
+            return value.substring(1, value.length() - 1);
+        }
+        return value;
     }
 
 

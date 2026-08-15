@@ -8,6 +8,12 @@ import javax.annotation.Nullable;
 import java.lang.reflect.Constructor;
 import java.util.stream.Stream;
 
+/**
+ * The available executor types with their default configuration.<br>
+ * To customize an executor (e.g. use a user provided OkHttp/Ktor/reactor-netty/Java HttpClient instance or change engine parameters)
+ * instantiate it directly using {@link HttpClient#HttpClient(java.util.function.Function)}:<br>
+ * {@code new HttpClient(c -> new OkHttpExecutor(c, myOkHttpClient))}
+ */
 public enum ExecutorType {
 
     @Deprecated
@@ -44,6 +50,27 @@ public enum ExecutorType {
     REACTOR_NETTY(
             "reactor.netty.http.client.HttpClient",
             "net.lenni0451.commons.httpclient.executor.extra.ReactorNettyExecutor"
+    ),
+    /**
+     * Use the OkHttp executor.<br>
+     * OkHttp needs to be added as a dependency to your project.
+     *
+     * @see net.lenni0451.commons.httpclient.executor.extra.OkHttpExecutor
+     */
+    OK_HTTP(
+            "okhttp3.OkHttpClient",
+            "net.lenni0451.commons.httpclient.executor.extra.OkHttpExecutor"
+    ),
+    /**
+     * Use the Ktor executor.<br>
+     * Ktor (including a client engine) needs to be added as a dependency to your project.<br>
+     * Note: only the presence of ktor-client-core is checked, a missing engine is only detected when the first request is executed.
+     *
+     * @see net.lenni0451.commons.httpclient.executor.extra.KtorExecutor
+     */
+    KTOR(
+            "io.ktor.client.HttpClient",
+            "net.lenni0451.commons.httpclient.executor.extra.KtorExecutor"
     ),
     ;
 
