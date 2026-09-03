@@ -27,6 +27,20 @@ public class GsonArray extends GsonElement implements Iterable<GsonElement> {
         this.array = array;
     }
 
+    public GsonArray(final List<GsonElement> elements) {
+        this();
+        for (GsonElement element : elements) {
+            this.add(element);
+        }
+    }
+
+    public <T> GsonArray(final List<T> elements, final Function<T, GsonElement> mapper) {
+        this();
+        for (T element : elements) {
+            this.add(mapper.apply(element));
+        }
+    }
+
     public JsonArray getJsonArray() {
         return this.array;
     }
@@ -63,6 +77,20 @@ public class GsonArray extends GsonElement implements Iterable<GsonElement> {
 
     public GsonArray addAll(final GsonArray other) {
         this.array.addAll(other.getJsonArray());
+        return this;
+    }
+
+    public GsonArray addAll(final List<GsonElement> elements) {
+        for (GsonElement element : elements) {
+            this.add(element);
+        }
+        return this;
+    }
+
+    public <T> GsonArray addAll(final List<T> elements, final Function<T, GsonElement> mapper) {
+        for (T element : elements) {
+            this.add(mapper.apply(element));
+        }
         return this;
     }
 

@@ -4,6 +4,7 @@ import com.google.gson.JsonPrimitive;
 import org.junit.jupiter.api.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -104,6 +105,56 @@ class GsonArrayTest {
         assertEquals("value1", list.get(0).get("key1").asString());
         assertEquals("value2", list.get(1).get("key2").asString());
         assertEquals("value3", list.get(2).get("key3").asString());
+    }
+
+    @Test
+    void fromList() {
+        GsonArray array = new GsonArray();
+        array.add(1);
+        array.add("test");
+        array.add(true);
+
+        List<GsonElement> list = new ArrayList<>();
+        list.add(new GsonPrimitive(1));
+        list.add(new GsonPrimitive("test"));
+        list.add(new GsonPrimitive(true));
+
+        assertEquals(array, new GsonArray(list));
+    }
+
+    @Test
+    void fromListWithMapper() {
+        GsonArray array = new GsonArray();
+        array.add(1);
+        array.add(2);
+        array.add(3);
+
+        List<Integer> list = Arrays.asList(1, 2, 3);
+
+        assertEquals(array, new GsonArray(list, GsonPrimitive::new));
+    }
+
+    @Test
+    void addAllFromList() {
+        List<GsonElement> list = new ArrayList<>();
+        list.add(new GsonPrimitive(1));
+        list.add(new GsonPrimitive("test"));
+        list.add(new GsonPrimitive(true));
+
+        GsonArray array = new GsonArray();
+        array.addAll(list);
+
+        assertEquals(array, new GsonArray(list));
+    }
+
+    @Test
+    void addAllFromListWithMapper() {
+        List<Integer> list = Arrays.asList(1, 2, 3);
+
+        GsonArray array = new GsonArray();
+        array.addAll(list, GsonPrimitive::new);
+
+        assertEquals(array, new GsonArray(list, GsonPrimitive::new));
     }
 
     private void check(final Object... objects) {
