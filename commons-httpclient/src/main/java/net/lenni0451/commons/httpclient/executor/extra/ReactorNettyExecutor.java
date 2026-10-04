@@ -32,11 +32,7 @@ import java.io.UncheckedIOException;
 import java.net.CookieManager;
 import java.net.URL;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Stream;
 
 /**
@@ -46,7 +42,18 @@ import java.util.stream.Stream;
  */
 public class ReactorNettyExecutor extends RequestExecutor {
 
+    private static final int MAX_RESPONSE_HEADER_SIZE;
     private static final byte[] EMPTY_BODY = new byte[0];
+
+    static {
+        int maxResponseHeaderSize = 256 * 1024;
+        try {
+            maxResponseHeaderSize = Integer.decode(System.getProperty("jdk.http.maxHeaderSize"));
+        } catch (Throwable ignored) {
+        }
+        MAX_RESPONSE_HEADER_SIZE = maxResponseHeaderSize;
+    }
+
 
     public ReactorNettyExecutor(final HttpClient client) {
         super(client);
@@ -176,6 +183,7 @@ public class ReactorNettyExecutor extends RequestExecutor {
                 if (proxyHandler.getPassword() != null) builder.password(s -> proxyHandler.getPassword());
             });
         }
+        httpClient.httpResponseDecoder(spec -> spec.maxHeaderSize(MAX_RESPONSE_HEADER_SIZE));
         return httpClient;
     }
 
