@@ -183,8 +183,7 @@ public class ReactorNettyExecutor extends RequestExecutor {
                 if (proxyHandler.getPassword() != null) builder.password(s -> proxyHandler.getPassword());
             });
         }
-        httpClient.httpResponseDecoder(spec -> spec.maxHeaderSize(MAX_RESPONSE_HEADER_SIZE));
-        return httpClient;
+        return httpClient.httpResponseDecoder(spec -> spec.maxHeaderSize(MAX_RESPONSE_HEADER_SIZE));
     }
 
     private Map<String, List<String>> convertHeaders(final HttpHeaders headers) {
