@@ -4,6 +4,7 @@ import net.lenni0451.commons.asm.mappings.Mappings;
 
 import javax.annotation.WillClose;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -74,11 +75,10 @@ public abstract class MappingsLoader implements MappingsProvider {
     protected abstract Mappings load(final List<String> lines) throws Throwable;
 
     private List<String> readLines() throws IOException {
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(this.ioProvider.load()))) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(this.ioProvider.load(), StandardCharsets.UTF_8))) {
             return br.lines().filter(s -> !s.trim().isEmpty()).collect(Collectors.toList());
         }
     }
-
 
     @FunctionalInterface
     private interface IOProvider {
