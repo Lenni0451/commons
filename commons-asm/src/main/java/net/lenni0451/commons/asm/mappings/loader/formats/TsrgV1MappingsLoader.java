@@ -27,8 +27,9 @@ public class TsrgV1MappingsLoader extends MappingsLoader {
         Mappings mappings = new Mappings();
         String currentClass = null;
         for (String line : lines) {
-            String[] parts = line.trim().split(" ");
+            String[] parts = line.trim().split("\\s+");
             if (!line.startsWith("\t")) {
+                if (parts[0].startsWith("#") || parts.length != 2) continue; //Skip comments, the optional "tsrg <namespaces...>" header and invalid lines
                 currentClass = parts[0];
                 String newName = parts[1];
                 mappings.addClassMapping(currentClass, newName);
