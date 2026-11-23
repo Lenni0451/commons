@@ -55,6 +55,22 @@ class TsrgV2MappingsLoaderTest {
     }
 
     @Test
+    void testDescriptorsRemappedToSourceNamespace() {
+        // Descriptors are always in the first namespace and must be remapped to the source namespace
+        String content = String.join("\n",
+                "tsrg2 obf srg mcp",
+                "a net/Foo net/Foo",
+                "b net/Bar net/Bar",
+                "\tx La; f_1_ value",
+                "\ty (La;I)Lb; m_1_ convert"
+        );
+        TsrgV2MappingsLoader loader = new TsrgV2MappingsLoader(new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8)), "srg", "mcp");
+        Mappings mappings = loader.getMappings();
+        assertEquals("value", mappings.mapFieldName("net/Bar", "f_1_", "Lnet/Foo;"));
+        assertEquals("convert", mappings.mapMethodName("net/Bar", "m_1_", "(Lnet/Foo;I)Lnet/Bar;"));
+    }
+
+    @Test
     void testMissingNamespace() {
         TsrgV2MappingsLoader loader = new TsrgV2MappingsLoader(new ByteArrayInputStream(MAPPINGS.getBytes(StandardCharsets.UTF_8)), "missing", "mapped");
         assertThrows(RuntimeException.class, loader::getMappings);

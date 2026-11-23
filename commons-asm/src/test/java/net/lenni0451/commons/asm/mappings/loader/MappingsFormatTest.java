@@ -1,10 +1,13 @@
 package net.lenni0451.commons.asm.mappings.loader;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -38,6 +41,26 @@ class MappingsFormatTest {
         assertEquals(MappingsFormat.TSRG_V1, detect("tsrg a", "\tc d"));
         assertEquals(MappingsFormat.TSRG_V1, detect("tsrg2 a", "\tc d"));
         assertEquals(MappingsFormat.TSRG_V1, detect("v1 a", "\tc d"));
+    }
+
+    @Test
+    void testTsrgV1WithoutMembers() {
+        assertEquals(MappingsFormat.TSRG_V1, detect("a/ b/", "c d"));
+        assertEquals(MappingsFormat.TSRG_V1, detect("# comment", "c d", "e f"));
+        assertNull(detect("c d", "e f g"));
+    }
+
+    @Test
+    void testTsrgV1ClassNamedTiny() {
+        assertEquals(MappingsFormat.TSRG_V1, detect("tiny a", "\tc d"));
+        assertEquals(MappingsFormat.TSRG_V1, detect("tiny a"));
+    }
+
+    @Test
+    void testPathWithMalformedUtf8(@TempDir final Path dir) throws IOException {
+        Path file = dir.resolve("mappings.tsrg");
+        Files.write(file, new byte[]{'#', ' ', (byte) 0xE4, '\n', 'a', ' ', 'b', '\n', '\t', 'c', ' ', 'd'});
+        assertEquals(MappingsFormat.TSRG_V1, MappingsFormat.detect(file));
     }
 
     @Test

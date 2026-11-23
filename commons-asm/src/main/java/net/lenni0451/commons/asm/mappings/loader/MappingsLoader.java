@@ -80,6 +80,7 @@ public abstract class MappingsLoader implements MappingsProvider {
         }
     }
 
+
     @FunctionalInterface
     private interface IOProvider {
         InputStream load() throws IOException;

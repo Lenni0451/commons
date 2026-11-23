@@ -1,21 +1,16 @@
 package net.lenni0451.commons.asm.mappings.loader;
 
+import lombok.SneakyThrows;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.WillClose;
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.UncheckedIOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
- * The mappings formats supported by the {@link MappingsLoader} implementations.
+ * The mappings formats supported by the default {@link MappingsLoader} implementations.
  */
 public enum MappingsFormat {
 
@@ -55,7 +50,8 @@ public enum MappingsFormat {
      * @return The detected mappings format or {@code null} if it could not be detected
      * @throws IOException If an error occurs while reading the file
      */
-    public static @Nullable MappingsFormat detect(final File file) throws IOException {
+    @Nullable
+    public static MappingsFormat detect(final File file) throws IOException {
         return detect(file.toPath());
     }
 
@@ -66,8 +62,9 @@ public enum MappingsFormat {
      * @return The detected mappings format or {@code null} if it could not be detected
      * @throws IOException If an error occurs while reading the file
      */
-    public static @Nullable MappingsFormat detect(final Path path) throws IOException {
-        return detect(Files.newBufferedReader(path, StandardCharsets.UTF_8));
+    @Nullable
+    public static MappingsFormat detect(final Path path) throws IOException {
+        return detect(new InputStreamReader(Files.newInputStream(path), StandardCharsets.UTF_8));
     }
 
     /**
@@ -76,12 +73,10 @@ public enum MappingsFormat {
      * @param bytes The raw content of the mappings file
      * @return The detected mappings format or {@code null} if it could not be detected
      */
-    public static @Nullable MappingsFormat detect(final byte[] bytes) {
-        try {
-            return detect(new InputStreamReader(new ByteArrayInputStream(bytes), StandardCharsets.UTF_8));
-        } catch (IOException e) {
-            throw new UncheckedIOException(e); //Cannot happen for a ByteArrayInputStream
-        }
+    @Nullable
+    @SneakyThrows // The exception can't happen for a ByteArrayInputStream
+    public static MappingsFormat detect(final byte[] bytes) {
+        return detect(new InputStreamReader(new ByteArrayInputStream(bytes), StandardCharsets.UTF_8));
     }
 
     /**
@@ -92,16 +87,19 @@ public enum MappingsFormat {
      * @return The detected mappings format or {@code null} if it could not be detected
      * @throws IOException If an error occurs while reading the reader
      */
-    public static @Nullable MappingsFormat detect(@WillClose final Reader reader) throws IOException {
+    @Nullable
+    public static MappingsFormat detect(@WillClose final Reader reader) throws IOException {
         try (BufferedReader br = reader instanceof BufferedReader ? (BufferedReader) reader : new BufferedReader(reader)) {
             boolean headerChecked = false;
+            boolean sawClassLine = false;
+            boolean onlyClassLines = true;
             for (String line = br.readLine(); line != null; line = br.readLine()) {
                 String trimmed = line.trim();
                 if (trimmed.isEmpty() || trimmed.startsWith("#")) continue;
                 if (!headerChecked) {
                     headerChecked = true;
                     String[] headerParts = trimmed.split("\\s+");
-                    if (headerParts[0].equals("tiny") && headerParts.length >= 2) { // Tiny v2: tiny <version> ...
+                    if (headerParts[0].equals("tiny") && headerParts.length >= 5) { // Tiny v2: tiny <major> <minor> <namespaces...>
                         return headerParts[1].equals("2") ? TINY_V2 : null;
                     }
                     if (headerParts.length >= 3) { // Headers with namespaces
@@ -123,10 +121,15 @@ public enum MappingsFormat {
                     return PROGUARD;
                 } else if (line.startsWith("\t")) {
                     return TSRG_V1;
+                } else if (trimmed.split("\\s+").length == 2) {
+                    sawClassLine = true;
+                } else {
+                    onlyClassLines = false;
                 }
             }
 
-            return null;
+            // Headerless TSRG v1 files without any member lines only consist of "<from> <to>" class/package lines
+            return sawClassLine && onlyClassLines ? TSRG_V1 : null;
         }
     }
 

@@ -23,13 +23,16 @@ public class TsrgV1MappingsLoader extends MappingsLoader {
     }
 
     @Override
-    protected Mappings load(List<String> lines) throws Throwable {
+    protected Mappings load(List<String> lines) {
         Mappings mappings = new Mappings();
         String currentClass = null;
         for (String line : lines) {
             String[] parts = line.trim().split("\\s+");
             if (!line.startsWith("\t")) {
-                if (parts[0].startsWith("#") || parts.length != 2) continue; //Skip comments, the optional "tsrg <namespaces...>" header and invalid lines
+                if (parts[0].startsWith("#") || parts.length != 2) {
+                    // Skip comments, the optional "tsrg <namespaces...>" header and invalid lines
+                    continue;
+                }
                 currentClass = parts[0];
                 String newName = parts[1];
                 mappings.addClassMapping(currentClass, newName);
