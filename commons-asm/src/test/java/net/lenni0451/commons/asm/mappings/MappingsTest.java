@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class MappingsTest {
 
@@ -37,6 +38,32 @@ class MappingsTest {
         assertEquals("rRefField", mappings.mapFieldName("a/b/C", "rRenamedRefField", "La/b/C;"));
         assertEquals("rMethod", mappings.mapMethodName("a/b/C", "rRenamedMethod", "()I"));
         assertEquals("rRefMethod", mappings.mapMethodName("a/b/C", "rRenamedRefMethod", "(La/b/C;)La/b/C;"));
+    }
+
+    @Test
+    void testUpdateReverseOverwrite() {
+        Mappings mappings = new Mappings();
+        mappings.addClassMapping("a/b/C", "x/y/Z");
+        mappings.addFieldMapping("a/b/C", "field", "I", "renamedField");
+        mappings.addMethodMapping("a/b/C", "method", "()I", "renamedMethod");
+        mappings.addPackageMapping("a/b", "x/y");
+        Mappings reverse = mappings.reverse(Mappings.ReverseCacheMode.UPDATE);
+
+        //Overwriting a member mapping must remove the stale reverse key instead of leaving it behind
+        mappings.addFieldMapping("a/b/C", "field", "I", "renamedField2");
+        mappings.addMethodMapping("a/b/C", "method", "()I", "renamedMethod2");
+        assertEquals("field", reverse.mapFieldName("x/y/Z", "renamedField2", "I"));
+        assertEquals("method", reverse.mapMethodName("x/y/Z", "renamedMethod2", "()I"));
+        assertEquals("renamedField", reverse.mapFieldName("x/y/Z", "renamedField", "I"));
+        assertEquals("renamedMethod", reverse.mapMethodName("x/y/Z", "renamedMethod", "()I"));
+
+        //Class and package overwrites must drop the stale reverse keys as well
+        mappings.addClassMapping("a/b/C", "x/y/W");
+        mappings.addPackageMapping("a/b", "p/q");
+        assertEquals("a/b/C", reverse.map("x/y/W"));
+        assertEquals("x/y/Z", reverse.map("x/y/Z"));
+        assertEquals("a/b/", reverse.getPackageMappings().get("p/q/"));
+        assertNull(reverse.getPackageMappings().get("x/y/"));
     }
 
     @Test
