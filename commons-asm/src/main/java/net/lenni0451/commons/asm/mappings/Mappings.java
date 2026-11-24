@@ -97,9 +97,10 @@ public class Mappings extends Remapper {
         if (!from.equals(".") && !from.endsWith("/")) from += "/";
         if (!to.equals(".") && !to.endsWith("/")) to += "/";
         if (skipExisting && this.packageMappings.containsKey(from)) return this;
-        this.packageMappings.put(from, to);
+        String oldTo = this.packageMappings.put(from, to);
         if (this.reverse != null) {
             if (this.reverseCacheMode.equals(ReverseCacheMode.UPDATE)) {
+                if (oldTo != null) this.reverse.packageMappings.remove(oldTo, from);
                 this.reverse.packageMappings.put(to, from);
                 Reverser.recalculateClasses(this, this.reverse);
             } else if (this.reverseCacheMode.equals(ReverseCacheMode.RECREATE)) {
@@ -174,9 +175,10 @@ public class Mappings extends Remapper {
         if (from.contains(".")) throw new IllegalArgumentException("Class mappings must not contain '.'");
         if (to.contains(".")) throw new IllegalArgumentException("Class mappings must not contain '.'");
         if (skipExisting && this.classMappings.containsKey(from)) return this;
-        this.classMappings.put(from, to);
+        String oldTo = this.classMappings.put(from, to);
         if (this.reverse != null) {
             if (this.reverseCacheMode.equals(ReverseCacheMode.UPDATE)) {
+                if (oldTo != null) this.reverse.classMappings.remove(this.mapClassPackage(oldTo), from);
                 this.reverse.classMappings.put(this.map(from), from);
                 Reverser.recalculateFields(this, this.reverse);
                 Reverser.recalculateMethods(this, this.reverse);
@@ -237,11 +239,14 @@ public class Mappings extends Remapper {
         if (owner.contains(".")) throw new IllegalArgumentException("Field mappings must not contain '.'");
         String key = owner + "." + name + (descriptor != null ? ":" + descriptor : "");
         if (skipExisting && this.fieldMappings.containsKey(key)) return this;
-        this.fieldMappings.put(key, newName);
+        String oldName = this.fieldMappings.put(key, newName);
         if (this.reverse != null) {
             if (this.reverseCacheMode.equals(ReverseCacheMode.UPDATE)) {
-                this.reverse.addFieldMapping(this.map(owner), newName, this.mapDesc(descriptor), name);
-            } else if (this.reverse.equals(ReverseCacheMode.RECREATE)) {
+                String mappedOwner = this.map(owner);
+                String mappedDesc = descriptor == null ? "" : ":" + this.mapDesc(descriptor);
+                if (oldName != null) this.reverse.fieldMappings.remove(mappedOwner + "." + oldName + mappedDesc, name);
+                this.reverse.fieldMappings.put(mappedOwner + "." + newName + mappedDesc, name);
+            } else if (this.reverseCacheMode.equals(ReverseCacheMode.RECREATE)) {
                 this.reverse.reverseCacheMode = null;
                 this.reverse.reverse = null;
                 this.reverseCacheMode = null;
@@ -295,10 +300,13 @@ public class Mappings extends Remapper {
         if (owner.contains(".")) throw new IllegalArgumentException("Method mappings must not contain '.'");
         String key = owner + "." + name + descriptor;
         if (skipExisting && this.methodMappings.containsKey(key)) return this;
-        this.methodMappings.put(key, newName);
+        String oldName = this.methodMappings.put(key, newName);
         if (this.reverse != null) {
             if (this.reverseCacheMode.equals(ReverseCacheMode.UPDATE)) {
-                this.reverse.addMethodMapping(this.map(owner), newName, this.mapMethodDesc(descriptor), name);
+                String mappedOwner = this.map(owner);
+                String mappedDesc = this.mapMethodDesc(descriptor);
+                if (oldName != null) this.reverse.methodMappings.remove(mappedOwner + "." + oldName + mappedDesc, name);
+                this.reverse.methodMappings.put(mappedOwner + "." + newName + mappedDesc, name);
             } else if (this.reverseCacheMode.equals(ReverseCacheMode.RECREATE)) {
                 this.reverse.reverseCacheMode = null;
                 this.reverse.reverse = null;
