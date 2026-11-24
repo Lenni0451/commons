@@ -240,8 +240,8 @@ public class Mappings extends Remapper {
         this.fieldMappings.put(key, newName);
         if (this.reverse != null) {
             if (this.reverseCacheMode.equals(ReverseCacheMode.UPDATE)) {
-                this.reverse.addFieldMapping(this.map(owner), newName, this.mapDesc(descriptor), name);
-            } else if (this.reverse.equals(ReverseCacheMode.RECREATE)) {
+                this.reverse.fieldMappings.put(this.map(owner) + "." + newName + (descriptor == null ? "" : ":" + this.mapDesc(descriptor)), name);
+            } else if (this.reverseCacheMode.equals(ReverseCacheMode.RECREATE)) {
                 this.reverse.reverseCacheMode = null;
                 this.reverse.reverse = null;
                 this.reverseCacheMode = null;
@@ -298,7 +298,7 @@ public class Mappings extends Remapper {
         this.methodMappings.put(key, newName);
         if (this.reverse != null) {
             if (this.reverseCacheMode.equals(ReverseCacheMode.UPDATE)) {
-                this.reverse.addMethodMapping(this.map(owner), newName, this.mapMethodDesc(descriptor), name);
+                this.reverse.methodMappings.put(this.map(owner) + "." + newName + this.mapMethodDesc(descriptor), name);
             } else if (this.reverseCacheMode.equals(ReverseCacheMode.RECREATE)) {
                 this.reverse.reverseCacheMode = null;
                 this.reverse.reverse = null;
